@@ -1,5 +1,10 @@
 import { type JSX } from "react";
 
+export interface TEST {
+  id: number
+  name: string
+}
+
 export function Card({
   className,
   title,
