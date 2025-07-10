@@ -1,0 +1,134 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  IT
+  OWNER
+  GUEST
+  OPERATOR
+  ADMIN
+  BLOCKED
+}
+
+model User {
+  id         Int    @id @default(autoincrement())
+  telegramId String @unique
+
+  data            Json?
+  role            Role                 @default(GUEST)
+  reminders       Reminder[]
+  settings        NotificationSetting?
+  receipts        Receipt[]
+  shiftReports    ShiftReport[] // факт подтверждения смены
+  createdAt       DateTime             @default(now())
+  updatedAt       DateTime             @updatedAt
+  NotificationLog NotificationLog[]
+
+  active            Boolean         @default(true)
+  accessRequests    AccessRequest[]
+  processedRequests AccessRequest[] @relation("ProcessedBy") // Заявки, обработанные этим пользователем
+  allowedPhones     AllowedPhone[]
+}
+
+model Product {
+  id           Int       @id @default(autoincrement())
+  name         String    @unique
+  quantity     Int
+  minThreshold Int
+  unit         String?   @default("ед")
+  category     String?
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+  receipts     Receipt[]
+  active       Boolean   @default(true)
+}
+
+model Receipt {
+  id         Int      @id @default(autoincrement())
+  operator   User?    @relation(fields: [operatorId], references: [id])
+  operatorId Int?
+  receipts   Json // [{ productId: number, quantity: number }]
+  createdAt  DateTime @default(now())
+  Product    Product? @relation(fields: [productId], references: [id])
+  productId  Int?
+}
+
+model Reminder {
+  id        Int      @id @default(autoincrement())
+  user      User     @relation(fields: [userId], references: [id])
+  userId    Int
+  text      String
+  cron      String
+  enabled   Boolean  @default(true)
+  createdAt DateTime @default(now())
+}
+
+model NotificationSetting {
+  id              Int  @id @default(autoincrement())
+  user            User @relation(fields: [userId], references: [id])
+  userId          Int  @unique
+  intervalMinutes Int  @default(30)
+  maxRetries      Int  @default(3)
+}
+
+model NotificationLog {
+  id            Int       @id @default(autoincrement())
+  user          User      @relation(fields: [userId], references: [id])
+  userId        Int
+  type          String
+  status        String
+  attempts      Int       @default(0)
+  lastAttemptAt DateTime?
+  createdAt     DateTime  @default(now())
+}
+
+model ShiftReport {
+  id           Int      @id @default(autoincrement())
+  userId       Int
+  consumptions Json // [ { productId: number, consumed: number }, … ]
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  User         User     @relation(fields: [userId], references: [id])
+}
+
+enum AccessRequestStatus {
+  PENDING
+  APPROVED
+  DECLINED
+}
+
+model AccessRequest {
+  id            Int                 @id @default(autoincrement())
+  user          User                @relation(fields: [userId], references: [id])
+  userId        Int
+  status        AccessRequestStatus @default(PENDING)
+  message       String? // Дополнительное сообщение от пользователя
+  adminNote     String? // Заметка администратора
+  createdAt     DateTime            @default(now())
+  updatedAt     DateTime            @updatedAt
+  processedAt   DateTime? // Когда заявка была обработана
+  processedBy   User?               @relation("ProcessedBy", fields: [processedById], references: [id])
+  processedById Int?
+}
+
+model AllowedPhone {
+  id        Int      @id @default(autoincrement())
+  phone     String   @unique // В формате +79991234567
+  comment   String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  usedBy    User?    @relation(fields: [usedById], references: [id])
+  usedById  Int?
+}
