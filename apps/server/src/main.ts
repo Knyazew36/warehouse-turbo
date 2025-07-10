@@ -14,6 +14,7 @@ async function bootstrap() {
       'https://localhost:5173/',
       'https://localhost:10004/',
       'https://localhost:10004',
+      'https://warehouse-turbo-frontend.vercel.app',
 
       process.env.WEBAPP_URL,
       'https://big-grain-tg.vercel.app',
