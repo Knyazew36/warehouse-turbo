@@ -33,7 +33,7 @@ export default defineConfig({
   publicDir: './public',
   server: {
     host: true,
-    port: process.env.NODE_ENV === 'development' ? 10004 : undefined
+    port: 3000
   }
   // server: {
   //   // Exposes your dev server and makes it accessible for the devices in the same network.
