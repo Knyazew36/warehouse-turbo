@@ -1,12 +1,6 @@
 #!/bin/bash
 set -e
 {
-
-    git pull
-    # yarn prisma:migrate:deploy
-    # yarn prisma:generate
-    yarn
+    npx prisma generate
     yarn build
-    pm2 restart all
- 
 }
