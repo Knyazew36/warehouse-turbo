@@ -14,7 +14,6 @@ const initDataRaw = import.meta.env.DEV
   : isTMA()
     ? retrieveRawInitData()
     : ''
-
 const isProduction = false
 
 // Создаем экземпляр Axios

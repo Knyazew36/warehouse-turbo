@@ -6,7 +6,7 @@
   "homepage": "https://telegram-mini-apps.github.io/reactjs-template",
   "scripts": {
     "dev": "vite",
-    "start": "vite",
+    "start": "vite preview",
     "dev:https": "cross-env HTTPS=true vite",
     "build": "tsc --noEmit && vite build",
     "preview": "vite preview",
