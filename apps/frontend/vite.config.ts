@@ -30,11 +30,11 @@ export default defineConfig({
   build: {
     target: 'esnext'
   },
-  publicDir: './public',
-  server: {
-    port:3000,
-    allowedHosts:['5278831-ad07030.twc1.net']
-  }
+  publicDir: './public'
+  // server: {
+  //   port: 3000
+  //   // allowedHosts:['5278831-ad07030.twc1.net']
+  // }
   // server: {
   //   // Exposes your dev server and makes it accessible for the devices in the same network.
   //   host: true,

@@ -12,8 +12,8 @@ import { hapticFeedback, initData, isTMA, mockTelegramEnv, retrieveRawInitData }
 const initDataRaw = import.meta.env.DEV
   ? 'user=%7B%22id%22%3A239676985%2C%22first_name%22%3A%22%D0%A1%D0%B5%D1%80%D0%B3%D0%B5%D0%B9%22%2C%22last_name%22%3A%22%D0%9A%D0%BD%D1%8F%D0%B7%D0%B5%D0%B2%22%2C%22username%22%3A%22Knyaz_sv%22%2C%22language_code%22%3A%22ru%22%2C%22is_premium%22%3Atrue%2C%22allows_write_to_pm%22%3Atrue%2C%22photo_url%22%3A%22https%3A%5C%2F%5C%2Ft.me%5C%2Fi%5C%2Fuserpic%5C%2F320%5C%2FdVwpqY8rwKcDgyKCeVKKd95SfUDZ89Fhpw-zbGDB6Rg.svg%22%7D&chat_instance=7502372238548063129&chat_type=sender&auth_date=1752162094&signature=soRdb6ed72y-csy9FWagLSM9xRwBtdLBCzIiEeu9bx9PpNEpOewHBHxLVVi4CVD4gzAW1KTqZl4jXm1YsblcBw&hash=da038da8d66210bbae3b8072ff2fde3fd496b9e4d322f3f4ef2832b7e74d7195'
   : isTMA()
-  ? retrieveRawInitData()
-  : ''
+    ? retrieveRawInitData()
+    : ''
 
 const isProduction = false
 
@@ -94,7 +94,7 @@ $api.interceptors.response.use(
 // Логирование ошибок
 function logErrorDetails(error: AxiosError) {
   log({
-    name: axios.isAxiosError(error) ? error.config?.url ?? 'undefined url' : 'Not instance of AxiosError',
+    name: axios.isAxiosError(error) ? (error.config?.url ?? 'undefined url') : 'Not instance of AxiosError',
     data: error,
     type: 'catch'
   })

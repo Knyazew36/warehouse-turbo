@@ -87,6 +87,8 @@ const dailyRotateFileTransport = new winston.transports.DailyRotateFile({
         const nodeEnv = cfg.get<string>('NODE_ENV') || 'development';
         const isDev = nodeEnv === 'development';
 
+        console.log('🐝 [BotModule] nodeEnv=', nodeEnv);
+
         const devToken = cfg.get<string>('TG_BOT_TOKEN_DEV');
         const prodToken = cfg.get<string>('TG_BOT_TOKEN');
 
