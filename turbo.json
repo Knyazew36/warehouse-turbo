@@ -19,6 +19,9 @@
     },
     "prisma:generate": {
       "cache": false
+    },
+    "deploy": {
+      "cache": false
     }
   }
 }
