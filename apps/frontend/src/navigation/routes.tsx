@@ -7,7 +7,6 @@ import { TONConnectPage } from '@/pages/TONConnectPage/TONConnectPage'
 import { ProductsPage } from '@/pages/products/ProductsPage'
 import MenuPage from '@/pages/menu-page/MenuPage'
 import ReportPage from '@/pages/report/ReportPage'
-import SettingsPage from '@/pages/seittings/SettingsPage'
 import IncomingPage from '@/pages/incoming/IncomingPage'
 import IncomingToWarehousePage from '@/pages/incoming-to-warehouse/IncomingToWarehousePage'
 import { ProductsDeletePage } from '@/pages/products-delete/ProductsDeletePage'
@@ -17,6 +16,8 @@ import AuthPage from '@/pages/auth/AuthPage'
 import StaffPage from '@/pages/staff/StaffPage'
 import NotificationsSettingPage from '@/pages/notifications-setting/NotificationsSettingPage'
 import AddUserPage from '@/pages/add-user/ui/AddUserPage'
+import SettingsWarehousePage from '@/pages/seittings-warehouse/SettingsWarehousePage'
+import SettingsPage from '@/pages/settings/SettingsPage'
 
 interface Route {
   path: string
@@ -39,6 +40,7 @@ export const routes: Route[] = [
   { path: '/incoming', Component: IncomingPage, title: 'Incoming' },
   { path: '/incoming-statistics', Component: IncomingStatistics, title: 'Incoming Statistics' },
   { path: '/notifications-setting', Component: NotificationsSettingPage, title: 'Notifications Setting' },
+  { path: '/settings-warehouse', Component: SettingsWarehousePage, title: 'Init Data' },
   { path: '/settings', Component: SettingsPage, title: 'Init Data' },
   { path: '/theme-params', Component: ThemeParamsPage, title: 'Theme Params' },
   { path: '/launch-params', Component: LaunchParamsPage, title: 'Launch Params' },

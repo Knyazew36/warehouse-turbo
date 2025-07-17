@@ -29,7 +29,7 @@ async function bootstrap() {
     optionsSuccessStatus: 204,
   });
 
-  // app.setGlobalPrefix('api');
+  app.setGlobalPrefix('api');
 
   const winstonLogger = app.get(WINSTON_MODULE_NEST_PROVIDER);
   app.useLogger(winstonLogger);

@@ -7,7 +7,7 @@ import PageHeader from '@/shared/ui/page-header/ui/PageHeader'
 import MenuButton from '../menu-page/menu-button/MenuButton'
 import { useAuthStore } from '@/entitites/auth/model/auth.store'
 
-const SettingsPage = () => {
+const SettingsWarehousePage = () => {
   const { isIT, isOwner, isAdmin } = useAuthStore()
 
   return (
@@ -93,4 +93,4 @@ const SettingsPage = () => {
   )
 }
 
-export default SettingsPage
+export default SettingsWarehousePage
