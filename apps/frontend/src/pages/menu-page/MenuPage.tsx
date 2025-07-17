@@ -185,7 +185,7 @@ const MenuPage: FC = () => {
       to: '/settings',
       title: 'Настройки',
       color: 'gray',
-
+      isDevelop: isIT,
       icon: (
         <svg
           xmlns='http://www.w3.org/2000/svg'
