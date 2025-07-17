@@ -6,7 +6,9 @@ set -e
     yarn
     chmod +x apps/server/deploy.sh
     chmod +x apps/frontend/deploy.sh
-    yarn deploy
+    cd apps/server && ./deploy.sh
+    cd ../frontend && ./deploy.sh
+    cd ../..
     pm2 restart all
 
  
