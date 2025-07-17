@@ -30,7 +30,13 @@ export default defineConfig({
   build: {
     target: 'esnext'
   },
-  publicDir: './public'
+  publicDir: './public',
+  server: {
+    port: 5173
+  },
+  preview: {
+    port: 5173
+  }
   // server: {
   //   port: 3000
   //   // allowedHosts:['5278831-ad07030.twc1.net']
