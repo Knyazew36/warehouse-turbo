@@ -165,8 +165,8 @@ const AddUserPage = () => {
                           phoneValidation[index]?.isEmpty
                             ? undefined
                             : phoneValidation[index]?.isValid
-                            ? undefined
-                            : 'Неверный формат телефона'
+                              ? undefined
+                              : 'Неверный формат телефона'
                         }
                       />
                     </div>
@@ -232,7 +232,7 @@ const AddUserPage = () => {
                 </button>
 
                 <p className='mt-2 text-sm text-gray-500 dark:text-neutral-500 bg-gray-50 dark:bg-neutral-800 p-3 rounded-lg'>
-                  💡 Подсказка: Каждый телефон создаст отдельного сотрудника. Формат:&nbsp;+7&nbsp;(999)&nbsp;999-99-99
+                  💡 Подсказка: Каждый телефон создаст отдельного сотрудника.
                 </p>
               </div>
 

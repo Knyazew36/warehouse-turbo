@@ -8,6 +8,7 @@ import { toast } from 'sonner'
 // import { json } from 'stream/consumers'
 import React from 'react'
 import { hapticFeedback, initData, isTMA, mockTelegramEnv, retrieveRawInitData } from '@telegram-apps/sdk'
+import { useOrganizationStore } from '@/entitites/organization/model/organization.store'
 
 const initDataRaw = import.meta.env.DEV
   ? 'query_id=AAE5LkkOAAAAADkuSQ4OlMA2&user=%7B%22id%22%3A239676985%2C%22first_name%22%3A%22%D0%A1%D0%B5%D1%80%D0%B3%D0%B5%D0%B9%22%2C%22last_name%22%3A%22%D0%9A%D0%BD%D1%8F%D0%B7%D0%B5%D0%B2%22%2C%22username%22%3A%22Knyaz_sv%22%2C%22language_code%22%3A%22ru%22%2C%22is_premium%22%3Atrue%2C%22allows_write_to_pm%22%3Atrue%2C%22photo_url%22%3A%22https%3A%5C%2F%5C%2Ft.me%5C%2Fi%5C%2Fuserpic%5C%2F320%5C%2FdVwpqY8rwKcDgyKCeVKKd95SfUDZ89Fhpw-zbGDB6Rg.svg%22%7D&auth_date=1752767184&signature=1A0sPL6PBEvO6iwx4Vtw2pcLcHQuNyADqM39-7ASO1LGSmDZ4hWpeD7rVUOtvLpy7OA2bDr2v-4AsKPq547kBQ&hash=9ad91e21ebae5480a7d979046aa30d9c46629dee00a65515a0b16a3cbc530c57'
@@ -23,9 +24,23 @@ const $api = axios.create({
     Authorization: `tma ${initDataRaw}`
   }
 })
+
+// Функция для получения organizationId из store
+const getOrganizationId = (): number | null => {
+  // Получаем состояние store напрямую
+  const state = useOrganizationStore.getState()
+  return state.organizationId
+}
+
 // Интерцептор для запросов
 $api.interceptors.request.use(
   async config => {
+    // Добавляем organizationId в заголовки, если он есть
+    const organizationId = getOrganizationId()
+    if (organizationId) {
+      config.headers['x-organization-id'] = organizationId.toString()
+    }
+
     if (!isProduction) {
       log({
         name: config.url ?? 'undefined url',

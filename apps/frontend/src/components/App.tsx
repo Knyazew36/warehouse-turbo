@@ -5,6 +5,7 @@ import { AppRoot } from '@telegram-apps/telegram-ui'
 
 import { routes } from '@/navigation/routes.tsx'
 import AppProvider from '@/app/providers/AppProvider'
+import OrganizationDebug from './OrganizationDebug'
 
 export function App() {
   const lp = useMemo(() => retrieveLaunchParams(), [])
@@ -28,6 +29,7 @@ export function App() {
             element={<Navigate to='/' />}
           />
         </Routes>
+        <OrganizationDebug />
       </AppProvider>
     </AppRoot>
   )

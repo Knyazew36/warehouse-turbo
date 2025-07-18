@@ -1,18 +1,23 @@
 import React from 'react'
 import { useMyOrganizations } from '../../api/organization.api'
-import { useOrganizationStore } from '../../model/organization.store'
+import { useOrganizationStore, useOrganizationId } from '../../model/organization.store'
 import { IUserOrganization } from '../../model/organization.type'
 import { ChevronDown, Building2 } from 'lucide-react'
+import { useNavigate } from 'react-router-dom'
 
 const OrganizationSelector: React.FC = () => {
   const { data: organizations = [], isLoading } = useMyOrganizations()
   const { currentOrganization, setCurrentOrganization } = useOrganizationStore()
+  const organizationId = useOrganizationId()
   const [isOpen, setIsOpen] = React.useState(false)
+
+  const navigate = useNavigate()
 
   console.info('organizations', organizations)
   const handleSelectOrganization = (organization: IUserOrganization) => {
     setCurrentOrganization(organization)
     setIsOpen(false)
+    navigate(`/menu`)
   }
 
   if (isLoading) {
@@ -43,12 +48,12 @@ const OrganizationSelector: React.FC = () => {
 
       {isOpen && (
         <div className='absolute top-full left-0 right-0 mt-1 bg-white border border-gray-200 rounded-lg shadow-lg z-50 dark:bg-neutral-900 dark:border-neutral-700'>
-          {organizations.data.map(org => (
+          {organizations.data.map((org: IUserOrganization) => (
             <button
               key={org.id}
               onClick={() => handleSelectOrganization(org)}
               className={`w-full text-left px-3 py-2 hover:bg-gray-50 dark:hover:bg-neutral-800 transition-colors ${
-                currentOrganization?.id === org.id ? 'bg-blue-50 dark:bg-blue-900/20' : ''
+                organizationId === org.organizationId ? 'bg-blue-50 dark:bg-blue-900/20' : ''
               }`}
             >
               <div className='text-sm font-medium text-gray-700 dark:text-neutral-300'>{org.organization.name}</div>
