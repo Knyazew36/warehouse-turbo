@@ -15,9 +15,9 @@ export class AllowedPhoneService {
   /**
    * Добавить номер телефона (для админки)
    */
-  async addPhone(phone: string, comment?: string) {
+  async addPhone(phone: string, organizationId: number, comment?: string) {
     try {
-      return await this.prisma.allowedPhone.create({ data: { phone, comment } });
+      return await this.prisma.allowedPhone.create({ data: { phone, comment, organizationId } });
     } catch (error) {
       // Если телефон уже существует, обновляем комментарий если он передан
       if (error.code === 'P2002' && comment) {

@@ -7,7 +7,6 @@ import { BotService } from '../bot/bot.service';
 import { NotificationService } from '../bot/notification.service';
 import { UserService } from '../user/user.service';
 import { Cron } from '@nestjs/schedule';
-import { CronExpression } from '@nestjs/schedule';
 
 @Injectable()
 export class ProductsService {
@@ -20,13 +19,28 @@ export class ProductsService {
     console.log('🟢 ProductsService создан', new Date().toISOString());
   }
 
-  async create(dto: CreateProductDto) {
-    return this.prisma.product.create({ data: dto });
+  async create(dto: CreateProductDto, organizationId: number) {
+    return this.prisma.product.create({
+      data: {
+        ...dto,
+        organizationId,
+      },
+    });
   }
 
-  async findAll(onlyActive = true): Promise<Product[]> {
+  async findAll(onlyActive = true, organizationId?: number): Promise<Product[]> {
+    const whereClause: any = {};
+
+    if (onlyActive) {
+      whereClause.active = true;
+    }
+
+    if (organizationId) {
+      whereClause.organizationId = organizationId;
+    }
+
     return this.prisma.product.findMany({
-      where: onlyActive ? { active: true } : undefined,
+      where: whereClause,
       orderBy: { name: 'asc' },
     });
   }

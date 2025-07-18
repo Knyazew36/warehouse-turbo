@@ -18,6 +18,8 @@ import NotificationsSettingPage from '@/pages/notifications-setting/Notification
 import AddUserPage from '@/pages/add-user/ui/AddUserPage'
 import SettingsWarehousePage from '@/pages/seittings-warehouse/SettingsWarehousePage'
 import SettingsPage from '@/pages/settings/SettingsPage'
+import OrganizationManagementPage from '@/pages/organization-management/OrganizationManagementPage'
+import OrganizationSelector from '@/entitites/organization/ui/organization-selector/OrganizationSelector'
 
 interface Route {
   path: string
@@ -42,6 +44,8 @@ export const routes: Route[] = [
   { path: '/notifications-setting', Component: NotificationsSettingPage, title: 'Notifications Setting' },
   { path: '/settings-warehouse', Component: SettingsWarehousePage, title: 'Init Data' },
   { path: '/settings', Component: SettingsPage, title: 'Init Data' },
+  { path: '/organization-management', Component: OrganizationManagementPage, title: 'Organization Management' },
+  { path: '/organization-selector', Component: OrganizationSelector, title: 'Organization Settings' },
   { path: '/theme-params', Component: ThemeParamsPage, title: 'Theme Params' },
   { path: '/launch-params', Component: LaunchParamsPage, title: 'Launch Params' },
   {

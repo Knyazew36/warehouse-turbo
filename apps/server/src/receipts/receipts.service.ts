@@ -24,7 +24,7 @@ export interface StatisticsResult {
 export class ReceiptsService {
   constructor(private readonly prisma: PrismaService) {}
 
-  async createReceipt(userId: number, dto: CreateReceiptDto) {
+  async createReceipt(userId: number, dto: CreateReceiptDto, organizationId: number) {
     return this.prisma.$transaction(async (tx) => {
       // Проверяем, что все товары существуют
       for (const receiptItem of dto.receipts) {
@@ -38,6 +38,7 @@ export class ReceiptsService {
       const receipt = await tx.receipt.create({
         data: {
           operatorId: userId,
+          organizationId,
           receipts: JSON.stringify(dto.receipts),
         },
       });

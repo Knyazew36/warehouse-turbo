@@ -40,11 +40,46 @@ model User {
   accessRequests    AccessRequest[]
   processedRequests AccessRequest[] @relation("ProcessedBy") // Заявки, обработанные этим пользователем
   allowedPhones     AllowedPhone[]
+
+  // Связи с организациями
+  userOrganizations UserOrganization[]
+}
+
+model Organization {
+  id          Int      @id @default(autoincrement())
+  name        String
+  description String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  active      Boolean  @default(true)
+
+  // Связи
+  userOrganizations UserOrganization[]
+  products          Product[]
+  receipts          Receipt[]
+  shiftReports      ShiftReport[]
+  allowedPhones     AllowedPhone[]
+}
+
+model UserOrganization {
+  id             Int      @id @default(autoincrement())
+  userId         Int
+  organizationId Int
+  role           Role // Роль пользователя в конкретной организации
+  isOwner        Boolean  @default(false) // Владелец организации
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  // Связи
+  user         User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, organizationId])
 }
 
 model Product {
   id           Int       @id @default(autoincrement())
-  name         String    @unique
+  name         String
   quantity     Int
   minThreshold Int
   unit         String?   @default("ед")
@@ -53,6 +88,12 @@ model Product {
   updatedAt    DateTime  @updatedAt
   receipts     Receipt[]
   active       Boolean   @default(true)
+
+  // Связь с организацией
+  organizationId Int
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  @@unique([organizationId, name]) // Уникальное имя в рамках организации
 }
 
 model Receipt {
@@ -63,6 +104,10 @@ model Receipt {
   createdAt  DateTime @default(now())
   Product    Product? @relation(fields: [productId], references: [id])
   productId  Int?
+
+  // Связь с организацией
+  organizationId Int
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
 }
 
 model Reminder {
@@ -101,6 +146,10 @@ model ShiftReport {
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
   User         User     @relation(fields: [userId], references: [id])
+
+  // Связь с организацией
+  organizationId Int
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
 }
 
 enum AccessRequestStatus {
@@ -131,4 +180,8 @@ model AllowedPhone {
   updatedAt DateTime @updatedAt
   usedBy    User?    @relation(fields: [usedById], references: [id])
   usedById  Int?
+
+  // Связь с организацией
+  organizationId Int
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
 }

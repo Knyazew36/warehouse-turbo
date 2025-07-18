@@ -14,6 +14,7 @@ import { ReceiptsModule } from './receipts/receipts.module';
 import { ScheduleModule } from '@nestjs/schedule';
 import { LoggerMiddleware } from './common/middlewares/logger.middleware';
 import { UserModule } from './user/user.module';
+import { OrganizationModule } from './organization/organization.module';
 import * as winston from 'winston';
 import 'winston-daily-rotate-file';
 import { WinstonModule } from 'nest-winston';
@@ -75,6 +76,7 @@ const dailyRotateFileTransport = new winston.transports.DailyRotateFile({
     BotModule,
     UserModule,
     AuthModule,
+    OrganizationModule,
     ProductsModule,
     ShiftsModule,
     ReceiptsModule,

@@ -9,7 +9,7 @@ export class ShiftsService {
   /**
    * Создаёт ShiftReport и уменьшает остатки для каждого продукта
    */
-  async createShiftReport(userId: number, consumptions: ConsumptionDto[]) {
+  async createShiftReport(userId: number, consumptions: ConsumptionDto[], organizationId: number) {
     return this.prisma.$transaction(async (tx) => {
       // 1) Проверяем, что не было отчёта с точно таким же userId+createdAt (при необходимости)
       //    (для MVP пропустим дубли)
@@ -18,6 +18,7 @@ export class ShiftsService {
       const shift = await tx.shiftReport.create({
         data: {
           userId,
+          organizationId,
           consumptions: consumptions.map((c) => ({
             productId: c.productId,
             consumed: c.consumed,

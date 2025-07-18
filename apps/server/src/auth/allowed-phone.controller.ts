@@ -4,6 +4,7 @@ import { AddPhoneDto } from './dto/add-phone.dto';
 import { Roles } from './decorators/roles.decorator';
 import { RolesGuard } from './guards/roles.guard';
 import { TelegramAuthGuard } from './guards/telegram-auth.guard';
+import { OrganizationId } from '../organization/decorators/organization-id.decorator';
 
 @Controller('allowed-phones')
 export class AllowedPhoneController {
@@ -15,13 +16,20 @@ export class AllowedPhoneController {
   @Post('add')
   @UseGuards(TelegramAuthGuard, RolesGuard)
   @Roles('ADMIN', 'OWNER', 'IT')
-  async addPhone(@Body() dto: AddPhoneDto) {
+  async addPhone(@Body() dto: AddPhoneDto, @OrganizationId() organizationId?: number) {
     const existingPhone = await this.allowedPhoneService.isPhoneAllowed(dto.phone);
 
     if (existingPhone) {
       // Если телефон уже существует, обновляем комментарий если он передан
       if (dto.comment) {
-        const updatedPhone = await this.allowedPhoneService.addPhone(dto.phone, dto.comment);
+        if (!organizationId) {
+          throw new Error('Organization ID is required');
+        }
+        const updatedPhone = await this.allowedPhoneService.addPhone(
+          dto.phone,
+          organizationId,
+          dto.comment,
+        );
         return {
           ...updatedPhone,
           message: 'Телефон уже был в списке разрешенных. Комментарий обновлен.',
@@ -37,7 +45,14 @@ export class AllowedPhoneController {
     }
 
     // Если телефона нет, добавляем новый
-    const newPhone = await this.allowedPhoneService.addPhone(dto.phone, dto.comment);
+    if (!organizationId) {
+      throw new Error('Organization ID is required');
+    }
+    const newPhone = await this.allowedPhoneService.addPhone(
+      dto.phone,
+      organizationId,
+      dto.comment,
+    );
     return {
       ...newPhone,
       message: 'Телефон успешно добавлен в список разрешенных.',
