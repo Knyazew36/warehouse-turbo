@@ -68,14 +68,18 @@ export const useUsersEmployees = () => {
     retryDelay: 5000
   })
 }
-export const useUserRole = (id: string) => {
+export const useUserRole = ({ id, organizationId }: { id: string; organizationId: number }) => {
   const { setRole } = useAuthStore()
 
   return useQuery<Role>({
     queryKey: ['user-role', id],
     queryFn: async () => {
       try {
-        const res = await $api.get(`${apiDomain}/user/${id}/role`)
+        const res = await $api.get(`${apiDomain}/user/${id}/role`, {
+          params: {
+            organizationId
+          }
+        })
         const role = res.data.data?.role
         if (role) {
           setRole(role)
@@ -88,8 +92,6 @@ export const useUserRole = (id: string) => {
         return Role.GUEST
       }
     },
-    enabled: !!id,
-    retry: 2,
-    retryDelay: 1000
+    enabled: !!id && !!organizationId
   })
 }
