@@ -5,13 +5,16 @@ import { IUserOrganization, IOrganization } from '../../model/organization.type'
 import { ChevronDown, Building2, Plus, Users } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 import { hapticFeedback } from '@telegram-apps/sdk-react'
+import { useQueryClient } from '@tanstack/react-query'
 
 const OrganizationSelector: React.FC = () => {
   const { data, isLoading } = useAvailableOrganizations()
-  const { currentOrganization, setCurrentOrganization } = useOrganizationStore()
+  const { currentOrganization, setCurrentOrganization, clearCache } = useOrganizationStore()
   const organizationId = useOrganizationId()
   const [isOpen, setIsOpen] = React.useState(false)
   const [activeTab, setActiveTab] = React.useState<'my' | 'invited'>('my')
+  const [isChangingOrganization, setIsChangingOrganization] = React.useState(false)
+  const queryClient = useQueryClient()
 
   const navigate = useNavigate()
   const joinOrganization = useJoinOrganization()
@@ -19,30 +22,53 @@ const OrganizationSelector: React.FC = () => {
   const myOrganizations = data?.myOrganizations || []
   const invitedOrganizations = data?.invitedOrganizations || []
 
-  const handleSelectOrganization = (organization: IUserOrganization) => {
+  const handleSelectOrganization = async (organization: IUserOrganization) => {
+    setIsChangingOrganization(true)
+
+    // Очищаем кэш всех данных, которые зависят от организации
+    clearCache()
+
     setCurrentOrganization(organization)
     setIsOpen(false)
+
+    // Небольшая задержка для показа состояния загрузки
+    await new Promise(resolve => setTimeout(resolve, 100))
+
     navigate(`/menu`)
+    setIsChangingOrganization(false)
   }
 
   const handleJoinOrganization = async (organization: IOrganization) => {
     try {
+      setIsChangingOrganization(true)
       await joinOrganization.mutateAsync(organization.id)
       hapticFeedback.notificationOccurred('success')
       setIsOpen(false)
+
+      // Очищаем кэш после присоединения к организации
+      clearCache()
+
+      // Небольшая задержка для показа состояния загрузки
+      await new Promise(resolve => setTimeout(resolve, 100))
+
       // После присоединения перенаправляем в меню
       navigate(`/menu`)
     } catch (error) {
       hapticFeedback.notificationOccurred('error')
       console.error('Error joining organization:', error)
+    } finally {
+      setIsChangingOrganization(false)
     }
   }
 
-  if (isLoading) {
+  if (isLoading || isChangingOrganization) {
     return (
       <div className='flex items-center space-x-2 px-3 py-2 bg-gray-100 rounded-lg dark:bg-neutral-800'>
         <div className='w-4 h-4 bg-gray-300 rounded animate-pulse'></div>
         <div className='w-24 h-4 bg-gray-300 rounded animate-pulse'></div>
+        {isChangingOrganization && (
+          <div className='text-xs text-gray-500 dark:text-neutral-400 ml-2'>Смена организации...</div>
+        )}
       </div>
     )
   }
@@ -57,7 +83,8 @@ const OrganizationSelector: React.FC = () => {
         <div className='relative'>
           <button
             onClick={() => setIsOpen(!isOpen)}
-            className='flex items-center space-x-2 px-3 py-2 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 dark:bg-neutral-900 dark:border-neutral-700 dark:hover:bg-neutral-800 transition-colors w-full'
+            disabled={isChangingOrganization}
+            className='flex items-center space-x-2 px-3 py-2 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 dark:bg-neutral-900 dark:border-neutral-700 dark:hover:bg-neutral-800 transition-colors w-full disabled:opacity-50 disabled:cursor-not-allowed'
           >
             <Building2 className='w-4 h-4 text-gray-600 dark:text-neutral-400' />
             <span className='text-sm font-medium text-gray-700 dark:text-neutral-300 flex-1 text-left'>
@@ -72,7 +99,8 @@ const OrganizationSelector: React.FC = () => {
               <div className='flex border-b border-gray-200 dark:border-neutral-700'>
                 <button
                   onClick={() => setActiveTab('my')}
-                  className={`flex-1 px-3 py-2 text-sm font-medium transition-colors ${
+                  disabled={isChangingOrganization}
+                  className={`flex-1 px-3 py-2 text-sm font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed ${
                     activeTab === 'my'
                       ? 'text-blue-600 border-b-2 border-blue-600 dark:text-blue-400 dark:border-blue-400'
                       : 'text-gray-500 hover:text-gray-700 dark:text-neutral-400 dark:hover:text-neutral-300'
@@ -85,7 +113,8 @@ const OrganizationSelector: React.FC = () => {
                 </button>
                 <button
                   onClick={() => setActiveTab('invited')}
-                  className={`flex-1 px-3 py-2 text-sm font-medium transition-colors ${
+                  disabled={isChangingOrganization}
+                  className={`flex-1 px-3 py-2 text-sm font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed ${
                     activeTab === 'invited'
                       ? 'text-blue-600 border-b-2 border-blue-600 dark:text-blue-400 dark:border-blue-400'
                       : 'text-gray-500 hover:text-gray-700 dark:text-neutral-400 dark:hover:text-neutral-300'
@@ -111,7 +140,8 @@ const OrganizationSelector: React.FC = () => {
                         <button
                           key={org.id}
                           onClick={() => handleSelectOrganization(org)}
-                          className={`w-full text-left px-3 py-2 hover:bg-gray-50 dark:hover:bg-neutral-800 transition-colors ${
+                          disabled={isChangingOrganization}
+                          className={`w-full text-left px-3 py-2 hover:bg-gray-50 dark:hover:bg-neutral-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed ${
                             organizationId === org.organizationId ? 'bg-blue-50 dark:bg-blue-900/20' : ''
                           }`}
                         >
@@ -146,7 +176,7 @@ const OrganizationSelector: React.FC = () => {
                             </div>
                             <button
                               onClick={() => handleJoinOrganization(org)}
-                              disabled={joinOrganization.isPending}
+                              disabled={joinOrganization.isPending || isChangingOrganization}
                               className='flex items-center space-x-1 px-2 py-1 text-xs bg-blue-600 text-white rounded hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors'
                             >
                               <Plus className='w-3 h-3' />

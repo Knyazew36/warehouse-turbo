@@ -8,6 +8,7 @@ import { useBottomSheetStore } from '@/shared/bottom-sheet/model/store.bottom-sh
 import { setMiniAppBackgroundColor, setMiniAppHeaderColor } from '@telegram-apps/sdk-react'
 import { useErrorHandler } from '@/features/error-handler'
 import { expandViewport } from '@telegram-apps/sdk'
+import { useInitializeCacheClear } from '@/entitites/organization/model/organization.store'
 
 interface ServiceProviderProps {
   children: React.ReactNode
@@ -17,9 +18,17 @@ async function loadPreline() {
 }
 const queryClient = new QueryClient()
 
+// Делаем queryClient доступным глобально для функции очистки кэша
+if (typeof window !== 'undefined') {
+  ;(window as any).__REACT_QUERY_CLIENT__ = queryClient
+}
+
 const ServiceProvider = ({ children }: ServiceProviderProps) => {
   const location = useLocation()
   const { isOpen, title, description, close } = useBottomSheetStore()
+
+  // Инициализируем функцию очистки кэша
+  useInitializeCacheClear()
 
   if (expandViewport.isAvailable()) {
     expandViewport()

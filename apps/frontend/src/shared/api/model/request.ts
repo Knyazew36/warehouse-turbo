@@ -8,10 +8,10 @@ import { toast } from 'sonner'
 // import { json } from 'stream/consumers'
 import React from 'react'
 import { hapticFeedback, initData, isTMA, mockTelegramEnv, retrieveRawInitData } from '@telegram-apps/sdk'
-import { useOrganizationStore } from '@/entitites/organization/model/organization.store'
+import { getOrganizationIdFromStore } from '../middleware/organization.middleware'
 
 const initDataRaw = import.meta.env.DEV
-  ? 'user=%7B%22id%22%3A239676985%2C%22first_name%22%3A%22%D0%A1%D0%B5%D1%80%D0%B3%D0%B5%D0%B9%22%2C%22last_name%22%3A%22%D0%9A%D0%BD%D1%8F%D0%B7%D0%B5%D0%B2%22%2C%22username%22%3A%22Knyaz_sv%22%2C%22language_code%22%3A%22ru%22%2C%22is_premium%22%3Atrue%2C%22allows_write_to_pm%22%3Atrue%2C%22photo_url%22%3A%22https%3A%5C%2F%5C%2Ft.me%5C%2Fi%5C%2Fuserpic%5C%2F320%5C%2FdVwpqY8rwKcDgyKCeVKKd95SfUDZ89Fhpw-zbGDB6Rg.svg%22%7D&chat_instance=8202761078890547989&chat_type=supergroup&auth_date=1752924243&signature=kAwixNAq9RHWwn1sh2QQZDujUehoiyfFwbP3YYiPqsSb6F4xw9VB52wF3U59STSPHqqFjOBdXExS7eCbGEc_DA&hash=14c901b93203c44e3935862b5447786ad40d2c1bef35e9abb90d3ae88418dca3'
+  ? 'user=%7B%22id%22%3A239676985%2C%22first_name%22%3A%22%D0%A1%D0%B5%D1%80%D0%B3%D0%B5%D0%B9%22%2C%22last_name%22%3A%22%D0%9A%D0%BD%D1%8F%D0%B7%D0%B5%D0%B2%22%2C%22username%22%3A%22Knyaz_sv%22%2C%22language_code%22%3A%22ru%22%2C%22is_premium%22%3Atrue%2C%22allows_write_to_pm%22%3Atrue%2C%22photo_url%22%3A%22https%3A%5C%2F%5C%2Ft.me%5C%2Fi%5C%2Fuserpic%5C%2F320%5C%2FdVwpqY8rwKcDgyKCeVKKd95SfUDZ89Fhpw-zbGDB6Rg.svg%22%7D&chat_instance=7502372238548063129&chat_type=sender&auth_date=1753011931&signature=Wasg8xCm3UNiBFM3VHa7LiKuHqQgNkXsAGNHOltO9KE1Bq4S9jH3q-qPB_U21rEU7qrAlnlaYtf6UHUdacCkDA&hash=b9c205b6cadf0b67273a0f22b2cd463d5fcbf57c84621d6fd716ea55f346c85f'
   : isTMA()
     ? retrieveRawInitData()
     : ''
@@ -25,18 +25,13 @@ const $api = axios.create({
   }
 })
 
-// Функция для получения organizationId из store
-const getOrganizationId = (): number | null => {
-  // Получаем состояние store напрямую
-  const state = useOrganizationStore.getState()
-  return state.organizationId
-}
+// Удаляем старые глобальные переменные и функции, так как теперь используем Zustand store
 
 // Интерцептор для запросов
 $api.interceptors.request.use(
   async config => {
     // Добавляем organizationId в заголовки, если он есть
-    const organizationId = getOrganizationId()
+    const organizationId = getOrganizationIdFromStore()
     if (organizationId) {
       config.headers['x-organization-id'] = organizationId.toString()
     }

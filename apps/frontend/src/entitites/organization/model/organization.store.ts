@@ -10,6 +10,7 @@ interface OrganizationStore {
   setCurrentOrganization: (organization: IUserOrganization | null) => void
   setOrganizationId: (id: number | null) => void
   clearCurrentOrganization: () => void
+  clearCache: () => void
 }
 
 export const useOrganizationStore = create<OrganizationStore>()(
@@ -17,17 +18,21 @@ export const useOrganizationStore = create<OrganizationStore>()(
     set => ({
       currentOrganization: null,
       organizationId: null,
-      setCurrentOrganization: organization =>
+      setCurrentOrganization: organization => {
+        const newOrganizationId = organization?.organizationId || null
         set(
           {
             currentOrganization: organization,
-            organizationId: organization?.organizationId || null
+            organizationId: newOrganizationId
           },
           false,
           'setCurrentOrganization'
-        ),
-      setOrganizationId: id => set({ organizationId: id }, false, 'setOrganizationId'),
-      clearCurrentOrganization: () =>
+        )
+      },
+      setOrganizationId: id => {
+        set({ organizationId: id }, false, 'setOrganizationId')
+      },
+      clearCurrentOrganization: () => {
         set(
           {
             currentOrganization: null,
@@ -36,6 +41,10 @@ export const useOrganizationStore = create<OrganizationStore>()(
           false,
           'clearCurrentOrganization'
         )
+      },
+      clearCache: () => {
+        // Эта функция будет переопределена при инициализации
+      }
     }),
     {
       name: 'organization-store'
@@ -43,18 +52,57 @@ export const useOrganizationStore = create<OrganizationStore>()(
   )
 )
 
-// Хук для автоматической инициализации организации
+// Функция для установки функции очистки кэша
+export const setClearCacheFunction = (clearCacheFn: () => void) => {
+  useOrganizationStore.setState({ clearCache: clearCacheFn })
+}
+
+// Хук для инициализации функции очистки кэша
+export const useInitializeCacheClear = () => {
+  // Устанавливаем функцию очистки кэша
+  setClearCacheFunction(() => {
+    // Получаем queryClient из window объекта или используем другой способ
+    const queryClient = (window as any).__REACT_QUERY_CLIENT__
+    if (queryClient) {
+      // Очищаем кэш продуктов
+      queryClient.removeQueries({ queryKey: ['products'] })
+      queryClient.removeQueries({ queryKey: ['product'] })
+
+      // Очищаем кэш чеков
+      queryClient.removeQueries({ queryKey: ['receipts'] })
+
+      // Очищаем кэш смен
+      queryClient.removeQueries({ queryKey: ['shifts'] })
+
+      // Очищаем кэш пользователей
+      queryClient.removeQueries({ queryKey: ['user'] })
+      queryClient.removeQueries({ queryKey: ['employees'] })
+      queryClient.removeQueries({ queryKey: ['user-role'] })
+
+      // Очищаем кэш организаций
+      queryClient.removeQueries({ queryKey: ['organizations'] })
+    }
+  })
+}
+
+// Хук для инициализации организации (можно использовать в компонентах)
 export const useOrganizationInit = () => {
   const { data: organizations = [], isLoading } = useMyOrganizations()
-  const { currentOrganization, setCurrentOrganization } = useOrganizationStore()
+  const { currentOrganization, setCurrentOrganization, clearCache } = useOrganizationStore()
 
   useEffect(() => {
     // Если у пользователя есть организации и текущая организация не выбрана
     if (organizations.length > 0 && !currentOrganization) {
+      // Очищаем кэш перед установкой первой организации
+      clearCache()
       // Выбираем первую организацию по умолчанию
       setCurrentOrganization(organizations[0])
+    } else if (organizations.length === 0 && currentOrganization) {
+      // Если у пользователя нет организаций, но есть выбранная организация, очищаем её
+      clearCache()
+      setCurrentOrganization(null)
     }
-  }, [organizations, currentOrganization, setCurrentOrganization])
+  }, [organizations, currentOrganization, setCurrentOrganization, clearCache])
 
   return { isLoading }
 }
