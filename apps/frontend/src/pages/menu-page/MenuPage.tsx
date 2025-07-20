@@ -2,7 +2,7 @@ import { Page } from '@/components/Page'
 import React, { FC, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 
-import { hapticFeedback } from '@telegram-apps/sdk-react'
+import { hapticFeedback, initDataUser } from '@telegram-apps/sdk-react'
 import AlertProductLowStock from '@/widgets/alert-product-low-stock/AlertProductLowStock'
 
 import { useAuthStore } from '@/entitites/auth/model/auth.store'
@@ -11,21 +11,20 @@ import { Role } from '@/entitites/user/model/user.type'
 import MenuButton, { IMenuButton } from './menu-button/MenuButton'
 import { useNavigate } from 'react-router-dom'
 import { Settings, UserPlus } from 'lucide-react'
+import { useUserRole } from '@/entitites/user/api/user.api'
+import { useOrganization } from '@/entitites/organization/api/organization.api'
+import { useOrganizationStore } from '@/entitites/organization/model/organization.store'
 
 const MenuPage: FC = () => {
   const { isAdmin, isOwner, isIT, isOperator, role } = useAuthStore()
-  const navigate = useNavigate()
+  const { currentOrganization, setCurrentOrganization, setOrganizationId } = useOrganizationStore()
+  const user = initDataUser()
+  const userId = user?.id?.toString()
 
-  useEffect(() => {
-    // Перенаправляем на главную страницу если у пользователя нет прав доступа
-    // Но только если роль уже загружена (не undefined)
-    if (role && role !== Role.ADMIN && role !== Role.OWNER && role !== Role.IT && role !== Role.OPERATOR) {
-      navigate('/')
-    }
-  }, [role, navigate])
+  const { data: userRole, isLoading } = useUserRole(userId || '')
 
   // Если роль еще не загружена, показываем загрузку
-  if (!role) {
+  if (!role || isLoading) {
     return (
       <div className='flex items-center justify-center min-h-screen'>
         <div className='text-center'>

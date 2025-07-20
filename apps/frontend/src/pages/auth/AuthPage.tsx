@@ -15,9 +15,9 @@ const AuthPage = () => {
 
   // Проверяем, что пользователь существует и у него есть ID
   const userId = user?.id?.toString()
-  const { data: role, isLoading } = useUserRole(userId ?? '')
+  // const { data: role, isLoading } = useUserRole(userId ?? '')
 
-  console.log('auth page', role, 'user:', user)
+  // console.log('auth page', role, 'user:', user)
 
   // Если пользователь не найден, показываем сообщение об ошибке
   if (!user || !userId) {
@@ -34,19 +34,19 @@ const AuthPage = () => {
     )
   }
 
-  if (isLoading) return <Loader />
+  // if (isLoading) return <Loader />
 
-  console.log(
-    'Role check:',
-    role,
-    'Should redirect to menu:',
-    role && (role === Role.ADMIN || role === Role.OWNER || role === Role.IT || role === Role.OPERATOR)
-  )
+  // console.log(
+  //   'Role check:',
+  //   role,
+  //   'Should redirect to menu:',
+  //   role && (role === Role.ADMIN || role === Role.OWNER || role === Role.IT || role === Role.OPERATOR)
+  // )
 
   // Перенаправляем на /menu только если у пользователя есть права доступа
-  if (role && (role === Role.ADMIN || role === Role.OWNER || role === Role.IT || role === Role.OPERATOR)) {
-    return <Navigate to='/menu' />
-  }
+  // if (role && (role === Role.ADMIN || role === Role.OWNER || role === Role.IT || role === Role.OPERATOR)) {
+  //   return <Navigate to='/menu' />
+  // }
 
   return (
     <>

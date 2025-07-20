@@ -174,3 +174,33 @@ export const useUpdateUserRole = () => {
     }
   })
 }
+
+// Получить организации, доступные пользователю (включая приглашения)
+export const useAvailableOrganizations = () => {
+  return useQuery<{
+    myOrganizations: IUserOrganization[]
+    invitedOrganizations: IOrganization[]
+  }>({
+    queryKey: [...ORGANIZATION_KEYS.my(), 'available'],
+    queryFn: async () => {
+      const res = await $api.get(`${apiDomain}/organizations/available`)
+      return res.data.data
+    }
+  })
+}
+
+// Присоединиться к организации через приглашение
+export const useJoinOrganization = () => {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: async (organizationId: number) => {
+      const res = await $api.post(`${apiDomain}/organizations/${organizationId}/join`)
+      return res.data.data
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ORGANIZATION_KEYS.my() })
+      queryClient.invalidateQueries({ queryKey: [...ORGANIZATION_KEYS.my(), 'available'] })
+    }
+  })
+}

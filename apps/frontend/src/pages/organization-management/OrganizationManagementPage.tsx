@@ -1,18 +1,24 @@
 import React, { useState } from 'react'
 import { Page } from '@/components/Page'
 import { useMyOrganizations, useCreateOrganization } from '@/entitites/organization/api/organization.api'
-import { ICreateOrganization } from '@/entitites/organization/model/organization.type'
+import { ICreateOrganization, IUserOrganization } from '@/entitites/organization/model/organization.type'
 import { Button } from '@/components/ui/button'
 import { Plus, Building2, Users, Settings } from 'lucide-react'
 import PageHeader from '@/shared/ui/page-header/ui/PageHeader'
 import Loader from '@/shared/loader/ui/Loader'
 import Empty from '@/shared/empty/ui/Empty'
 import { hapticFeedback } from '@telegram-apps/sdk-react'
+import OrganizationSelector from '@/entitites/organization/ui/organization-selector/OrganizationSelector'
+import { useOrganizationStore } from '@/entitites/organization/model/organization.store'
+import { useNavigate } from 'react-router-dom'
 
 const OrganizationManagementPage: React.FC = () => {
+  const navigate = useNavigate()
   const { data: organizations = [], isLoading } = useMyOrganizations()
   const { mutate: createOrganization, isPending } = useCreateOrganization()
   const [showCreateForm, setShowCreateForm] = useState(false)
+  const { currentOrganization, setCurrentOrganization, setOrganizationId } = useOrganizationStore()
+
   const [formData, setFormData] = useState<ICreateOrganization>({
     name: '',
     description: ''
@@ -33,6 +39,12 @@ const OrganizationManagementPage: React.FC = () => {
         hapticFeedback.notificationOccurred('error')
       }
     })
+  }
+
+  const handleSelectOrganization = (organization: IUserOrganization) => {
+    setCurrentOrganization(organization)
+    setOrganizationId(organization.id)
+    navigate('/menu')
   }
 
   if (isLoading) {
@@ -100,6 +112,7 @@ const OrganizationManagementPage: React.FC = () => {
           <div className='grid gap-4'>
             {organizations.map(userOrg => (
               <div
+                onClick={() => handleSelectOrganization(userOrg)}
                 key={userOrg.id}
                 className='bg-white border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow dark:bg-neutral-900 dark:border-neutral-700'
               >
