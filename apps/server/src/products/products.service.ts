@@ -20,6 +20,15 @@ export class ProductsService {
   }
 
   async create(dto: CreateProductDto, organizationId: number) {
+    // Проверяем существование организации
+    const organization = await this.prisma.organization.findUnique({
+      where: { id: Number(organizationId) }
+    })
+
+    if (!organization) {
+      throw new NotFoundException(`Organization #${organizationId} not found`)
+    }
+
     return this.prisma.product.create({
       data: {
         ...dto,

@@ -15,6 +15,7 @@ import { ScheduleModule } from '@nestjs/schedule'
 import { LoggerMiddleware } from './common/middlewares/logger.middleware'
 import { UserModule } from './user/user.module'
 import { OrganizationModule } from './organization/organization.module'
+import { OrganizationContextMiddleware } from './organization/middleware/organization-context.middleware'
 import * as winston from 'winston'
 import 'winston-daily-rotate-file'
 import { WinstonModule } from 'nest-winston'
@@ -118,6 +119,6 @@ const dailyRotateFileTransport = new winston.transports.DailyRotateFile({
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
-    consumer.apply(LoggerMiddleware).forRoutes('*')
+    consumer.apply(LoggerMiddleware).forRoutes('*').apply(OrganizationContextMiddleware).forRoutes('*')
   }
 }
