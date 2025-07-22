@@ -72,7 +72,7 @@ export class ProductsService {
 
   // @Cron(CronExpression.EVERY_HOUR)
   //FIXME: не забыть
-  @Cron('0 9 * * *') // Каждый день в 9 утра
+  // @Cron('0 9 * * *') // Каждый день в 9 утра
   // @Cron(CronExpression.EVERY_MINUTE)
   async checkLowStockAndNotify() {
     console.log('🔍 checkLowStockAndNotify')
@@ -89,20 +89,20 @@ export class ProductsService {
 
     // Получаем всех активных пользователей, кроме операторов
     const users = await this.userService.findAll()
-    const notifyUsers = users.filter(u => u.role !== 'OPERATOR' && u.active && u.telegramId)
+    // const notifyUsers = users.filter(u => u.role !== 'OPERATOR' && u.active && u.telegramId)
 
-    for (const user of notifyUsers) {
-      console.info('🔍 sendMessage', user.telegramId, message)
-      try {
-        const webappUrl = this.notificationService.config.get<string>('WEBAPP_URL') || 'https://big-grain-tg.vercel.app'
-        await this.notificationService.sendMessage(user.telegramId, message, {
-          reply_markup: {
-            inline_keyboard: [[{ text: '🚀 Открыть приложение', web_app: { url: webappUrl } }]]
-          }
-        })
-      } catch (err) {
-        console.error(`Ошибка отправки уведомления пользователю ${user.telegramId}:`, err)
-      }
-    }
+    // for (const user of notifyUsers) {
+    //   console.info('🔍 sendMessage', user.telegramId, message)
+    //   try {
+    //     const webappUrl = this.notificationService.config.get<string>('WEBAPP_URL') || 'https://big-grain-tg.vercel.app'
+    //     await this.notificationService.sendMessage(user.telegramId, message, {
+    //       reply_markup: {
+    //         inline_keyboard: [[{ text: '🚀 Открыть приложение', web_app: { url: webappUrl } }]]
+    //       }
+    //     })
+    //   } catch (err) {
+    //     console.error(`Ошибка отправки уведомления пользователю ${user.telegramId}:`, err)
+    //   }
+    // }
   }
 }

@@ -70,24 +70,25 @@ export class AuthController {
       }
     }
 
-    if (user.role === 'BLOCKED') {
-      return {
-        isAuthorized: false,
-        message: 'Пользователь заблокирован',
-        needsPhoneAuth: false,
-        role: user.role
-      }
-    }
+    // if (user.role === 'BLOCKED') {
+    //   return {
+    //     isAuthorized: false,
+    //     message: 'Пользователь заблокирован',
+    //     needsPhoneAuth: false,
+    //     role: user.role
+    //   }
+    // }
 
     // Проверяем, есть ли привязанный номер телефона
     const userWithPhones = await this.authService.findByTelegramIdWithPhones(telegramId)
     const hasPhoneAuth = userWithPhones && userWithPhones.allowedPhones && userWithPhones.allowedPhones.length > 0
 
     return {
-      isAuthorized: hasPhoneAuth && user.role !== ('BLOCKED' as any),
+      // isAuthorized: hasPhoneAuth && user.role !== ('BLOCKED' as any),
+      isAuthorized: hasPhoneAuth,
       message: hasPhoneAuth ? 'Пользователь авторизован' : 'Требуется авторизация через номер телефона',
       needsPhoneAuth: !hasPhoneAuth,
-      role: user.role,
+      // role: user.role,
       hasPhoneAuth
     }
   }

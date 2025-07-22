@@ -70,9 +70,9 @@ export class TelegramAuthGuard implements CanActivate {
     // }
 
     // 6) Проверяем, что пользователь не заблокирован
-    if (user.role === 'BLOCKED') {
-      throw new UnauthorizedException('User is blocked')
-    }
+    // if (user.role === 'BLOCKED') {
+    //   throw new UnauthorizedException('User is blocked')
+    // }
 
     // console.log('user telegram', user);
     // 7) Кладём пользователя в request.user
