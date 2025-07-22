@@ -11,7 +11,7 @@ import { hapticFeedback, initData, isTMA, mockTelegramEnv, retrieveRawInitData }
 import { getOrganizationIdFromStore } from '../middleware/organization.middleware'
 
 const initDataRaw = import.meta.env.DEV
-  ? 'user=%7B%22id%22%3A239676985%2C%22first_name%22%3A%22%D0%A1%D0%B5%D1%80%D0%B3%D0%B5%D0%B9%22%2C%22last_name%22%3A%22%D0%9A%D0%BD%D1%8F%D0%B7%D0%B5%D0%B2%22%2C%22username%22%3A%22Knyaz_sv%22%2C%22language_code%22%3A%22ru%22%2C%22is_premium%22%3Atrue%2C%22allows_write_to_pm%22%3Atrue%2C%22photo_url%22%3A%22https%3A%5C%2F%5C%2Ft.me%5C%2Fi%5C%2Fuserpic%5C%2F320%5C%2FdVwpqY8rwKcDgyKCeVKKd95SfUDZ89Fhpw-zbGDB6Rg.svg%22%7D&chat_instance=7502372238548063129&chat_type=sender&auth_date=1753011931&signature=Wasg8xCm3UNiBFM3VHa7LiKuHqQgNkXsAGNHOltO9KE1Bq4S9jH3q-qPB_U21rEU7qrAlnlaYtf6UHUdacCkDA&hash=b9c205b6cadf0b67273a0f22b2cd463d5fcbf57c84621d6fd716ea55f346c85f'
+  ? 'user=%7B%22id%22%3A239676985%2C%22first_name%22%3A%22%D0%A1%D0%B5%D1%80%D0%B3%D0%B5%D0%B9%22%2C%22last_name%22%3A%22%D0%9A%D0%BD%D1%8F%D0%B7%D0%B5%D0%B2%22%2C%22username%22%3A%22Knyaz_sv%22%2C%22language_code%22%3A%22ru%22%2C%22is_premium%22%3Atrue%2C%22allows_write_to_pm%22%3Atrue%2C%22photo_url%22%3A%22https%3A%5C%2F%5C%2Ft.me%5C%2Fi%5C%2Fuserpic%5C%2F320%5C%2FdVwpqY8rwKcDgyKCeVKKd95SfUDZ89Fhpw-zbGDB6Rg.svg%22%7D&chat_instance=-7154825992710538405&chat_type=supergroup&auth_date=1753171494&signature=Ajwgc-Gz2qV79Wwkxq1nWFp6jT1c5Ifc2f1oW2jwcZaievk9vtwBkowlxaC-SskaQRfov3MlJcfncWfH3jYIDA&hash=e0a8de090e61574a4d34051b17447f50e46a50cf48503cc093432174395bbdea'
   : isTMA()
     ? retrieveRawInitData()
     : ''

@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Page } from '@/components/Page'
 import { useMyOrganizations, useCreateOrganization } from '@/entitites/organization/api/organization.api'
 import { ICreateOrganization, IUserOrganization } from '@/entitites/organization/model/organization.type'
@@ -17,12 +17,18 @@ const OrganizationManagementPage: React.FC = () => {
   const { data: organizations = [], isLoading } = useMyOrganizations()
   const { mutate: createOrganization, isPending } = useCreateOrganization()
   const [showCreateForm, setShowCreateForm] = useState(false)
-  const { currentOrganization, setCurrentOrganization, setOrganizationId } = useOrganizationStore()
+  const { currentOrganization, setCurrentOrganization, setOrganizationId, organizationId } = useOrganizationStore()
 
   const [formData, setFormData] = useState<ICreateOrganization>({
     name: '',
     description: ''
   })
+
+  useEffect(() => {
+    if (organizations && organizations.length === 1 && !organizationId) {
+      handleSelectOrganization(organizations[0])
+    }
+  }, [organizations])
 
   const handleCreateOrganization = () => {
     if (!formData.name.trim()) {

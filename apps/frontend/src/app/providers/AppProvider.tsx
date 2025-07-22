@@ -1,6 +1,5 @@
 import React, { FC } from 'react'
 import ServiceProvider from './service-provider/ServiceProvider'
-import OrganizationProvider from './OrganizationProvider'
 import { HashRouter } from 'react-router-dom'
 
 interface IProps {
@@ -9,9 +8,7 @@ interface IProps {
 const AppProvider: FC<IProps> = ({ children }) => {
   return (
     <HashRouter>
-      <ServiceProvider>
-        <OrganizationProvider>{children}</OrganizationProvider>
-      </ServiceProvider>
+      <ServiceProvider>{children}</ServiceProvider>
     </HashRouter>
   )
 }
