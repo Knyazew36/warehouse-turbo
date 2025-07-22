@@ -16,6 +16,7 @@ export interface IUser {
   createdAt: Date
   updatedAt: Date
   active: boolean
+  role?: Role
 }
 
 export interface UpdateUserDto {

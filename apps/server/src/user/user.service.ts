@@ -246,7 +246,7 @@ export class UserService {
       }
     }
 
-    return this.prisma.user.findMany({
+    const users = await this.prisma.user.findMany({
       where: whereClause,
       orderBy: { createdAt: 'desc' },
       include: organizationId
@@ -257,6 +257,11 @@ export class UserService {
           }
         : undefined
     })
+
+    return users.map(user => ({
+      ...user,
+      role: user.userOrganizations.find(uo => uo.organizationId === organizationId)?.role || null
+    }))
   }
 
   async getUsersByRole(role: Role, organizationId?: number): Promise<User[]> {

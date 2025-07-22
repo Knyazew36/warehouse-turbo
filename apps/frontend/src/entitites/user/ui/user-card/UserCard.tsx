@@ -11,15 +11,18 @@ import { useOrganizationStore } from '@/entitites/organization/model/organizatio
 const UserCard = ({ data }: { data: IUser }) => {
   const { currentOrganization } = useOrganizationStore()
   const { data: userRole, isLoading: isRoleLoading } = useUserRole({
-    id: data.id.toString()
+    id: data.telegramId.toString()
   })
 
   const { control, handleSubmit } = useForm({
     defaultValues: {
-      role: userRole || Role.GUEST
+      role: data.role || Role.GUEST
     },
     mode: 'onChange'
   })
+
+  console.info(data)
+  console.info('userRole', userRole)
 
   const { mutate: updateUser, isPending } = useUpdateUser()
   const { mutate: updateUserRole, isPending: isUpdateRolePending } = useUpdateUserRole()
@@ -221,7 +224,7 @@ const UserCard = ({ data }: { data: IUser }) => {
             <path d='M10 14h4' />
             <path d='M10 18h4' />
           </svg> */}
-          <p className='text-sm text-gray-500 dark:text-neutral-500'>{userRole}</p>
+          <p className='text-sm text-gray-500 dark:text-neutral-500'>{data.role}</p>
         </div>
       </div>
       {/* End Body */}
