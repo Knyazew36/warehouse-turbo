@@ -27,7 +27,7 @@ model User {
   telegramId String @unique
 
   data            Json?
-  role            Role                 @default(GUEST)
+  // role            Role                 @default(GUEST)
   reminders       Reminder[]
   settings        NotificationSetting?
   receipts        Receipt[]

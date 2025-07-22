@@ -21,12 +21,12 @@ export class OrganizationController {
     return { data: organization }
   }
 
-  @Get()
-  @Roles(Role.ADMIN, Role.OWNER, Role.IT)
-  async findAll() {
-    const organizations = await this.organizationService.findAll()
-    return { data: organizations }
-  }
+  // @Get()
+  // @Roles(Role.ADMIN, Role.OWNER, Role.IT)
+  // async findAll() {
+  //   const organizations = await this.organizationService.findAll()
+  //   return { data: organizations }
+  // }
 
   @Get('my')
   async getMyOrganizations(@User() user: UserType) {

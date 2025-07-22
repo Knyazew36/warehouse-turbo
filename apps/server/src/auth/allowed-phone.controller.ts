@@ -56,7 +56,7 @@ export class AllowedPhoneController {
    * Получить список всех разрешенных номеров телефонов
    */
   @Post('list')
-  @UseGuards(TelegramAuthGuard, RolesGuard)
+  @UseGuards(TelegramAuthGuard)
   @Roles('ADMIN', 'OWNER', 'IT')
   async getAllPhones(@OrganizationId() organizationId?: number) {
     return this.allowedPhoneService.getAll(organizationId)

@@ -17,7 +17,7 @@ import { useOrganizationStore } from '@/entitites/organization/model/organizatio
 
 const MenuPage: FC = () => {
   const { isAdmin, isOwner, isIT, isOperator, role } = useAuthStore()
-  const { currentOrganization, setCurrentOrganization, setOrganizationId } = useOrganizationStore()
+  const { currentOrganization } = useOrganizationStore()
   const user = initDataUser()
   const userId = user?.id?.toString()
 

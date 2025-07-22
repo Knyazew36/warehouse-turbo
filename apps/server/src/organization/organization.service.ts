@@ -35,12 +35,12 @@ export class OrganizationService {
     })
   }
 
-  async findAll(): Promise<Organization[]> {
-    return this.prisma.organization.findMany({
-      where: { active: true },
-      orderBy: { createdAt: 'desc' }
-    })
-  }
+  // async findAll(): Promise<Organization[]> {
+  //   return this.prisma.organization.findMany({
+  //     where: { active: true },
+  //     orderBy: { createdAt: 'desc' }
+  //   })
+  // }
 
   async findOne(id: number): Promise<Organization> {
     const organization = await this.prisma.organization.findUnique({
