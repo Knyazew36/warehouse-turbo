@@ -3,28 +3,37 @@ import { IUser, Role } from '../../model/user.type'
 import { getFullName } from '@/shared/utils/getFullName'
 import Select from '@/shared/ui/select/ui/Select'
 import { Controller, useForm } from 'react-hook-form'
-import { useUpdateUser, useUserDelete } from '../../api/user.api'
+import { useUpdateUser, useUserDelete, useUserRole, useUpdateUserRole } from '../../api/user.api'
 import LoaderSection from '@/shared/loader/ui/LoaderSection'
 import UserDelete from '../delete/UserDelete'
+import { useOrganizationStore } from '@/entitites/organization/model/organization.store'
 
-const UserCard = ({ data, role }: { data: IUser; role: Role }) => {
+const UserCard = ({ data }: { data: IUser }) => {
+  const { currentOrganization } = useOrganizationStore()
+  const { data: userRole, isLoading: isRoleLoading } = useUserRole({
+    id: data.id.toString()
+  })
+
   const { control, handleSubmit } = useForm({
     defaultValues: {
-      role: data.role
+      role: userRole || Role.GUEST
     },
     mode: 'onChange'
   })
+
   const { mutate: updateUser, isPending } = useUpdateUser()
+  const { mutate: updateUserRole, isPending: isUpdateRolePending } = useUpdateUserRole()
   const { isPending: isDeletePending } = useUserDelete()
-  const onSubmit = (data: any) => {
-    updateUser({ id: data.id, dto: { role: data.role } })
+
+  const onSubmit = (formData: any) => {
+    updateUser({ id: data.id, dto: {} })
   }
   return (
     <form
       onSubmit={handleSubmit(onSubmit)}
       className='flex relative overflow-hidden  flex-col mb-4 bg-white border border-gray-200 rounded-xl dark:bg-neutral-900 dark:border-neutral-700 '
     >
-      {data.role !== Role.OWNER && (
+      {userRole && userRole !== Role.OWNER && (
         <div className='absolute top-2 left-2'>
           <UserDelete userId={data.id} />
         </div>
@@ -212,7 +221,7 @@ const UserCard = ({ data, role }: { data: IUser; role: Role }) => {
             <path d='M10 14h4' />
             <path d='M10 18h4' />
           </svg> */}
-          <p className='text-sm text-gray-500 dark:text-neutral-500'>{data.role}</p>
+          <p className='text-sm text-gray-500 dark:text-neutral-500'>{userRole}</p>
         </div>
       </div>
       {/* End Body */}
@@ -246,9 +255,9 @@ const UserCard = ({ data, role }: { data: IUser; role: Role }) => {
         {/* End List */}
       </div>
 
-      {data.role !== Role.OWNER && (
+      {userRole && userRole !== Role.OWNER && (
         <div className='py-3 overflow-hidden relative px-5 flex flex-col sm:flex-row sm:justify-between sm:items-center gap-y-1 sm:gap-y-0 gap-x-2 text-center sm:text-start border-t border-gray-200 dark:border-neutral-700'>
-          {isPending || (isDeletePending && <LoaderSection />)}
+          {isPending || isUpdateRolePending || (isDeletePending && <LoaderSection />)}
           <div>
             <p className='text-sm text-gray-500 dark:text-neutral-500'>Сменить роль</p>
           </div>
@@ -258,7 +267,7 @@ const UserCard = ({ data, role }: { data: IUser; role: Role }) => {
               name='role'
               render={({ field }) => (
                 <Select
-                  disabled={data.role === Role.OWNER}
+                  disabled={false}
                   options={[
                     { value: Role.ADMIN, label: 'Админ' },
                     { value: Role.OPERATOR, label: 'Оператор' }
@@ -268,7 +277,13 @@ const UserCard = ({ data, role }: { data: IUser; role: Role }) => {
                   value={field.value}
                   onChange={value => {
                     field.onChange(value)
-                    updateUser({ id: data.id, dto: { role: value as Role } })
+                    if (currentOrganization?.organizationId) {
+                      updateUserRole({
+                        organizationId: currentOrganization.organizationId,
+                        userId: data.id,
+                        role: value as Role
+                      })
+                    }
                   }}
                 />
               )}

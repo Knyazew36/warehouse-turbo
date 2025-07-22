@@ -6,7 +6,6 @@ export interface BaseResponse<T> {
   path?: string
   user?: {
     id: number
-    role: string
     telegramId: string
   }
 }

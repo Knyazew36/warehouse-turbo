@@ -1,4 +1,15 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Query, UseGuards } from '@nestjs/common'
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  Query,
+  UseGuards,
+  BadRequestException
+} from '@nestjs/common'
 import { GetUsersDto } from './dto/get-users.dto'
 import { UpdateUserDto } from './dto/update-user.dto'
 import { RolesGuard } from '../auth/guards/roles.guard'
@@ -27,15 +38,20 @@ export class UserController {
     return this.usersService.getEmployees(organizationId)
   }
 
+  @UseGuards(TelegramAuthGuard, OrganizationRolesGuard)
   @Get('role/:role')
   @Roles('ADMIN', 'OWNER', 'IT')
-  getUsersByRole(@Param('role') role: Role) {
-    return this.usersService.getUsersByRole(role)
+  getUsersByRole(@Param('role') role: Role, @OrganizationId() organizationId?: number) {
+    return this.usersService.getUsersByRole(role, organizationId)
   }
 
+  @UseGuards(TelegramAuthGuard, OrganizationRolesGuard)
   @Get(':telegramId/role')
-  getUserRole(@Param('telegramId') telegramId: string) {
-    return this.usersService.getUserRole(telegramId)
+  getUserRole(@Param('telegramId') telegramId: string, @OrganizationId() organizationId?: number) {
+    if (!organizationId) {
+      throw new BadRequestException('organizationId is required')
+    }
+    return this.usersService.getUserRole(telegramId, organizationId)
   }
 
   @UseGuards(TelegramAuthGuard, OrganizationRolesGuard)

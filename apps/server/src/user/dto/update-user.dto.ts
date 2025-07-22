@@ -1,11 +1,6 @@
-import { IsOptional, IsEnum } from 'class-validator';
-import { Role } from '@prisma/client';
+import { IsOptional } from 'class-validator'
 
 export class UpdateUserDto {
   @IsOptional()
-  @IsEnum(Role)
-  role?: Role;
-
-  @IsOptional()
-  data?: any;
+  data?: any
 }

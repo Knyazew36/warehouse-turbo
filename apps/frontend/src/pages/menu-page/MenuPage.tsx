@@ -21,7 +21,7 @@ const MenuPage: FC = () => {
   const user = initDataUser()
   const userId = user?.id?.toString()
 
-  const { data: userRole, isLoading } = useUserRole({ id: userId || '', organizationId: currentOrganization?.id || 0 })
+  const { data: userRole, isLoading } = useUserRole({ id: userId || '' })
 
   // Если роль еще не загружена, показываем загрузку
   if (!role || isLoading) {

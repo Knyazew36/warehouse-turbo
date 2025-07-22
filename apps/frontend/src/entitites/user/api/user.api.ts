@@ -41,6 +41,24 @@ export const useUpdateUser = () => {
   })
 }
 
+export const useUpdateUserRole = () => {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: async ({ organizationId, userId, role }: { organizationId: number; userId: number; role: Role }) => {
+      const res = await $api.patch(`${apiDomain}/organizations/${organizationId}/users/${userId}/role`, { role })
+      return res.data.data
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['user', 'employees'] })
+      queryClient.invalidateQueries({ queryKey: ['user-role'] })
+      hapticFeedback.notificationOccurred('success')
+    },
+    onError: () => {
+      hapticFeedback.notificationOccurred('error')
+    }
+  })
+}
+
 export const useUserDelete = () => {
   const queryClient = useQueryClient()
   return useMutation({
@@ -68,18 +86,14 @@ export const useUsersEmployees = () => {
     retryDelay: 5000
   })
 }
-export const useUserRole = ({ id, organizationId }: { id: string; organizationId: number }) => {
+export const useUserRole = ({ id }: { id: string }) => {
   const { setRole } = useAuthStore()
 
   return useQuery<Role>({
     queryKey: ['user-role', id],
     queryFn: async () => {
       try {
-        const res = await $api.get(`${apiDomain}/user/${id}/role`, {
-          params: {
-            organizationId
-          }
-        })
+        const res = await $api.get(`${apiDomain}/user/${id}/role`)
         const role = res.data.data?.role
         if (role) {
           setRole(role)
@@ -92,6 +106,6 @@ export const useUserRole = ({ id, organizationId }: { id: string; organizationId
         return Role.GUEST
       }
     },
-    enabled: !!id && !!organizationId
+    enabled: !!id
   })
 }

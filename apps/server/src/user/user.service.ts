@@ -11,7 +11,7 @@ export class UserService {
   }
 
   async findAll(query: GetUsersDto = {}, organizationId?: number): Promise<User[]> {
-    const { role, onlyEmployees, includeDeleted } = query
+    const { onlyEmployees, includeDeleted } = query
 
     let whereClause: any = {}
 
@@ -26,14 +26,19 @@ export class UserService {
 
     // Если запрошены только сотрудники, фильтруем по ролям OPERATOR и ADMIN
     if (onlyEmployees) {
-      whereClause.role = {
-        not: [Role.GUEST, Role.BLOCKED]
+      if (organizationId) {
+        whereClause.userOrganizations.some.role = {
+          not: [Role.GUEST, Role.BLOCKED]
+        }
+      } else {
+        whereClause.userOrganizations = {
+          some: {
+            role: {
+              not: [Role.GUEST, Role.BLOCKED]
+            }
+          }
+        }
       }
-    }
-
-    // Если указана конкретная роль, добавляем её в фильтр
-    if (role) {
-      whereClause.role = role
     }
 
     // По умолчанию показываем только активных пользователей
@@ -78,7 +83,13 @@ export class UserService {
     const user = await this.findOne(id)
 
     // Проверяем, не пытаемся ли удалить владельца системы
-    if (user.role === Role.OWNER) {
+    // Проверяем роль в организации (если есть)
+    const userOrganizations = await this.prisma.userOrganization.findMany({
+      where: { userId: id }
+    })
+
+    const isOwner = userOrganizations.some(uo => uo.role === Role.OWNER)
+    if (isOwner) {
       throw new BadRequestException('Нельзя удалить владельца системы')
     }
 
@@ -114,12 +125,11 @@ export class UserService {
         where: { userId: id }
       })
 
-      // 5. Мягкое удаление пользователя - помечаем как неактивного и блокируем
+      // 5. Мягкое удаление пользователя - помечаем как неактивного
       const deletedUser = await prisma.user.update({
         where: { id },
         data: {
           active: false,
-          role: Role.BLOCKED,
           telegramId: `deleted_${user.telegramId}_${Date.now()}` // Уникальный ID для удаленного пользователя
         }
       })
@@ -136,7 +146,13 @@ export class UserService {
     const user = await this.findOne(id)
 
     // Проверяем, не пытаемся ли удалить владельца системы
-    if (user.role === Role.OWNER) {
+    // Проверяем роль в организации (если есть)
+    const userOrganizations = await this.prisma.userOrganization.findMany({
+      where: { userId: id }
+    })
+
+    const isOwner = userOrganizations.some(uo => uo.role === Role.OWNER)
+    if (isOwner) {
       throw new BadRequestException('Нельзя удалить владельца системы')
     }
 
@@ -182,7 +198,6 @@ export class UserService {
       where: { id },
       data: {
         active: true,
-        role: Role.GUEST, // Восстанавливаем с базовой ролью
         telegramId: user.telegramId.replace(/^deleted_.*_/, '') // Восстанавливаем оригинальный telegramId
       }
     })
@@ -217,17 +232,16 @@ export class UserService {
   }
 
   async getEmployees(organizationId?: number): Promise<User[]> {
-    let whereClause: any = {
-      role: {
-        in: [Role.OPERATOR, Role.ADMIN, Role.OWNER]
-      }
-    }
+    let whereClause: any = {}
 
-    // Если указан organizationId, фильтруем пользователей по организации
+    // Если указан organizationId, фильтруем пользователей по организации и ролям
     if (organizationId) {
       whereClause.userOrganizations = {
         some: {
-          organizationId: organizationId
+          organizationId: organizationId,
+          role: {
+            in: [Role.OPERATOR, Role.ADMIN, Role.OWNER]
+          }
         }
       }
     }
@@ -245,18 +259,50 @@ export class UserService {
     })
   }
 
-  async getUsersByRole(role: Role): Promise<User[]> {
+  async getUsersByRole(role: Role, organizationId?: number): Promise<User[]> {
+    let whereClause: any = {
+      userOrganizations: {
+        some: {
+          role: role
+        }
+      }
+    }
+
+    if (organizationId) {
+      whereClause.userOrganizations.some.organizationId = organizationId
+    }
+
     return this.prisma.user.findMany({
-      where: { role },
-      orderBy: { createdAt: 'desc' }
+      where: whereClause,
+      orderBy: { createdAt: 'desc' },
+      include: {
+        userOrganizations: {
+          where: organizationId ? { organizationId } : undefined
+        }
+      }
     })
   }
 
-  async getUserRole(telegramId: string): Promise<{ role: Role }> {
-    const user = await this.prisma.user.findUnique({ where: { telegramId } })
+  async getUserRole(telegramId: string, organizationId: number): Promise<{ role: Role }> {
+    const user = await this.prisma.user.findUnique({
+      where: { telegramId },
+      include: {
+        userOrganizations: {
+          where: { organizationId }
+        }
+      }
+    })
+
     if (!user) {
       throw new NotFoundException(`User #${telegramId} not found`)
     }
-    return { role: user.role }
+
+    // Получаем роль пользователя в конкретной организации
+    const userOrganization = user.userOrganizations[0]
+    if (!userOrganization) {
+      throw new NotFoundException(`User #${telegramId} not found in organization #${organizationId}`)
+    }
+
+    return { role: userOrganization.role }
   }
 }

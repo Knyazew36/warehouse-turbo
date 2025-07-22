@@ -53,7 +53,7 @@ export class OrganizationService {
                 id: true,
                 telegramId: true,
                 data: true,
-                role: true,
+                // role: true,
                 active: true
               }
             }
@@ -127,7 +127,7 @@ export class OrganizationService {
             id: true,
             telegramId: true,
             data: true,
-            role: true,
+            // role: true,
             active: true
           }
         }
@@ -185,7 +185,7 @@ export class OrganizationService {
             id: true,
             telegramId: true,
             data: true,
-            role: true,
+            // role: true,
             active: true
           }
         }
@@ -230,7 +230,7 @@ export class OrganizationService {
             id: true,
             telegramId: true,
             data: true,
-            role: true,
+            // role: true,
             active: true
           }
         }

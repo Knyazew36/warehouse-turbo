@@ -12,7 +12,6 @@ export interface IUser {
   id: number
   telegramId: string
 
-  role: Role
   data: User
   createdAt: Date
   updatedAt: Date
@@ -20,6 +19,5 @@ export interface IUser {
 }
 
 export interface UpdateUserDto {
-  role?: Role
   data?: Partial<User>
 }
