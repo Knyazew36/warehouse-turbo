@@ -3,10 +3,14 @@ import { PrismaService } from 'nestjs-prisma'
 import { User, Role } from '@prisma/client'
 import { GetUsersDto } from './dto/get-users.dto'
 import { UpdateUserDto } from './dto/update-user.dto'
+import { OrganizationService } from 'src/organization/organization.service'
 
 @Injectable()
 export class UserService {
-  constructor(private readonly prisma: PrismaService) {
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly organizationService: OrganizationService
+  ) {
     console.log('🟢 UsersService создан', new Date().toISOString())
   }
 
@@ -289,33 +293,57 @@ export class UserService {
   }
 
   async getUserRole(telegramId: string, organizationId: number): Promise<{ role: Role }> {
-    const user = await this.prisma.user.findUnique({
-      where: { telegramId },
-      select: { id: true }
+    //@ts-ignore
+    const organizations = await this.prisma.userOrganization.findMany({
+      where: { user: { telegramId } },
+      include: {
+        organization: true
+      },
+      orderBy: { createdAt: 'desc' }
     })
 
-    console.log('user getUserRole', user)
-    if (!user) {
-      throw new NotFoundException(`User #${telegramId} not found`)
+    if (organizations.length === 0) {
+      throw new NotFoundException(`organizations not found`)
     }
 
-    const currentOrganization = await this.prisma.organization.findUnique({
-      where: { id: organizationId },
-      include: {
-        userOrganizations: true
-      }
-    })
-
-    const userOrganization = currentOrganization.userOrganizations.find(uo => uo.userId === user.id)
-
-    // const userOrganization = await this.prisma.userOrganization.findFirst({
-    //   where: { userId: user.id, organizationId }
-    // })
-
-    if (!userOrganization) {
+    const currentOrganization = organizations.find(o => o.organizationId === organizationId)
+    if (!currentOrganization) {
       throw new NotFoundException(`User #${telegramId} not found in organization #${organizationId}`)
     }
+    return { role: currentOrganization.role }
 
-    return { role: userOrganization.role }
+    // const user = await this.prisma.user.findUnique({
+    //   where: { telegramId },
+    //   select: { id: true, userOrganizations: true }
+    // })
+
+    // console.log('user getUserRole', user)
+    // if (!user) {
+    //   throw new NotFoundException(`User #${telegramId} not found`)
+    // }
+
+    // const currentOrganization = user.userOrganizations
+    // //@ts-ignore
+    // return currentOrganization
+
+    // // return { role: currentOrganization.role }
+
+    // if (!currentOrganization) {
+    //   throw new NotFoundException(`User #${telegramId} not found in organization #${organizationId}`)
+    // }
+
+    // return { role: currentOrganization.role }
+
+    // const userOrganization = currentOrganization.userOrganizations.find(uo => uo.userId === user.id)
+
+    // // const userOrganization = await this.prisma.userOrganization.findFirst({
+    // //   where: { userId: user.id, organizationId }
+    // // })
+
+    // if (!userOrganization) {
+    //   throw new NotFoundException(`User #${telegramId} not found in organization #${organizationId}`)
+    // }
+
+    // return { role: userOrganization.role }
   }
 }
