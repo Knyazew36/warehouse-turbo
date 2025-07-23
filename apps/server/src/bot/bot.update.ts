@@ -143,17 +143,16 @@ export class BotUpdate {
     const phone = contact.phone_number.startsWith('+') ? contact.phone_number : `+${contact.phone_number}`
     const telegramId = String(ctx.from.id)
     console.info('phone', phone)
-    // Проверяем, разрешён ли номер
-    const allowed = await this.allowedPhoneService.isPhoneAllowed(phone)
-    if (!allowed) {
-      await ctx.reply('❌ Ваш номер не найден в списке разрешённых. Обратитесь к администратору для получения доступа.')
-      return
-    }
 
-    // Проверяем, не используется ли номер другим пользователем
-    if (allowed.usedById) {
+    // Проверяем, используется ли номер другим пользователем
+    const existingAllowedPhone = await this.prisma.allowedPhone.findUnique({
+      where: { phone },
+      include: { usedBy: true }
+    })
+
+    if (existingAllowedPhone && existingAllowedPhone.usedById) {
       const existingUser = await this.prisma.user.findUnique({
-        where: { id: allowed.usedById }
+        where: { id: existingAllowedPhone.usedById }
       })
       if (existingUser && existingUser.telegramId !== telegramId) {
         await ctx.reply('❌ Этот номер телефона уже используется другим пользователем.')
@@ -175,7 +174,8 @@ export class BotUpdate {
       }
     })
 
-    await this.allowedPhoneService.bindPhoneToUser(phone, user.id)
+    // Создаем или обновляем запись телефона для бота
+    await this.allowedPhoneService.createOrUpdatePhoneForBot(phone, user.id)
 
     const webappUrl = process.env.WEBAPP_URL || 'https://big-grain-tg.vercel.app'
 
@@ -210,17 +210,17 @@ export class BotUpdate {
     }
   }
 
-  private async ensureUser(ctx: Context) {
-    if (ctx.from?.id) {
-      const tgId = String(ctx.from.id)
-      const user = await this.prisma.user.upsert({
-        where: { telegramId: tgId },
-        update: {},
-        create: { telegramId: tgId }
-      })
-      ctx.state.user = user
-    }
-  }
+  // private async ensureUser(ctx: Context) {
+  //   if (ctx.from?.id) {
+  //     const tgId = String(ctx.from.id)
+  //     const user = await this.prisma.user.upsert({
+  //       where: { telegramId: tgId },
+  //       update: {},
+  //       create: { telegramId: tgId }
+  //     })
+  //     ctx.state.user = user
+  //   }
+  // }
 
   private async checkAuthorization(ctx: Context): Promise<boolean> {
     const telegramId = String(ctx.from.id)

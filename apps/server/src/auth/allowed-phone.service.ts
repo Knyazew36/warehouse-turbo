@@ -45,6 +45,54 @@ export class AllowedPhoneService {
   }
 
   /**
+   * Создать или обновить запись телефона для бота (без организации)
+   */
+  async createOrUpdatePhoneForBot(phone: string, userId: number) {
+    try {
+      // Пытаемся найти существующую запись
+      const existingPhone = await this.prisma.allowedPhone.findUnique({
+        where: { phone }
+      })
+
+      if (existingPhone) {
+        // Если запись существует, обновляем привязку к пользователю
+        return this.prisma.allowedPhone.update({
+          where: { phone },
+          data: { usedById: userId }
+        })
+      } else {
+        // Если записи нет, создаем новую с дефолтной организацией
+        // Сначала найдем первую активную организацию или создадим дефолтную
+        let defaultOrganization = await this.prisma.organization.findFirst({
+          where: { active: true }
+        })
+
+        if (!defaultOrganization) {
+          // Создаем дефолтную организацию
+          defaultOrganization = await this.prisma.organization.create({
+            data: {
+              name: 'Default Organization',
+              description: 'Default organization for bot users'
+            }
+          })
+        }
+
+        // Создаем запись телефона
+        return this.prisma.allowedPhone.create({
+          data: {
+            phone,
+            organizationId: defaultOrganization.id,
+            usedById: userId
+          }
+        })
+      }
+    } catch (error) {
+      console.error('Error in createOrUpdatePhoneForBot:', error)
+      throw error
+    }
+  }
+
+  /**
    * Получить все разрешённые номера
    */
   async getAll(organizationId?: number) {
