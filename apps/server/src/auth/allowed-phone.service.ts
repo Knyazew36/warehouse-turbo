@@ -60,6 +60,15 @@ export class AllowedPhoneService {
           where: { phone },
           data: { usedById: userId }
         })
+      } else {
+        // Если записи не существует, создаем новую
+        // Для бота создаем запись без привязки к организации
+        return this.prisma.allowedPhone.create({
+          data: {
+            phone,
+            usedById: userId
+          }
+        })
       }
     } catch (error) {
       console.error('Error in createOrUpdatePhoneForBot:', error)
@@ -70,7 +79,7 @@ export class AllowedPhoneService {
   /**
    * Получить все разрешённые номера
    */
-  async getAll(organizationId?: number) {
+  async getAll(organizationId: number) {
     return this.prisma.allowedPhone.findMany({ where: { organizationId } })
   }
 }

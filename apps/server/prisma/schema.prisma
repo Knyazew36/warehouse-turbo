@@ -58,7 +58,7 @@ model Organization {
   products          Product[]
   receipts          Receipt[]
   shiftReports      ShiftReport[]
-  allowedPhones     AllowedPhone[]
+  allowedPhones     AllowedPhone[] // Телефоны, привязанные к организации
 }
 
 model UserOrganization {
@@ -181,7 +181,7 @@ model AllowedPhone {
   usedBy    User?    @relation(fields: [usedById], references: [id])
   usedById  Int?
 
-  // Связь с организацией
-  organizationId Int
-  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  // Связь с организацией (необязательная)
+  organizationId Int?
+  organization   Organization? @relation(fields: [organizationId], references: [id], onDelete: Cascade)
 }
