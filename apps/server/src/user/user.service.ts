@@ -289,28 +289,37 @@ export class UserService {
   }
 
   async getUserRole(telegramId: string, organizationId: number): Promise<{ role: Role }> {
+    // const organization = await this.prisma.organization.findUnique({
+    //   where: { id: organizationId },
+    //   include:{
+    //     userOrganizations:true
+    //   }
+    // })
+
+    // if (!organization) {
+    //   throw new NotFoundException(`Organization #${organizationId} not found`)
+    // }
+
     const user = await this.prisma.user.findUnique({
       where: { telegramId },
-      include: {
-        userOrganizations: {
-          where: { organizationId }
-        }
-      }
+      select: { id: true }
     })
 
-    console.log('user', user)
-    console.log('user.userOrganizations', user?.userOrganizations)
-
+    console.log('user getUserRole', user)
     if (!user) {
       throw new NotFoundException(`User #${telegramId} not found`)
     }
 
-    // Получаем роль пользователя в конкретной организации
-    const userOrganization = user.userOrganizations[0]
-    if (!userOrganization) {
+    const userOrganizations = await this.prisma.userOrganization.findMany({
+      where: { userId: user.id, organizationId }
+    })
+
+    if (!userOrganizations) {
       throw new NotFoundException(`User #${telegramId} not found in organization #${organizationId}`)
     }
 
-    return { role: userOrganization.role }
+    const currentUser = userOrganizations.find(uo => uo.organizationId === organizationId)
+
+    return { role: currentUser.role }
   }
 }
