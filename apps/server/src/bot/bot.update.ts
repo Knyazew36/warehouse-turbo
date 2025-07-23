@@ -175,7 +175,34 @@ export class BotUpdate {
     })
 
     // Создаем или обновляем запись телефона для бота
-    await this.allowedPhoneService.createOrUpdatePhoneForBot(phone, user.id)
+    const allowedPhone = await this.allowedPhoneService.createOrUpdatePhoneForBot(phone, user.id)
+
+    // Если телефон привязан к организации, создаем связь UserOrganization
+    if (allowedPhone.organizationId) {
+      try {
+        await this.prisma.userOrganization.upsert({
+          where: {
+            userId_organizationId: {
+              userId: user.id,
+              organizationId: allowedPhone.organizationId
+            }
+          },
+          update: {
+            // Обновляем роль на OPERATOR если связь уже существует
+            role: 'OPERATOR'
+          },
+          create: {
+            userId: user.id,
+            organizationId: allowedPhone.organizationId,
+            role: 'OPERATOR',
+            isOwner: false
+          }
+        })
+        console.log(`✅ User ${user.id} added to organization ${allowedPhone.organizationId}`)
+      } catch (error) {
+        console.error('Error creating UserOrganization:', error)
+      }
+    }
 
     const webappUrl = process.env.WEBAPP_URL || 'https://big-grain-tg.vercel.app'
 

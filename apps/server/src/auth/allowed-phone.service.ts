@@ -84,7 +84,7 @@ export class AllowedPhoneService {
   }
 
   /**
-   * Создать или обновить запись телефона для бота (без организации)
+   * Создать или обновить запись телефона для бота (сохраняя organizationId)
    */
   async createOrUpdatePhoneForBot(phone: string, userId: number) {
     try {
@@ -94,14 +94,17 @@ export class AllowedPhoneService {
       })
 
       if (existingPhone) {
-        // Если запись существует, обновляем привязку к пользователю
+        // Если запись существует, обновляем привязку к пользователю, сохраняя organizationId
         return this.prisma.allowedPhone.update({
           where: { phone },
-          data: { usedById: userId }
+          data: {
+            usedById: userId,
+            // Сохраняем organizationId если он был
+            organizationId: existingPhone.organizationId
+          }
         })
       } else {
-        // Если записи не существует, создаем новую
-        // Для бота создаем запись без привязки к организации
+        // Если записи не существует, создаем новую без привязки к организации
         return this.prisma.allowedPhone.create({
           data: {
             phone,
