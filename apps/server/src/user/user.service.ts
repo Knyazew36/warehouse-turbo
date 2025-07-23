@@ -299,14 +299,23 @@ export class UserService {
       throw new NotFoundException(`User #${telegramId} not found`)
     }
 
-    const userOrganization = await this.prisma.userOrganization.findFirst({
-      where: { userId: user.id, organizationId }
+    const currentOrganization = await this.prisma.organization.findUnique({
+      where: { id: organizationId },
+      include: {
+        userOrganizations: true
+      }
     })
+
+    const userOrganization = currentOrganization.userOrganizations.find(uo => uo.userId === user.id)
+
+    // const userOrganization = await this.prisma.userOrganization.findFirst({
+    //   where: { userId: user.id, organizationId }
+    // })
 
     if (!userOrganization) {
       throw new NotFoundException(`User #${telegramId} not found in organization #${organizationId}`)
     }
 
-    return { role: Role.OWNER }
+    return { role: userOrganization.role }
   }
 }
