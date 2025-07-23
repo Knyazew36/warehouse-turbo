@@ -85,6 +85,7 @@ export class ReceiptsService {
       }),
       this.prisma.shiftReport.findMany({
         where: {
+          organizationId,
           createdAt: {
             gte: periodStart,
             lte: periodEnd
