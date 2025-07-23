@@ -4,6 +4,7 @@ import { Request } from 'express'
 import { ConfigService } from '@nestjs/config'
 import { PrismaService } from 'nestjs-prisma'
 import { validate, parse, User } from '@telegram-apps/init-data-node'
+import { RequestWithOrganization } from '../../organization/types/request.types'
 @Injectable()
 export class TelegramAuthGuard implements CanActivate {
   constructor(
@@ -12,7 +13,7 @@ export class TelegramAuthGuard implements CanActivate {
   ) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
-    const req = context.switchToHttp().getRequest<Request>()
+    const req = context.switchToHttp().getRequest<RequestWithOrganization>()
     const authHeader = String(req.header('authorization') || '')
 
     // 1) Разбираем "tma <initDataRaw>"
@@ -59,24 +60,46 @@ export class TelegramAuthGuard implements CanActivate {
         telegramId,
         data: initData?.user
       }
-      // include: {
-      //   allowedPhones: true, // Включаем привязанные телефоны
-      // },
     })
 
-    // 5) Проверяем, что пользователь авторизован через телефон
+    // 5) Получаем роль пользователя в текущей организации (если указана)
+    const organizationId = req.headers['x-organization-id'] as string
+    let userWithRole = user
+
+    if (organizationId) {
+      const userOrganization = await this.prisma.userOrganization.findUnique({
+        where: {
+          userId_organizationId: {
+            userId: user.id,
+            organizationId: parseInt(organizationId)
+          }
+        }
+      })
+
+      if (userOrganization) {
+        // Добавляем роль к объекту пользователя
+        userWithRole = {
+          ...user,
+          role: userOrganization.role
+        } as any
+      }
+    }
+
+    // 6) Проверяем, что пользователь авторизован через телефон
     // if (user.allowedPhones.length === 0) {
     //   throw new UnauthorizedException('User must authorize through phone number in bot first');
     // }
 
-    // 6) Проверяем, что пользователь не заблокирован
-    // if (user.role === 'BLOCKED') {
+    // 7) Проверяем, что пользователь не заблокирован (если роль получена)
+    // if (userWithRole.role === 'BLOCKED') {
     //   throw new UnauthorizedException('User is blocked')
     // }
 
     // console.log('user telegram', user);
-    // 7) Кладём пользователя в request.user
-    ;(req as any).user = user
+    // 8) Кладём пользователя в request.user
+
+    console.info('user with role', userWithRole)
+    req.user = userWithRole
     return true
   }
 }
