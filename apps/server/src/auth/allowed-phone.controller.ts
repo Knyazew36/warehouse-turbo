@@ -12,6 +12,7 @@ export class AllowedPhoneController {
 
   /**
    * Добавить разрешенный номер телефона (только для админа)
+   * Может быть добавлен с организацией или без (для глобальных пользователей)
    */
   @Post('add')
   @UseGuards(TelegramAuthGuard, RolesGuard)
@@ -22,9 +23,6 @@ export class AllowedPhoneController {
     if (existingPhone) {
       // Если телефон уже существует, обновляем комментарий если он передан
       if (dto.comment) {
-        if (!organizationId) {
-          throw new Error('Organization ID is required')
-        }
         const updatedPhone = await this.allowedPhoneService.addPhone(dto.phone, organizationId, dto.comment)
         return {
           ...updatedPhone,
@@ -40,15 +38,37 @@ export class AllowedPhoneController {
       }
     }
 
-    // Если телефона нет, добавляем новый
-    if (!organizationId) {
-      throw new Error('Organization ID is required')
-    }
+    // Если телефона нет, добавляем новый (может быть с организацией или без)
     const newPhone = await this.allowedPhoneService.addPhone(dto.phone, organizationId, dto.comment)
     return {
       ...newPhone,
-      message: 'Телефон успешно добавлен в список разрешенных.',
+      message: organizationId
+        ? 'Телефон успешно добавлен в список разрешенных для организации.'
+        : 'Телефон успешно добавлен в глобальный список разрешенных.',
       wasExisting: false
+    }
+  }
+
+  /**
+   * Добавить сотрудника в организацию (привязывает существующий телефон к организации)
+   */
+  @Post('add-employee')
+  @UseGuards(TelegramAuthGuard, RolesGuard)
+  @Roles('ADMIN', 'OWNER', 'IT')
+  async addEmployeeToOrganization(@Body() dto: AddPhoneDto, @OrganizationId() organizationId?: number) {
+    if (!organizationId) {
+      throw new Error('Organization ID is required for adding employee')
+    }
+
+    const result = await this.allowedPhoneService.addEmployeeToOrganization(dto.phone, organizationId, dto.comment)
+
+    return {
+      ...result,
+      message:
+        result.organizationId === organizationId
+          ? 'Сотрудник успешно добавлен в организацию.'
+          : 'Телефон привязан к организации.',
+      wasExisting: !!result.organizationId
     }
   }
 
@@ -72,6 +92,7 @@ export class AllowedPhoneController {
       phone,
       isAllowed: !!allowedPhone,
       isUsed: !!allowedPhone?.usedById,
+      hasOrganization: !!allowedPhone?.organizationId,
       comment: allowedPhone?.comment
     }
   }

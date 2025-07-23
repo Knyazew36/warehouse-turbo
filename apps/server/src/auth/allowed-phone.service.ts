@@ -13,25 +13,64 @@ export class AllowedPhoneService {
   }
 
   /**
-   * Добавить номер телефона (для админки)
+   * Добавить номер телефона (для админки) - может быть с организацией или без
    */
-  async addPhone(phone: string, organizationId: number, comment?: string) {
+  async addPhone(phone: string, organizationId?: number, comment?: string) {
     try {
-      return await this.prisma.allowedPhone.create({ data: { phone, comment, organizationId } })
+      return await this.prisma.allowedPhone.create({
+        data: {
+          phone,
+          comment,
+          organizationId: organizationId || null
+        }
+      })
     } catch (error) {
-      // Если телефон уже существует, обновляем комментарий если он передан
-      if (error.code === 'P2002' && comment) {
-        return await this.prisma.allowedPhone.update({
-          where: { phone },
-          data: { comment }
-        })
-      }
-      // Если телефон уже существует и комментарий не передан, возвращаем существующую запись
+      // Если телефон уже существует, обновляем комментарий и организацию если они переданы
       if (error.code === 'P2002') {
+        const updateData: any = {}
+        if (comment !== undefined) updateData.comment = comment
+        if (organizationId !== undefined) updateData.organizationId = organizationId || null
+
+        if (Object.keys(updateData).length > 0) {
+          return await this.prisma.allowedPhone.update({
+            where: { phone },
+            data: updateData
+          })
+        }
+
         return await this.prisma.allowedPhone.findUnique({ where: { phone } })
       }
       throw error
     }
+  }
+
+  /**
+   * Добавить сотрудника в организацию (привязывает существующий телефон к организации)
+   */
+  async addEmployeeToOrganization(phone: string, organizationId: number, comment?: string) {
+    const existingPhone = await this.prisma.allowedPhone.findUnique({
+      where: { phone }
+    })
+
+    if (!existingPhone) {
+      // Если телефона нет, создаем новый с привязкой к организации
+      return await this.prisma.allowedPhone.create({
+        data: {
+          phone,
+          organizationId,
+          comment
+        }
+      })
+    }
+
+    // Если телефон существует, обновляем привязку к организации
+    return await this.prisma.allowedPhone.update({
+      where: { phone },
+      data: {
+        organizationId,
+        comment: comment || existingPhone.comment
+      }
+    })
   }
 
   /**
@@ -77,9 +116,17 @@ export class AllowedPhoneService {
   }
 
   /**
-   * Получить все разрешённые номера
+   * Получить все разрешённые номера (с фильтрацией по организации или без)
    */
-  async getAll(organizationId: number) {
-    return this.prisma.allowedPhone.findMany({ where: { organizationId } })
+  async getAll(organizationId?: number) {
+    if (organizationId) {
+      // Получаем телефоны конкретной организации
+      return this.prisma.allowedPhone.findMany({
+        where: { organizationId }
+      })
+    } else {
+      // Получаем все телефоны (включая те, что без организации)
+      return this.prisma.allowedPhone.findMany()
+    }
   }
 }

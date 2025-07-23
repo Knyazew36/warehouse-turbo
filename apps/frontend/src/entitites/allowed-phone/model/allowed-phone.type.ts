@@ -7,5 +7,6 @@ export interface AllowedPhone {
   createdAt: string
   updatedAt: string
   usedBy?: IUser
-  usedById: number
+  usedById?: number
+  organizationId?: number
 }
