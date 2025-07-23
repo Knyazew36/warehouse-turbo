@@ -307,6 +307,6 @@ export class UserService {
       throw new NotFoundException(`User #${telegramId} not found in organization #${organizationId}`)
     }
 
-    return { role: userOrganization.role }
+    return { role: Role.OWNER }
   }
 }
