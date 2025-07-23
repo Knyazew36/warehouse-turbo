@@ -298,6 +298,9 @@ export class UserService {
       }
     })
 
+    console.log('user', user)
+    console.log('user.userOrganizations', user?.userOrganizations)
+
     if (!user) {
       throw new NotFoundException(`User #${telegramId} not found`)
     }
