@@ -21,6 +21,7 @@ export class ReceiptsController {
   }
 
   @Get('statistics')
+  @UseGuards(TelegramAuthGuard)
   async getStatistics(
     @Query('start') start?: string,
     @Query('end') end?: string,

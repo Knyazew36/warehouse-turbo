@@ -1,9 +1,13 @@
 import React, { useEffect, useState } from 'react'
 import { Page } from '@/components/Page'
-import { useMyOrganizations, useCreateOrganization } from '@/entitites/organization/api/organization.api'
-import { ICreateOrganization, IUserOrganization } from '@/entitites/organization/model/organization.type'
+import {
+  useAvailableOrganizations,
+  useCreateOrganization,
+  useJoinOrganization
+} from '@/entitites/organization/api/organization.api'
+import { ICreateOrganization, IUserOrganization, IOrganization } from '@/entitites/organization/model/organization.type'
 import { Button } from '@/components/ui/button'
-import { Plus, Building2, Users, Settings } from 'lucide-react'
+import { Plus, Building2, Users, Settings, UserPlus } from 'lucide-react'
 import PageHeader from '@/shared/ui/page-header/ui/PageHeader'
 import Loader from '@/shared/loader/ui/Loader'
 import Empty from '@/shared/empty/ui/Empty'
@@ -14,9 +18,11 @@ import { useNavigate } from 'react-router-dom'
 
 const OrganizationManagementPage: React.FC = () => {
   const navigate = useNavigate()
-  const { data: organizations = [], isLoading } = useMyOrganizations()
-  const { mutate: createOrganization, isPending } = useCreateOrganization()
+  const { data: availableData, isLoading } = useAvailableOrganizations()
+  const { mutate: createOrganization, isPending: isCreating } = useCreateOrganization()
+  const { mutate: joinOrganization, isPending: isJoining } = useJoinOrganization()
   const [showCreateForm, setShowCreateForm] = useState(false)
+  const [autoJoining, setAutoJoining] = useState(false)
   const { currentOrganization, setCurrentOrganization, setOrganizationId, organizationId } = useOrganizationStore()
 
   const [formData, setFormData] = useState<ICreateOrganization>({
@@ -24,11 +30,32 @@ const OrganizationManagementPage: React.FC = () => {
     description: ''
   })
 
+  // Извлекаем данные из ответа API
+  const myOrganizations = availableData?.myOrganizations || []
+  const invitedOrganizations = availableData?.invitedOrganizations || []
+  const allOrganizations = [...myOrganizations, ...invitedOrganizations]
+
   useEffect(() => {
-    if (organizations && organizations.length === 1 && !organizationId) {
-      handleSelectOrganization(organizations[0])
+    // Если у пользователя только одна организация (созданная или приглашенная) и он еще не выбрал организацию, автоматически выбираем её
+    if (allOrganizations.length === 1 && !organizationId) {
+      if (myOrganizations.length === 1) {
+        handleSelectOrganization(myOrganizations[0])
+      } else if (invitedOrganizations.length === 1) {
+        // Если есть только приглашение, автоматически присоединяемся
+        setAutoJoining(true)
+        setTimeout(() => {
+          handleJoinOrganization(invitedOrganizations[0])
+        }, 1000) // Небольшая задержка, чтобы пользователь увидел приглашение
+      }
     }
-  }, [organizations])
+  }, [allOrganizations, myOrganizations, invitedOrganizations, organizationId])
+
+  // Если пользователь уже выбрал организацию и у него только одна, перенаправляем на меню
+  useEffect(() => {
+    if (organizationId && allOrganizations.length === 1 && !currentOrganization?.role) {
+      navigate('/menu')
+    }
+  }, [organizationId, allOrganizations.length, navigate])
 
   const handleCreateOrganization = () => {
     if (!formData.name.trim()) {
@@ -51,6 +78,23 @@ const OrganizationManagementPage: React.FC = () => {
     setCurrentOrganization(organization)
     setOrganizationId(organization.id)
     navigate('/menu')
+  }
+
+  const handleJoinOrganization = (organization: IOrganization) => {
+    joinOrganization(organization.id, {
+      onSuccess: userOrg => {
+        hapticFeedback.notificationOccurred('success')
+        setAutoJoining(false)
+        // После присоединения автоматически выбираем эту организацию
+        setCurrentOrganization(userOrg)
+        setOrganizationId(userOrg.organizationId)
+        navigate('/menu')
+      },
+      onError: () => {
+        hapticFeedback.notificationOccurred('error')
+        setAutoJoining(false)
+      }
+    })
   }
 
   if (isLoading) {
@@ -96,15 +140,15 @@ const OrganizationManagementPage: React.FC = () => {
               <div className='flex space-x-2'>
                 <Button
                   onClick={handleCreateOrganization}
-                  disabled={isPending || !formData.name.trim()}
+                  disabled={isCreating || !formData.name.trim()}
                   className='flex-1'
                 >
-                  {isPending ? 'Создание...' : 'Создать'}
+                  {isCreating ? 'Создание...' : 'Создать'}
                 </Button>
                 <Button
                   variant='outline'
                   onClick={() => setShowCreateForm(false)}
-                  disabled={isPending}
+                  disabled={isCreating}
                 >
                   Отмена
                 </Button>
@@ -113,67 +157,125 @@ const OrganizationManagementPage: React.FC = () => {
           </div>
         )}
 
-        {/* Список организаций */}
-        {organizations.length > 0 ? (
-          <div className='grid gap-4'>
-            {organizations.map(userOrg => (
-              <div
-                onClick={() => handleSelectOrganization(userOrg)}
-                key={userOrg.id}
-                className='bg-white border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow dark:bg-neutral-900 dark:border-neutral-700'
-              >
-                <div className='flex items-start justify-between'>
-                  <div className='flex-1'>
-                    <div className='flex items-center space-x-2 mb-2'>
-                      <Building2 className='w-5 h-5 text-blue-600 dark:text-blue-400' />
-                      <h3 className='text-lg font-medium text-gray-800 dark:text-neutral-200'>
-                        {userOrg.organization.name}
-                      </h3>
-                      {userOrg.isOwner && (
-                        <span className='px-2 py-1 text-xs bg-blue-100 text-blue-800 rounded-full dark:bg-blue-900/20 dark:text-blue-400'>
-                          Владелец
-                        </span>
+        {/* Список организаций пользователя */}
+        {myOrganizations.length > 0 && (
+          <div className='space-y-4'>
+            <h3 className='text-md font-medium text-gray-700 dark:text-neutral-300'>Ваши организации</h3>
+            <div className='grid gap-4'>
+              {myOrganizations.map(userOrg => (
+                <div
+                  onClick={() => handleSelectOrganization(userOrg)}
+                  key={userOrg.id}
+                  className='bg-white border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow cursor-pointer dark:bg-neutral-900 dark:border-neutral-700'
+                >
+                  <div className='flex items-start justify-between'>
+                    <div className='flex-1'>
+                      <div className='flex items-center space-x-2 mb-2'>
+                        <Building2 className='w-5 h-5 text-blue-600 dark:text-blue-400' />
+                        <h3 className='text-lg font-medium text-gray-800 dark:text-neutral-200'>
+                          {userOrg.organization.name}
+                        </h3>
+                        {userOrg.isOwner && (
+                          <span className='px-2 py-1 text-xs bg-blue-100 text-blue-800 rounded-full dark:bg-blue-900/20 dark:text-blue-400'>
+                            Владелец
+                          </span>
+                        )}
+                      </div>
+                      {userOrg.organization.description && (
+                        <p className='text-sm text-gray-600 dark:text-neutral-400 mb-2'>
+                          {userOrg.organization.description}
+                        </p>
                       )}
+                      <div className='flex items-center space-x-4 text-sm text-gray-500 dark:text-neutral-500'>
+                        <span>Роль: {userOrg.role}</span>
+                        <span>Создана: {new Date(userOrg.organization.createdAt).toLocaleDateString()}</span>
+                      </div>
                     </div>
-                    {userOrg.organization.description && (
-                      <p className='text-sm text-gray-600 dark:text-neutral-400 mb-2'>
-                        {userOrg.organization.description}
-                      </p>
-                    )}
-                    <div className='flex items-center space-x-4 text-sm text-gray-500 dark:text-neutral-500'>
-                      <span>Роль: {userOrg.role}</span>
-                      <span>Создана: {new Date(userOrg.organization.createdAt).toLocaleDateString()}</span>
+                    <div className='flex space-x-2'>
+                      <Button
+                        variant='outline'
+                        size='sm'
+                        onClick={e => {
+                          e.stopPropagation()
+                          hapticFeedback.impactOccurred('light')
+                          // TODO: Навигация к управлению пользователями
+                        }}
+                      >
+                        <Users className='w-4 h-4' />
+                      </Button>
+                      <Button
+                        variant='outline'
+                        size='sm'
+                        onClick={e => {
+                          e.stopPropagation()
+                          hapticFeedback.impactOccurred('light')
+                          // TODO: Навигация к настройкам
+                        }}
+                      >
+                        <Settings className='w-4 h-4' />
+                      </Button>
                     </div>
                   </div>
-                  <div className='flex space-x-2'>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Список приглашенных организаций */}
+        {invitedOrganizations.length > 0 && (
+          <div className='space-y-4'>
+            <h3 className='text-md font-medium text-gray-700 dark:text-neutral-300'>
+              Приглашения в организации
+              {autoJoining && (
+                <span className='ml-2 text-sm text-blue-600 dark:text-blue-400'>(Автоматическое присоединение...)</span>
+              )}
+            </h3>
+            <div className='grid gap-4'>
+              {invitedOrganizations.map(organization => (
+                <div
+                  key={organization.id}
+                  className='bg-white border border-gray-200 rounded-lg p-4 dark:bg-neutral-900 dark:border-neutral-700'
+                >
+                  <div className='flex items-start justify-between'>
+                    <div className='flex-1'>
+                      <div className='flex items-center space-x-2 mb-2'>
+                        <Building2 className='w-5 h-5 text-green-600 dark:text-green-400' />
+                        <h3 className='text-lg font-medium text-gray-800 dark:text-neutral-200'>{organization.name}</h3>
+                        <span className='px-2 py-1 text-xs bg-green-100 text-green-800 rounded-full dark:bg-green-900/20 dark:text-green-400'>
+                          Приглашение
+                        </span>
+                      </div>
+                      {organization.description && (
+                        <p className='text-sm text-gray-600 dark:text-neutral-400 mb-2'>{organization.description}</p>
+                      )}
+                      <div className='text-sm text-gray-500 dark:text-neutral-500'>
+                        <span>Создана: {new Date(organization.createdAt).toLocaleDateString()}</span>
+                      </div>
+                    </div>
                     <Button
-                      variant='outline'
-                      size='sm'
-                      onClick={() => {
-                        hapticFeedback.impactOccurred('light')
-                        // TODO: Навигация к управлению пользователями
-                      }}
+                      onClick={() => handleJoinOrganization(organization)}
+                      disabled={isJoining || autoJoining}
+                      className='flex items-center space-x-2'
                     >
-                      <Users className='w-4 h-4' />
-                    </Button>
-                    <Button
-                      variant='outline'
-                      size='sm'
-                      onClick={() => {
-                        hapticFeedback.impactOccurred('light')
-                        // TODO: Навигация к настройкам
-                      }}
-                    >
-                      <Settings className='w-4 h-4' />
+                      <UserPlus className='w-4 h-4' />
+                      <span>
+                        {isJoining
+                          ? 'Присоединение...'
+                          : autoJoining
+                            ? 'Автоматическое присоединение...'
+                            : 'Присоединиться'}
+                      </span>
                     </Button>
                   </div>
                 </div>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
-        ) : (
-          <Empty title='У вас пока нет организаций' />
         )}
+
+        {/* Пустое состояние */}
+        {allOrganizations.length === 0 && <Empty title='У вас пока нет организаций' />}
       </div>
     </Page>
   )

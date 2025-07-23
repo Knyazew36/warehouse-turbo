@@ -282,7 +282,7 @@ const UserCard = ({ data }: { data: IUser }) => {
                     field.onChange(value)
                     if (currentOrganization?.organizationId) {
                       updateUserRole({
-                        organizationId: currentOrganization.organizationId,
+                        organizationId: currentOrganization?.organizationId,
                         userId: data.id,
                         role: value as Role
                       })

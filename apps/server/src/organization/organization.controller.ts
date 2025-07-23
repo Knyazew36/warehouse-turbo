@@ -35,8 +35,7 @@ export class OrganizationController {
 
   @Get('available')
   async getAvailableOrganizations(@User() user: UserType) {
-    const result = await this.organizationService.getAvailableOrganizations(user.id)
-    return { data: result }
+    return await this.organizationService.getAvailableOrganizations(user.id)
   }
 
   @Post(':id/join')

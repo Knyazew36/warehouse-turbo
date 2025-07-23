@@ -73,9 +73,10 @@ export class ReceiptsService {
     // Получаем только активные продукты
     const [products, users, receipts, shiftReports] = await Promise.all([
       this.prisma.product.findMany({ where: { active: true, organizationId } }),
-      this.prisma.user.findMany(),
+      this.prisma.user.findMany({ where: { userOrganizations: { some: { organizationId } } } }),
       this.prisma.receipt.findMany({
         where: {
+          organizationId,
           createdAt: {
             gte: periodStart,
             lte: periodEnd
