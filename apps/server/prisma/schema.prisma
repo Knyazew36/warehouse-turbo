@@ -58,7 +58,7 @@ model Organization {
   products          Product[]
   receipts          Receipt[]
   shiftReports      ShiftReport[]
-  allowedPhones     String[]
+  allowedPhones     AllowedPhoneOrganization[]
 }
 
 model UserOrganization {
@@ -172,16 +172,26 @@ model AccessRequest {
   processedById Int?
 }
 
-// model AllowedPhone {
-//   id        Int      @id @default(autoincrement())
-//   phone     String   @unique // В формате +79991234567
-//   comment   String?
-//   createdAt DateTime @default(now())
-//   updatedAt DateTime @updatedAt
-//   usedBy    User?    @relation(fields: [usedById], references: [id])
-//   usedById  Int?
+model AllowedPhone {
+  id        Int      @id @default(autoincrement())
+  phone     String   @unique // В формате +79991234567
+  comment   String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
-//   // Связь с организацией (необязательная)
-//   organizationId Int?
-//   organization   Organization? @relation(fields: [organizationId], references: [id], onDelete: Cascade)
-// }
+  // Связь many-to-many с организациями
+  organizations AllowedPhoneOrganization[]
+}
+
+model AllowedPhoneOrganization {
+  id             Int      @id @default(autoincrement())
+  allowedPhoneId Int
+  organizationId Int
+  createdAt      DateTime @default(now())
+
+  // Связи
+  allowedPhone AllowedPhone @relation(fields: [allowedPhoneId], references: [id], onDelete: Cascade)
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  @@unique([allowedPhoneId, organizationId])
+}

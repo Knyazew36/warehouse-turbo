@@ -31,7 +31,8 @@ export class OrganizationController {
 
   @Get('my')
   async getMyOrganizations(@User() user: UserType) {
-    return await this.organizationService.getUserOrganizations(user.id)
+    const organizations = await this.organizationService.getUserOrganizations(user.id)
+    return { data: organizations }
   }
 
   @Get('available')

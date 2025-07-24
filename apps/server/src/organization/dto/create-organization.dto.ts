@@ -11,5 +11,5 @@ export class CreateOrganizationDto {
 
   @IsArray()
   @IsOptional()
-  allowedPhones?: string[]
+  allowedPhones?: string[] // Оставляем для обратной совместимости, но обрабатываем по-новому
 }

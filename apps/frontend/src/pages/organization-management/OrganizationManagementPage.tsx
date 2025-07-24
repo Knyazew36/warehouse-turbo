@@ -35,6 +35,8 @@ const OrganizationManagementPage: React.FC = () => {
   const invitedOrganizations = availableData?.invitedOrganizations || []
   const allOrganizations = [...myOrganizations, ...invitedOrganizations]
 
+  console.info('availableData', availableData)
+
   useEffect(() => {
     // Если у пользователя только одна организация (созданная или приглашенная) и он еще не выбрал организацию, автоматически выбираем её
     if (allOrganizations.length === 1 && !organizationId) {

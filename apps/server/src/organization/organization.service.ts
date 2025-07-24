@@ -17,8 +17,7 @@ export class OrganizationService {
       const organization = await prisma.organization.create({
         data: {
           name: createOrganizationDto.name,
-          description: createOrganizationDto.description,
-          allowedPhones: createOrganizationDto.allowedPhones || [] // Используем переданные телефоны или пустой массив
+          description: createOrganizationDto.description
         }
       })
 
@@ -31,6 +30,29 @@ export class OrganizationService {
           isOwner: true
         }
       })
+
+      // Если есть разрешенные телефоны, добавляем их
+      if (createOrganizationDto.allowedPhones && createOrganizationDto.allowedPhones.length > 0) {
+        for (const phone of createOrganizationDto.allowedPhones) {
+          // Создаем или находим существующий телефон
+          const allowedPhone = await prisma.allowedPhone.upsert({
+            where: { phone },
+            update: {},
+            create: {
+              phone,
+              comment: ''
+            }
+          })
+
+          // Создаем связь с организацией
+          await prisma.allowedPhoneOrganization.create({
+            data: {
+              allowedPhoneId: allowedPhone.id,
+              organizationId: organization.id
+            }
+          })
+        }
+      }
 
       return organization
     })
@@ -47,10 +69,15 @@ export class OrganizationService {
                 id: true,
                 telegramId: true,
                 data: true,
-                phone: true, // Добавляем телефон пользователя
+                phone: true,
                 active: true
               }
             }
+          }
+        },
+        allowedPhones: {
+          include: {
+            allowedPhone: true
           }
         }
       }
@@ -66,9 +93,12 @@ export class OrganizationService {
   async update(id: number, updateOrganizationDto: UpdateOrganizationDto): Promise<Organization> {
     const organization = await this.findOne(id)
 
+    // Извлекаем allowedPhones из DTO, так как это поле больше не существует в модели
+    const { allowedPhones, ...updateData } = updateOrganizationDto
+
     return this.prisma.organization.update({
       where: { id },
-      data: updateOrganizationDto
+      data: updateData
     })
   }
 
@@ -121,7 +151,7 @@ export class OrganizationService {
             id: true,
             telegramId: true,
             data: true,
-            phone: true, // Добавляем телефон пользователя
+            phone: true,
             active: true
           }
         }
@@ -179,7 +209,7 @@ export class OrganizationService {
             id: true,
             telegramId: true,
             data: true,
-            phone: true, // Добавляем телефон пользователя
+            phone: true,
             active: true
           }
         }
@@ -224,7 +254,7 @@ export class OrganizationService {
             id: true,
             telegramId: true,
             data: true,
-            phone: true, // Добавляем телефон пользователя
+            phone: true,
             active: true
           }
         }
@@ -252,18 +282,34 @@ export class OrganizationService {
     const userOrganizationIds = myOrganizations.map(org => org.organizationId)
 
     // Получаем организации, где есть разрешенные телефоны пользователя, но он еще не состоит
-    const invitedOrganizations = await this.prisma.organization.findMany({
-      where: {
-        active: true,
-        allowedPhones: {
-          has: user.phone // Проверяем, есть ли телефон пользователя в массиве разрешенных телефонов
+    // Если у пользователя нет телефона, возвращаем пустой массив приглашений
+    let invitedOrganizations: Organization[] = []
+
+    if (user.phone) {
+      invitedOrganizations = await this.prisma.organization.findMany({
+        where: {
+          active: true,
+          allowedPhones: {
+            some: {
+              allowedPhone: {
+                phone: user.phone
+              }
+            }
+          },
+          id: {
+            notIn: userOrganizationIds
+          }
         },
-        id: {
-          notIn: userOrganizationIds
-        }
-      },
-      orderBy: { createdAt: 'desc' }
-    })
+        include: {
+          allowedPhones: {
+            include: {
+              allowedPhone: true
+            }
+          }
+        },
+        orderBy: { createdAt: 'desc' }
+      })
+    }
 
     return {
       myOrganizations,
@@ -285,7 +331,21 @@ export class OrganizationService {
     }
 
     // Проверяем, есть ли у пользователя разрешенный телефон для этой организации
-    if (!user.phone || !organization.allowedPhones.includes(user.phone)) {
+    let hasAccess = false
+
+    if (user.phone) {
+      hasAccess =
+        (await this.prisma.allowedPhoneOrganization.findFirst({
+          where: {
+            allowedPhone: {
+              phone: user.phone
+            },
+            organizationId
+          }
+        })) !== null
+    }
+
+    if (!user.phone || !hasAccess) {
       throw new BadRequestException('У вас нет разрешения для присоединения к этой организации')
     }
 
@@ -323,19 +383,39 @@ export class OrganizationService {
   async addAllowedPhone(organizationId: number, phone: string): Promise<Organization> {
     const organization = await this.findOne(organizationId)
 
-    // Проверяем, не добавлен ли уже этот телефон
-    if (organization.allowedPhones.includes(phone)) {
-      throw new BadRequestException('Этот телефон уже добавлен в список разрешенных')
-    }
+    // Создаем или находим существующий телефон
+    const allowedPhone = await this.prisma.allowedPhone.upsert({
+      where: { phone },
+      update: {},
+      create: {
+        phone,
+        comment: ''
+      }
+    })
 
-    return this.prisma.organization.update({
-      where: { id: organizationId },
-      data: {
-        allowedPhones: {
-          push: phone
+    // Проверяем, не добавлен ли уже этот телефон в организацию
+    const existingRelation = await this.prisma.allowedPhoneOrganization.findUnique({
+      where: {
+        allowedPhoneId_organizationId: {
+          allowedPhoneId: allowedPhone.id,
+          organizationId
         }
       }
     })
+
+    if (existingRelation) {
+      throw new BadRequestException('Этот телефон уже добавлен в список разрешенных')
+    }
+
+    // Создаем связь между телефоном и организацией
+    await this.prisma.allowedPhoneOrganization.create({
+      data: {
+        allowedPhoneId: allowedPhone.id,
+        organizationId
+      }
+    })
+
+    return this.findOne(organizationId)
   }
 
   /**
@@ -344,34 +424,73 @@ export class OrganizationService {
   async removeAllowedPhone(organizationId: number, phone: string): Promise<Organization> {
     const organization = await this.findOne(organizationId)
 
-    // Проверяем, есть ли этот телефон в списке
-    if (!organization.allowedPhones.includes(phone)) {
-      throw new BadRequestException('Этот телефон не найден в списке разрешенных')
+    const allowedPhone = await this.prisma.allowedPhone.findUnique({
+      where: { phone }
+    })
+
+    if (!allowedPhone) {
+      throw new BadRequestException('Телефон не найден в списке разрешенных')
     }
 
-    return this.prisma.organization.update({
-      where: { id: organizationId },
-      data: {
-        allowedPhones: {
-          set: organization.allowedPhones.filter(p => p !== phone)
-        }
+    // Удаляем связь между телефоном и организацией
+    const deletedRelation = await this.prisma.allowedPhoneOrganization.deleteMany({
+      where: {
+        allowedPhoneId: allowedPhone.id,
+        organizationId
       }
     })
+
+    if (deletedRelation.count === 0) {
+      throw new BadRequestException('Этот телефон не найден в списке разрешенных для данной организации')
+    }
+
+    // Если телефон больше не связан ни с одной организацией, удаляем его
+    const remainingRelations = await this.prisma.allowedPhoneOrganization.count({
+      where: { allowedPhoneId: allowedPhone.id }
+    })
+
+    if (remainingRelations === 0) {
+      await this.prisma.allowedPhone.delete({
+        where: { id: allowedPhone.id }
+      })
+    }
+
+    return this.findOne(organizationId)
   }
 
   /**
    * Получить все разрешенные телефоны организации
    */
-  async getAllowedPhones(organizationId: number): Promise<string[]> {
-    const organization = await this.findOne(organizationId)
-    return organization.allowedPhones
+  async getAllowedPhones(
+    organizationId: number
+  ): Promise<Array<{ id: number; phone: string; comment?: string; createdAt: Date }>> {
+    const organization = await this.prisma.organization.findUnique({
+      where: { id: organizationId },
+      include: {
+        allowedPhones: {
+          include: {
+            allowedPhone: true
+          }
+        }
+      }
+    })
+
+    if (!organization) {
+      throw new NotFoundException(`Организация с ID ${organizationId} не найдена`)
+    }
+
+    return organization.allowedPhones.map(relation => ({
+      id: relation.allowedPhone.id,
+      phone: relation.allowedPhone.phone,
+      comment: relation.allowedPhone.comment,
+      createdAt: relation.allowedPhone.createdAt
+    }))
   }
 
   /**
    * Проверить, может ли пользователь присоединиться к организации
    */
   async canUserJoinOrganization(organizationId: number, userId: number): Promise<boolean> {
-    const organization = await this.findOne(organizationId)
     const user = await this.prisma.user.findUnique({
       where: { id: userId }
     })
@@ -380,6 +499,15 @@ export class OrganizationService {
       return false
     }
 
-    return organization.allowedPhones.includes(user.phone)
+    const hasAccess = await this.prisma.allowedPhoneOrganization.findFirst({
+      where: {
+        allowedPhone: {
+          phone: user.phone
+        },
+        organizationId
+      }
+    })
+
+    return !!hasAccess
   }
 }

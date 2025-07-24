@@ -92,7 +92,11 @@ export class AuthService {
       where: {
         active: true,
         allowedPhones: {
-          has: user.phone
+          some: {
+            allowedPhone: {
+              phone: user.phone
+            }
+          }
         }
       }
     })
