@@ -69,7 +69,6 @@ export class OrganizationService {
                 id: true,
                 telegramId: true,
                 data: true,
-                phone: true,
                 active: true
               }
             }
@@ -151,7 +150,6 @@ export class OrganizationService {
             id: true,
             telegramId: true,
             data: true,
-            phone: true,
             active: true
           }
         }
@@ -199,8 +197,6 @@ export class OrganizationService {
   }
 
   async getOrganizationUsers(organizationId: number): Promise<UserOrganization[]> {
-    const organization = await this.findOne(organizationId)
-
     return this.prisma.userOrganization.findMany({
       where: { organizationId },
       include: {
@@ -209,7 +205,6 @@ export class OrganizationService {
             id: true,
             telegramId: true,
             data: true,
-            phone: true,
             active: true
           }
         }
@@ -254,7 +249,6 @@ export class OrganizationService {
             id: true,
             telegramId: true,
             data: true,
-            phone: true,
             active: true
           }
         }
@@ -269,9 +263,12 @@ export class OrganizationService {
     // Получаем организации пользователя
     const myOrganizations = await this.getUserOrganizations(userId)
 
-    // Получаем пользователя с его телефоном
+    // Получаем пользователя с его разрешенным телефоном
     const user = await this.prisma.user.findUnique({
-      where: { id: userId }
+      where: { id: userId },
+      include: {
+        allowedPhone: true
+      }
     })
 
     if (!user) {
@@ -282,17 +279,17 @@ export class OrganizationService {
     const userOrganizationIds = myOrganizations.map(org => org.organizationId)
 
     // Получаем организации, где есть разрешенные телефоны пользователя, но он еще не состоит
-    // Если у пользователя нет телефона, возвращаем пустой массив приглашений
+    // Если у пользователя нет разрешенного телефона, возвращаем пустой массив приглашений
     let invitedOrganizations: Organization[] = []
 
-    if (user.phone) {
+    if (user.allowedPhone) {
       invitedOrganizations = await this.prisma.organization.findMany({
         where: {
           active: true,
           allowedPhones: {
             some: {
               allowedPhone: {
-                phone: user.phone
+                phone: user.allowedPhone.phone
               }
             }
           },
@@ -321,9 +318,12 @@ export class OrganizationService {
     // Проверяем, существует ли организация
     const organization = await this.findOne(organizationId)
 
-    // Получаем пользователя с его телефоном
+    // Получаем пользователя с его разрешенным телефоном
     const user = await this.prisma.user.findUnique({
-      where: { id: userId }
+      where: { id: userId },
+      include: {
+        allowedPhone: true
+      }
     })
 
     if (!user) {
@@ -333,19 +333,19 @@ export class OrganizationService {
     // Проверяем, есть ли у пользователя разрешенный телефон для этой организации
     let hasAccess = false
 
-    if (user.phone) {
+    if (user.allowedPhone) {
       hasAccess =
         (await this.prisma.allowedPhoneOrganization.findFirst({
           where: {
             allowedPhone: {
-              phone: user.phone
+              phone: user.allowedPhone.phone
             },
             organizationId
           }
         })) !== null
     }
 
-    if (!user.phone || !hasAccess) {
+    if (!user.allowedPhone || !hasAccess) {
       throw new BadRequestException('У вас нет разрешения для присоединения к этой организации')
     }
 
@@ -492,17 +492,20 @@ export class OrganizationService {
    */
   async canUserJoinOrganization(organizationId: number, userId: number): Promise<boolean> {
     const user = await this.prisma.user.findUnique({
-      where: { id: userId }
+      where: { id: userId },
+      include: {
+        allowedPhone: true
+      }
     })
 
-    if (!user || !user.phone) {
+    if (!user || !user.allowedPhone) {
       return false
     }
 
     const hasAccess = await this.prisma.allowedPhoneOrganization.findFirst({
       where: {
         allowedPhone: {
-          phone: user.phone
+          phone: user.allowedPhone.phone
         },
         organizationId
       }

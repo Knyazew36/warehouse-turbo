@@ -170,9 +170,9 @@ export class AllowedPhoneController {
   @Get('user-accessible-organizations')
   @UseGuards(TelegramAuthGuard)
   async getUserAccessibleOrganizations(@Req() req: any) {
-    const userPhone = req.user?.phone
+    const userPhone = req.user?.allowedPhone?.phone
     if (!userPhone) {
-      throw new Error('User phone not found in request')
+      throw new Error('User allowed phone not found in request')
     }
 
     const organizations = await this.allowedPhoneService.getUserAccessibleOrganizations(userPhone)
@@ -189,9 +189,9 @@ export class AllowedPhoneController {
   @Post('check-user-access')
   @UseGuards(TelegramAuthGuard)
   async checkUserAccessToOrganization(@Body() dto: { organizationId: number }, @Req() req: any) {
-    const userPhone = req.user?.phone
+    const userPhone = req.user?.allowedPhone?.phone
     if (!userPhone) {
-      throw new Error('User phone not found in request')
+      throw new Error('User allowed phone not found in request')
     }
 
     const hasAccess = await this.allowedPhoneService.hasUserAccessToOrganization(userPhone, dto.organizationId)

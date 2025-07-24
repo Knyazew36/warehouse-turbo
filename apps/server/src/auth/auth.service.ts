@@ -72,14 +72,17 @@ export class AuthService {
 
   async findByTelegramIdWithPhones(telegramId: string) {
     const user = await this.prisma.user.findUnique({
-      where: { telegramId }
+      where: { telegramId },
+      include: {
+        allowedPhone: true
+      }
     })
 
     if (!user) {
       return null
     }
 
-    if (!user.phone) {
+    if (!user.allowedPhone) {
       return {
         ...user,
         hasAllowedPhone: false,
@@ -94,7 +97,7 @@ export class AuthService {
         allowedPhones: {
           some: {
             allowedPhone: {
-              phone: user.phone
+              phone: user.allowedPhone.phone
             }
           }
         }

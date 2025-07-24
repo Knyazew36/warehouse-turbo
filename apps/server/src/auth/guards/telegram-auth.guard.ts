@@ -59,6 +59,9 @@ export class TelegramAuthGuard implements CanActivate {
       create: {
         telegramId,
         data: initData?.user
+      },
+      include: {
+        allowedPhone: true
       }
     })
 

@@ -202,7 +202,9 @@ export class AllowedPhoneService {
                 userOrganizations: {
                   where: {
                     user: {
-                      phone: userPhone
+                      allowedPhone: {
+                        phone: userPhone
+                      }
                     }
                   },
                   include: {
@@ -252,7 +254,9 @@ export class AllowedPhoneService {
     const userOrg = await this.prisma.userOrganization.findFirst({
       where: {
         user: {
-          phone: userPhone
+          allowedPhone: {
+            phone: userPhone
+          }
         },
         organizationId
       }
@@ -310,8 +314,7 @@ export class AllowedPhoneService {
         user: {
           select: {
             id: true,
-            telegramId: true,
-            phone: true
+            telegramId: true
           }
         }
       }
@@ -356,7 +359,6 @@ export class AllowedPhoneService {
           select: {
             id: true,
             telegramId: true,
-            phone: true,
             createdAt: true,
             active: true
           }

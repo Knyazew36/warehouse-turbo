@@ -27,7 +27,7 @@ export class BotUpdate {
       }
     })
 
-    if (!user || !user.phone || user.allowedPhone === null) {
+    if (!user || user.allowedPhone === null) {
       await ctx.reply('👋 Привет! Для использования бота необходимо авторизоваться.', {
         reply_markup: {
           inline_keyboard: [
@@ -172,12 +172,10 @@ export class BotUpdate {
     const user = await this.prisma.user.upsert({
       where: { telegramId },
       update: {
-        phone: phone,
         data: { ...contact }
       },
       create: {
         telegramId,
-        phone: phone,
         data: { ...contact }
       }
     })
@@ -263,8 +261,8 @@ export class BotUpdate {
       }
     })
 
-    // Проверяем, что пользователь существует, имеет телефон и привязан к разрешенному телефону
-    return user && user.phone && user.allowedPhone !== null
+    // Проверяем, что пользователь существует и привязан к разрешенному телефону
+    return user && user.allowedPhone !== null
   }
 
   private async handleUnauthorizedMessage(ctx: Context) {

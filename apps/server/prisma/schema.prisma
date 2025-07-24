@@ -17,9 +17,9 @@ enum Role {
 }
 
 model User {
-  id         Int     @id @default(autoincrement())
-  telegramId String  @unique
-  phone      String? @unique
+  id         Int    @id @default(autoincrement())
+  telegramId String @unique
+  // phone      String? @unique - убираем это поле
 
   data            Json?
   // role            Role                 @default(GUEST)
