@@ -22,7 +22,15 @@ const BottomSheetSuccess = ({
 }: IBottomSheetSuccessProps) => {
   useEffect(() => {
     if (isOpen) {
-      hapticFeedback.notificationOccurred('success')
+      if (variant === 'success') {
+        hapticFeedback.notificationOccurred('success')
+      }
+      if (variant === 'error') {
+        hapticFeedback.notificationOccurred('error')
+      }
+      if (variant === 'warning') {
+        hapticFeedback.notificationOccurred('warning')
+      }
     }
   }, [isOpen])
   return (
