@@ -83,7 +83,7 @@ const OrganizationManagementPage: React.FC = () => {
   }
 
   const handleJoinOrganization = (organization: IOrganization) => {
-    joinOrganization(organization.id, {
+    joinOrganization(organization.organizationId, {
       onSuccess: userOrg => {
         hapticFeedback.notificationOccurred('success')
         setAutoJoining(false)
