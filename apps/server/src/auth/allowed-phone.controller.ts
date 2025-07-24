@@ -13,7 +13,7 @@ export class AllowedPhoneController {
   /**
    * Добавить сотрудника в организацию (привязывает существующий телефон к организации)
    */
-  @Post('add-employee')
+  @Post('add')
   @UseGuards(TelegramAuthGuard, RolesGuard)
   @Roles('ADMIN', 'OWNER', 'IT')
   async addEmployeeToOrganization(@Body() dto: AddPhoneDto, @OrganizationId() organizationId?: number) {

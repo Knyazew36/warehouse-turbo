@@ -32,9 +32,9 @@ export const allowedPhoneService = async ({ phone }: { phone: string }): Promise
   }
 }
 
-export const allowedGetAllPhones = async (): Promise<AllowedPhone[]> => {
+export const allowedGetAllPhones = async (): Promise<string[]> => {
   try {
-    const response: AxiosResponse<BaseResponse<AllowedPhone[]>> = await $api.post(`${apiDomain}/allowed-phones/list`)
+    const response: AxiosResponse<BaseResponse<string[]>> = await $api.post(`${apiDomain}/allowed-phones/list`)
     return response.data.data
   } catch (error: any) {
     const message = error?.response?.data?.message || 'Ошибка добавления телефона'

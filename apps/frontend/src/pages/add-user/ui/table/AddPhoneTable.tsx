@@ -6,7 +6,7 @@ import Empty from '@/shared/empty/ui/Empty'
 import LoaderSection from '@/shared/loader/ui/LoaderSection'
 
 const AddPhoneTable = () => {
-  const [data, setData] = useState<AllowedPhone[]>([])
+  const [data, setData] = useState<string[]>([])
   const [isLoading, setIsLoading] = useState(false)
 
   const getData = async () => {
@@ -30,9 +30,9 @@ const AddPhoneTable = () => {
           {data.map(item => (
             <div
               className='py-3 grid grid-cols-2 gap-x-3'
-              key={item.id}
+              key={item}
             >
-              <span className='block text-sm text-gray-500 dark:text-neutral-500'>{item.phone}</span>
+              <span className='block text-sm text-gray-500 dark:text-neutral-500'>{item}</span>
               {/* <div className='flex justify-end gap-2'>
                 <span
                   id='hs-pro-ccdcfn'
