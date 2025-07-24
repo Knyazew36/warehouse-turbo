@@ -11,6 +11,7 @@ import {
 } from '@/components/ui/drawer'
 import { IBottomSheetSuccessProps } from '../model/bottomSheetSuccess.type'
 import { hapticFeedback } from '@telegram-apps/sdk-react'
+import clsx from 'clsx'
 
 const BottomSheetSuccess = ({
   isOpen,
@@ -34,7 +35,14 @@ const BottomSheetSuccess = ({
         <div className='flex flex-col px-4 pb-8 pt-5'>
           {/* Icon */}
           <div className='mb-5 sm:mb-7 text-center'>
-            <span className='shrink-0 size-14 md:size-16 mx-auto flex justify-center items-center border-2 border-green-500 text-green-500 rounded-full'>
+            <span
+              className={clsx(
+                'shrink-0 size-14 md:size-16 mx-auto flex justify-center items-center border-2 rounded-full',
+                variant === 'success' && 'border-green-500 text-green-500',
+                variant === 'error' && 'border-red-500 text-red-500',
+                variant === 'warning' && 'border-yellow-500 text-yellow-500'
+              )}
+            >
               {variant === 'success' && (
                 <svg
                   className='shrink-0 size-8'
@@ -49,6 +57,25 @@ const BottomSheetSuccess = ({
                   strokeLinejoin='round'
                 >
                   <path d='M20 6 9 17l-5-5' />
+                </svg>
+              )}
+
+              {variant === 'warning' && (
+                <svg
+                  xmlns='http://www.w3.org/2000/svg'
+                  width='24'
+                  height='24'
+                  viewBox='0 0 24 24'
+                  fill='none'
+                  stroke='currentColor'
+                  stroke-width='2'
+                  stroke-linecap='round'
+                  stroke-linejoin='round'
+                  className='lucide lucide-triangle-alert-icon lucide-triangle-alert'
+                >
+                  <path d='m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3' />
+                  <path d='M12 9v4' />
+                  <path d='M12 17h.01' />
                 </svg>
               )}
             </span>
@@ -67,7 +94,12 @@ const BottomSheetSuccess = ({
               onClick={() => {
                 hapticFeedback.impactOccurred('rigid')
               }}
-              className='py-2.5  w-full sm:py-3 px-4  inline-flex justify-center items-center gap-x-2 font-medium sm:text-sm rounded-xl border border-transparent bg-green-600 text-white hover:bg-green-600 disabled:opacity-50 disabled:pointer-events-none focus:outline-hidden focus:bg-green-600'
+              className={clsx(
+                'py-2.5  w-full sm:py-3 px-4  inline-flex justify-center items-center gap-x-2 font-medium sm:text-sm rounded-xl border border-transparent text-white hover:bg-green-600 disabled:opacity-50 disabled:pointer-events-none focus:outline-hidden focus:bg-green-600',
+                variant === 'success' && 'bg-green-600 hover:bg-green-600',
+                variant === 'error' && 'bg-red-600 hover:bg-red-600',
+                variant === 'warning' && 'bg-yellow-600 hover:bg-yellow-600'
+              )}
             >
               Назад
             </button>

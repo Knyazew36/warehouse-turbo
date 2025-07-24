@@ -49,7 +49,8 @@ export const useErrorHandler = () => {
       useBottomSheetStore.setState({
         isOpen: true,
         title: error.message,
-        variant: 'error'
+        description: error?.description,
+        variant: error?.variant || 'error'
       })
     }
   }

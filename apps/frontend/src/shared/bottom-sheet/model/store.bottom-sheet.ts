@@ -8,7 +8,7 @@ type Store = {
   description?: string
   close: () => void
   onClose?: () => void
-  variant?: 'success' | 'error'
+  variant?: 'success' | 'error' | 'warning'
 }
 
 const useBottomSheetStore = create<Store>()(set => ({

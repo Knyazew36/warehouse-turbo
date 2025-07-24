@@ -25,7 +25,7 @@ if (typeof window !== 'undefined') {
 
 const ServiceProvider = ({ children }: ServiceProviderProps) => {
   const location = useLocation()
-  const { isOpen, title, description, close } = useBottomSheetStore()
+  const bottomSheetStore = useBottomSheetStore()
 
   // Инициализируем функцию очистки кэша
   useInitializeCacheClear()
@@ -70,10 +70,9 @@ const ServiceProvider = ({ children }: ServiceProviderProps) => {
         {children}
         <Toaster />
         <BottomSheetSuccess
-          isOpen={isOpen}
-          onClose={close}
-          title={title}
-          description={description}
+          {...bottomSheetStore}
+          title={bottomSheetStore.title}
+          description={bottomSheetStore.description}
         />
       </QueryClientProvider>
     </>
