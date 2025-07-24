@@ -3,6 +3,7 @@ import { OrganizationService } from './organization.service'
 import { CreateOrganizationDto } from './dto/create-organization.dto'
 import { UpdateOrganizationDto } from './dto/update-organization.dto'
 import { AddUserToOrganizationDto } from './dto/add-user-to-organization.dto'
+import { AddAllowedPhoneDto } from './dto/add-allowed-phone.dto'
 import { TelegramAuthGuard } from 'src/auth/guards/telegram-auth.guard'
 import { Roles } from 'src/auth/decorators/roles.decorator'
 import { Role } from '@prisma/client'
@@ -98,5 +99,35 @@ export class OrganizationController {
   ) {
     const userOrg = await this.organizationService.updateUserRole(id, userId, body.role, body.isOwner)
     return { data: userOrg }
+  }
+
+  // Новые эндпоинты для работы с разрешенными телефонами
+
+  @Get(':id/allowed-phones')
+  @Roles(Role.ADMIN, Role.OWNER, Role.IT)
+  async getAllowedPhones(@Param('id', ParseIntPipe) id: number) {
+    const phones = await this.organizationService.getAllowedPhones(id)
+    return { data: phones }
+  }
+
+  @Post(':id/allowed-phones')
+  @Roles(Role.ADMIN, Role.OWNER, Role.IT)
+  async addAllowedPhone(@Param('id', ParseIntPipe) id: number, @Body() addAllowedPhoneDto: AddAllowedPhoneDto) {
+    const organization = await this.organizationService.addAllowedPhone(id, addAllowedPhoneDto.phone)
+    return { data: organization }
+  }
+
+  @Delete(':id/allowed-phones')
+  @Roles(Role.ADMIN, Role.OWNER, Role.IT)
+  async removeAllowedPhone(@Param('id', ParseIntPipe) id: number, @Body() addAllowedPhoneDto: AddAllowedPhoneDto) {
+    const organization = await this.organizationService.removeAllowedPhone(id, addAllowedPhoneDto.phone)
+    return { data: organization }
+  }
+
+  @Get(':id/can-join/:userId')
+  @Roles(Role.ADMIN, Role.OWNER, Role.IT)
+  async canUserJoinOrganization(@Param('id', ParseIntPipe) id: number, @Param('userId', ParseIntPipe) userId: number) {
+    const canJoin = await this.organizationService.canUserJoinOrganization(id, userId)
+    return { data: { canJoin } }
   }
 }

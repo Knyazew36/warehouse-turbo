@@ -1,4 +1,4 @@
-import { Controller, Post, Body, UseGuards } from '@nestjs/common'
+import { Controller, Post, Body, UseGuards, Delete, Param } from '@nestjs/common'
 import { AllowedPhoneService } from './allowed-phone.service'
 import { AddPhoneDto } from './dto/add-phone.dto'
 import { Roles } from './decorators/roles.decorator'
@@ -9,45 +9,6 @@ import { OrganizationId } from '../organization/decorators/organization-id.decor
 @Controller('allowed-phones')
 export class AllowedPhoneController {
   constructor(private readonly allowedPhoneService: AllowedPhoneService) {}
-
-  /**
-   * Добавить разрешенный номер телефона (только для админа)
-   * Может быть добавлен с организацией или без (для глобальных пользователей)
-   */
-  @Post('add')
-  @UseGuards(TelegramAuthGuard, RolesGuard)
-  @Roles('ADMIN', 'OWNER', 'IT')
-  async addPhone(@Body() dto: AddPhoneDto, @OrganizationId() organizationId?: number) {
-    const existingPhone = await this.allowedPhoneService.isPhoneAllowed(dto.phone)
-
-    if (existingPhone) {
-      // Если телефон уже существует, обновляем комментарий если он передан
-      if (dto.comment) {
-        const updatedPhone = await this.allowedPhoneService.addPhone(dto.phone, organizationId, dto.comment)
-        return {
-          ...updatedPhone,
-          message: 'Телефон уже был в списке разрешенных. Комментарий обновлен.',
-          wasExisting: true
-        }
-      }
-
-      return {
-        ...existingPhone,
-        message: 'Телефон уже находится в списке разрешенных.',
-        wasExisting: true
-      }
-    }
-
-    // Если телефона нет, добавляем новый (может быть с организацией или без)
-    const newPhone = await this.allowedPhoneService.addPhone(dto.phone, organizationId, dto.comment)
-    return {
-      ...newPhone,
-      message: organizationId
-        ? 'Телефон успешно добавлен в список разрешенных для организации.'
-        : 'Телефон успешно добавлен в глобальный список разрешенных.',
-      wasExisting: false
-    }
-  }
 
   /**
    * Добавить сотрудника в организацию (привязывает существующий телефон к организации)
@@ -64,36 +25,59 @@ export class AllowedPhoneController {
 
     return {
       ...result,
-      message:
-        result.organizationId === organizationId
-          ? 'Сотрудник успешно добавлен в организацию.'
-          : 'Телефон привязан к организации.',
-      wasExisting: !!result.organizationId
+      message: 'Сотрудник успешно добавлен в организацию.',
+      wasExisting: result.allowedPhones.includes(dto.phone)
     }
   }
 
   /**
-   * Получить список всех разрешенных номеров телефонов
+   * Получить список всех разрешенных номеров телефонов в организации
    */
   @Post('list')
   @UseGuards(TelegramAuthGuard)
   @Roles('ADMIN', 'OWNER', 'IT')
   async getAllPhones(@OrganizationId() organizationId?: number) {
+    if (!organizationId) {
+      throw new Error('Organization ID is required')
+    }
     return this.allowedPhoneService.getAll(organizationId)
   }
 
   /**
-   * Проверить, разрешен ли номер телефона
+   * Удалить телефон из списка разрешенных
+   */
+  @Delete(':phone')
+  @UseGuards(TelegramAuthGuard, RolesGuard)
+  @Roles('ADMIN', 'OWNER', 'IT')
+  async removePhone(@Param('phone') phone: string, @OrganizationId() organizationId?: number) {
+    if (!organizationId) {
+      throw new Error('Organization ID is required')
+    }
+
+    const result = await this.allowedPhoneService.removePhone(phone, organizationId)
+
+    return {
+      ...result,
+      message: 'Телефон успешно удален из списка разрешенных.'
+    }
+  }
+
+  /**
+   * Проверить, разрешен ли телефон в организации
    */
   @Post('check')
-  async checkPhone(@Body('phone') phone: string) {
-    const allowedPhone = await this.allowedPhoneService.isPhoneAllowed(phone)
+  @UseGuards(TelegramAuthGuard)
+  async checkPhone(@Body() dto: { phone: string }, @OrganizationId() organizationId?: number) {
+    if (!organizationId) {
+      throw new Error('Organization ID is required')
+    }
+
+    const isAllowed = await this.allowedPhoneService.isPhoneAllowed(dto.phone, organizationId)
+
     return {
-      phone,
-      isAllowed: !!allowedPhone,
-      isUsed: !!allowedPhone?.usedById,
-      hasOrganization: !!allowedPhone?.organizationId,
-      comment: allowedPhone?.comment
+      phone: dto.phone,
+      isAllowed,
+      message: isAllowed ? 'Телефон разрешен в организации' : 'Телефон не разрешен в организации'
     }
   }
 }

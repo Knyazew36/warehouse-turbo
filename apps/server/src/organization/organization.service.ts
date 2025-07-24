@@ -17,7 +17,8 @@ export class OrganizationService {
       const organization = await prisma.organization.create({
         data: {
           name: createOrganizationDto.name,
-          description: createOrganizationDto.description
+          description: createOrganizationDto.description,
+          allowedPhones: createOrganizationDto.allowedPhones || [] // Используем переданные телефоны или пустой массив
         }
       })
 
@@ -35,13 +36,6 @@ export class OrganizationService {
     })
   }
 
-  // async findAll(): Promise<Organization[]> {
-  //   return this.prisma.organization.findMany({
-  //     where: { active: true },
-  //     orderBy: { createdAt: 'desc' }
-  //   })
-  // }
-
   async findOne(id: number): Promise<Organization> {
     const organization = await this.prisma.organization.findUnique({
       where: { id },
@@ -53,7 +47,7 @@ export class OrganizationService {
                 id: true,
                 telegramId: true,
                 data: true,
-                // role: true,
+                phone: true, // Добавляем телефон пользователя
                 active: true
               }
             }
@@ -127,7 +121,7 @@ export class OrganizationService {
             id: true,
             telegramId: true,
             data: true,
-            // role: true,
+            phone: true, // Добавляем телефон пользователя
             active: true
           }
         }
@@ -185,7 +179,7 @@ export class OrganizationService {
             id: true,
             telegramId: true,
             data: true,
-            // role: true,
+            phone: true, // Добавляем телефон пользователя
             active: true
           }
         }
@@ -230,7 +224,7 @@ export class OrganizationService {
             id: true,
             telegramId: true,
             data: true,
-            // role: true,
+            phone: true, // Добавляем телефон пользователя
             active: true
           }
         }
@@ -245,12 +239,9 @@ export class OrganizationService {
     // Получаем организации пользователя
     const myOrganizations = await this.getUserOrganizations(userId)
 
-    // Получаем пользователя с его телефонами
+    // Получаем пользователя с его телефоном
     const user = await this.prisma.user.findUnique({
-      where: { id: userId },
-      include: {
-        allowedPhones: true
-      }
+      where: { id: userId }
     })
 
     if (!user) {
@@ -265,9 +256,7 @@ export class OrganizationService {
       where: {
         active: true,
         allowedPhones: {
-          some: {
-            usedById: userId
-          }
+          has: user.phone // Проверяем, есть ли телефон пользователя в массиве разрешенных телефонов
         },
         id: {
           notIn: userOrganizationIds
@@ -286,15 +275,17 @@ export class OrganizationService {
     // Проверяем, существует ли организация
     const organization = await this.findOne(organizationId)
 
-    // Проверяем, есть ли у пользователя разрешенный телефон для этой организации
-    const allowedPhone = await this.prisma.allowedPhone.findFirst({
-      where: {
-        organizationId: organizationId,
-        usedById: userId
-      }
+    // Получаем пользователя с его телефоном
+    const user = await this.prisma.user.findUnique({
+      where: { id: userId }
     })
 
-    if (!allowedPhone) {
+    if (!user) {
+      throw new NotFoundException('Пользователь не найден')
+    }
+
+    // Проверяем, есть ли у пользователя разрешенный телефон для этой организации
+    if (!user.phone || !organization.allowedPhones.includes(user.phone)) {
       throw new BadRequestException('У вас нет разрешения для присоединения к этой организации')
     }
 
@@ -324,5 +315,71 @@ export class OrganizationService {
         organization: true
       }
     })
+  }
+
+  /**
+   * Добавить разрешенный телефон в организацию
+   */
+  async addAllowedPhone(organizationId: number, phone: string): Promise<Organization> {
+    const organization = await this.findOne(organizationId)
+
+    // Проверяем, не добавлен ли уже этот телефон
+    if (organization.allowedPhones.includes(phone)) {
+      throw new BadRequestException('Этот телефон уже добавлен в список разрешенных')
+    }
+
+    return this.prisma.organization.update({
+      where: { id: organizationId },
+      data: {
+        allowedPhones: {
+          push: phone
+        }
+      }
+    })
+  }
+
+  /**
+   * Удалить разрешенный телефон из организации
+   */
+  async removeAllowedPhone(organizationId: number, phone: string): Promise<Organization> {
+    const organization = await this.findOne(organizationId)
+
+    // Проверяем, есть ли этот телефон в списке
+    if (!organization.allowedPhones.includes(phone)) {
+      throw new BadRequestException('Этот телефон не найден в списке разрешенных')
+    }
+
+    return this.prisma.organization.update({
+      where: { id: organizationId },
+      data: {
+        allowedPhones: {
+          set: organization.allowedPhones.filter(p => p !== phone)
+        }
+      }
+    })
+  }
+
+  /**
+   * Получить все разрешенные телефоны организации
+   */
+  async getAllowedPhones(organizationId: number): Promise<string[]> {
+    const organization = await this.findOne(organizationId)
+    return organization.allowedPhones
+  }
+
+  /**
+   * Проверить, может ли пользователь присоединиться к организации
+   */
+  async canUserJoinOrganization(organizationId: number, userId: number): Promise<boolean> {
+    const organization = await this.findOne(organizationId)
+    const user = await this.prisma.user.findUnique({
+      where: { id: userId }
+    })
+
+    if (!user || !user.phone) {
+      return false
+    }
+
+    return organization.allowedPhones.includes(user.phone)
   }
 }

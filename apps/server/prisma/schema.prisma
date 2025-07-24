@@ -23,8 +23,9 @@ enum Role {
 }
 
 model User {
-  id         Int    @id @default(autoincrement())
-  telegramId String @unique
+  id         Int     @id @default(autoincrement())
+  telegramId String  @unique
+  phone      String? @unique
 
   data            Json?
   // role            Role                 @default(GUEST)
@@ -39,7 +40,6 @@ model User {
   active            Boolean         @default(true)
   accessRequests    AccessRequest[]
   processedRequests AccessRequest[] @relation("ProcessedBy") // Заявки, обработанные этим пользователем
-  allowedPhones     AllowedPhone[]
 
   // Связи с организациями
   userOrganizations UserOrganization[]
@@ -58,7 +58,7 @@ model Organization {
   products          Product[]
   receipts          Receipt[]
   shiftReports      ShiftReport[]
-  allowedPhones     AllowedPhone[] // Телефоны, привязанные к организации
+  allowedPhones     String[]
 }
 
 model UserOrganization {
@@ -172,16 +172,16 @@ model AccessRequest {
   processedById Int?
 }
 
-model AllowedPhone {
-  id        Int      @id @default(autoincrement())
-  phone     String   @unique // В формате +79991234567
-  comment   String?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  usedBy    User?    @relation(fields: [usedById], references: [id])
-  usedById  Int?
+// model AllowedPhone {
+//   id        Int      @id @default(autoincrement())
+//   phone     String   @unique // В формате +79991234567
+//   comment   String?
+//   createdAt DateTime @default(now())
+//   updatedAt DateTime @updatedAt
+//   usedBy    User?    @relation(fields: [usedById], references: [id])
+//   usedById  Int?
 
-  // Связь с организацией (необязательная)
-  organizationId Int?
-  organization   Organization? @relation(fields: [organizationId], references: [id], onDelete: Cascade)
-}
+//   // Связь с организацией (необязательная)
+//   organizationId Int?
+//   organization   Organization? @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+// }

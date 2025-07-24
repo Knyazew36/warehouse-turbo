@@ -1,11 +1,15 @@
-import { IsString, IsOptional, IsNotEmpty } from 'class-validator';
+import { IsString, IsOptional, IsNotEmpty, IsArray } from 'class-validator'
 
 export class CreateOrganizationDto {
   @IsString()
   @IsNotEmpty()
-  name: string;
+  name: string
 
   @IsString()
   @IsOptional()
-  description?: string;
+  description?: string
+
+  @IsArray()
+  @IsOptional()
+  allowedPhones?: string[]
 }

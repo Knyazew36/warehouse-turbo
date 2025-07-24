@@ -83,6 +83,16 @@ export class UserService {
     })
   }
 
+  //   /**
+  //  * Привязать номер к пользователю
+  //  */
+  //   async bindPhoneToUser(phone: string, userId: number) {
+  //     return this.prisma.user.update({
+  //       where: { id: userId },
+  //       data: { phone }
+  //     })
+  //   }
+
   async remove(id: number): Promise<User> {
     const user = await this.findOne(id)
 
@@ -99,12 +109,6 @@ export class UserService {
 
     // Начинаем транзакцию для атомарного удаления
     return await this.prisma.$transaction(async prisma => {
-      // 1. Отвязываем номер телефона от пользователя
-      await prisma.allowedPhone.updateMany({
-        where: { usedById: id },
-        data: { usedById: null }
-      })
-
       // 2. Отменяем все активные заявки на доступ пользователя
       await prisma.accessRequest.updateMany({
         where: {
@@ -169,12 +173,6 @@ export class UserService {
       await prisma.accessRequest.deleteMany({ where: { processedById: id } })
       await prisma.shiftReport.deleteMany({ where: { userId: id } })
       await prisma.receipt.deleteMany({ where: { operatorId: id } })
-
-      // 2. Отвязываем номера телефонов
-      await prisma.allowedPhone.updateMany({
-        where: { usedById: id },
-        data: { usedById: null }
-      })
 
       // 3. Удаляем настройки уведомлений
       await prisma.notificationSetting.deleteMany({ where: { userId: id } })

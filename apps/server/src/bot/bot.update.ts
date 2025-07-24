@@ -21,11 +21,10 @@ export class BotUpdate {
     // Проверяем, авторизован ли пользователь
     const telegramId = String(ctx.from.id)
     const user = await this.prisma.user.findUnique({
-      where: { telegramId },
-      include: { allowedPhones: true }
+      where: { telegramId }
     })
 
-    if (!user || user.allowedPhones.length === 0) {
+    if (!user || user.phone === null) {
       await ctx.reply('👋 Привет! Для использования бота необходимо авторизоваться.', {
         reply_markup: {
           inline_keyboard: [
@@ -144,21 +143,20 @@ export class BotUpdate {
     const telegramId = String(ctx.from.id)
     console.info('phone', phone)
 
-    // Проверяем, используется ли номер другим пользователем
-    const existingAllowedPhone = await this.prisma.allowedPhone.findUnique({
-      where: { phone },
-      include: { usedBy: true }
-    })
+    // // Проверяем, используется ли номер другим пользователем
+    // const existingAllowedPhone = await this.prisma.user.findUnique({
+    //   where: { phone: phone, telegramId: { not: telegramId } }
+    // })
 
-    if (existingAllowedPhone && existingAllowedPhone.usedById) {
-      const existingUser = await this.prisma.user.findUnique({
-        where: { id: existingAllowedPhone.usedById }
-      })
-      if (existingUser && existingUser.telegramId !== telegramId) {
-        await ctx.reply('❌ Этот номер телефона уже используется другим пользователем.')
-        return
-      }
-    }
+    // if (existingAllowedPhone && existingAllowedPhone.phone) {
+    //   const existingUser = await this.prisma.user.findUnique({
+    //     where: { id: existingAllowedPhone.id }
+    //   })
+    //   if (existingUser && existingUser.telegramId !== telegramId) {
+    //     await ctx.reply('❌ Этот номер телефона уже используется другим пользователем.')
+    //     return
+    //   }
+    // }
 
     // Привязываем номер к пользователю
     const user = await this.prisma.user.upsert({
@@ -175,34 +173,34 @@ export class BotUpdate {
     })
 
     // Создаем или обновляем запись телефона для бота
-    const allowedPhone = await this.allowedPhoneService.createOrUpdatePhoneForBot(phone, user.id)
+    // const allowedPhone = await this.allowedPhoneService.addEmployeeToOrganization(phone, user.id)
 
     // Если телефон привязан к организации, создаем связь UserOrganization
-    if (allowedPhone.organizationId) {
-      try {
-        await this.prisma.userOrganization.upsert({
-          where: {
-            userId_organizationId: {
-              userId: user.id,
-              organizationId: allowedPhone.organizationId
-            }
-          },
-          update: {
-            // Обновляем роль на OPERATOR если связь уже существует
-            role: 'OPERATOR'
-          },
-          create: {
-            userId: user.id,
-            organizationId: allowedPhone.organizationId,
-            role: 'OPERATOR',
-            isOwner: false
-          }
-        })
-        console.log(`✅ User ${user.id} added to organization ${allowedPhone.organizationId}`)
-      } catch (error) {
-        console.error('Error creating UserOrganization:', error)
-      }
-    }
+    // if (allowedPhone.organizationId) {
+    //   try {
+    //     await this.prisma.userOrganization.upsert({
+    //       where: {
+    //         userId_organizationId: {
+    //           userId: user.id,
+    //           organizationId: allowedPhone.organizationId
+    //         }
+    //       },
+    //       update: {
+    //         // Обновляем роль на OPERATOR если связь уже существует
+    //         role: 'OPERATOR'
+    //       },
+    //       create: {
+    //         userId: user.id,
+    //         organizationId: allowedPhone.organizationId,
+    //         role: 'OPERATOR',
+    //         isOwner: false
+    //       }
+    //     })
+    //     console.log(`✅ User ${user.id} added to organization ${allowedPhone.organizationId}`)
+    //   } catch (error) {
+    //     console.error('Error creating UserOrganization:', error)
+    //   }
+    // }
 
     const webappUrl = process.env.WEBAPP_URL || 'https://big-grain-tg.vercel.app'
 
@@ -237,26 +235,13 @@ export class BotUpdate {
     }
   }
 
-  // private async ensureUser(ctx: Context) {
-  //   if (ctx.from?.id) {
-  //     const tgId = String(ctx.from.id)
-  //     const user = await this.prisma.user.upsert({
-  //       where: { telegramId: tgId },
-  //       update: {},
-  //       create: { telegramId: tgId }
-  //     })
-  //     ctx.state.user = user
-  //   }
-  // }
-
   private async checkAuthorization(ctx: Context): Promise<boolean> {
     const telegramId = String(ctx.from.id)
     const user = await this.prisma.user.findUnique({
-      where: { telegramId },
-      include: { allowedPhones: true }
+      where: { telegramId }
     })
 
-    return user && user.allowedPhones.length > 0
+    return user && user.phone !== null
   }
 
   private async handleUnauthorizedMessage(ctx: Context) {

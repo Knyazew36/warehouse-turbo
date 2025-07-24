@@ -71,10 +71,38 @@ export class AuthService {
   }
 
   async findByTelegramIdWithPhones(telegramId: string) {
-    return this.prisma.user.findUnique({
-      where: { telegramId },
-      include: { allowedPhones: true }
+    const user = await this.prisma.user.findUnique({
+      where: { telegramId }
     })
+
+    if (!user) {
+      return null
+    }
+
+    if (!user.phone) {
+      return {
+        ...user,
+        hasAllowedPhone: false,
+        allowedOrganizations: []
+      }
+    }
+
+    // Проверяем, есть ли организации, где этот телефон разрешен
+    const organizationsWithPhone = await this.prisma.organization.findMany({
+      where: {
+        active: true,
+        allowedPhones: {
+          has: user.phone
+        }
+      }
+    })
+
+    // Возвращаем пользователя с информацией о том, что у него есть разрешенный телефон
+    return {
+      ...user,
+      hasAllowedPhone: organizationsWithPhone.length > 0,
+      allowedOrganizations: organizationsWithPhone
+    }
   }
 
   /**
