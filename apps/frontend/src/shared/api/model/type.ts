@@ -7,6 +7,8 @@ export interface BaseResponse<T> {
   user?: {
     id: number
     telegramId: string
+    allowedPhone: boolean
+    role: string | null
   }
 }
 
@@ -15,11 +17,3 @@ export interface ErrorResponse {
   message?: string
   code: number
 }
-
-// export interface CommonData {
-// 	add_select_options?: boolean
-// }
-
-// export interface CommonDataRes {
-// 	select_options?: ISelectOption
-// }

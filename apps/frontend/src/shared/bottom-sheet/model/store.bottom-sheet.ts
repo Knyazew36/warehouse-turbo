@@ -8,14 +8,23 @@ type Store = {
   description?: string
   close: () => void
   onClose?: () => void
+  variant?: 'success' | 'error'
 }
 
 const useBottomSheetStore = create<Store>()(set => ({
   isOpen: false,
-  open: props => set({ isOpen: props.isOpen, title: props.title, description: props.description, onClose: props.onClose }),
+  open: props =>
+    set({
+      isOpen: props.isOpen,
+      title: props.title,
+      description: props.description,
+      onClose: props.onClose,
+      variant: props.variant || 'success'
+    }),
   title: undefined,
   description: undefined,
-  close: () => set({ isOpen: false, title: undefined, description: undefined, onClose: () => {} }),
+  variant: undefined,
+  close: () => set({ isOpen: false, title: undefined, description: undefined, onClose: () => {}, variant: undefined }),
   onClose: () => {}
 }))
 

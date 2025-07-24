@@ -12,7 +12,13 @@ import {
 import { IBottomSheetSuccessProps } from '../model/bottomSheetSuccess.type'
 import { hapticFeedback } from '@telegram-apps/sdk-react'
 
-const BottomSheetSuccess = ({ isOpen, onClose, description, title = 'Успех!' }: IBottomSheetSuccessProps) => {
+const BottomSheetSuccess = ({
+  isOpen,
+  onClose,
+  description,
+  title = 'Успех!',
+  variant = 'success'
+}: IBottomSheetSuccessProps) => {
   useEffect(() => {
     if (isOpen) {
       hapticFeedback.notificationOccurred('success')
@@ -29,20 +35,22 @@ const BottomSheetSuccess = ({ isOpen, onClose, description, title = 'Успех!
           {/* Icon */}
           <div className='mb-5 sm:mb-7 text-center'>
             <span className='shrink-0 size-14 md:size-16 mx-auto flex justify-center items-center border-2 border-green-500 text-green-500 rounded-full'>
-              <svg
-                className='shrink-0 size-8'
-                xmlns='http://www.w3.org/2000/svg'
-                width={24}
-                height={24}
-                viewBox='0 0 24 24'
-                fill='none'
-                stroke='currentColor'
-                strokeWidth={2}
-                strokeLinecap='round'
-                strokeLinejoin='round'
-              >
-                <path d='M20 6 9 17l-5-5' />
-              </svg>
+              {variant === 'success' && (
+                <svg
+                  className='shrink-0 size-8'
+                  xmlns='http://www.w3.org/2000/svg'
+                  width={24}
+                  height={24}
+                  viewBox='0 0 24 24'
+                  fill='none'
+                  stroke='currentColor'
+                  strokeWidth={2}
+                  strokeLinecap='round'
+                  strokeLinejoin='round'
+                >
+                  <path d='M20 6 9 17l-5-5' />
+                </svg>
+              )}
             </span>
           </div>
           {/* End Icon */}

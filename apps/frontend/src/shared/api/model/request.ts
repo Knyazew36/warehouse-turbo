@@ -63,18 +63,6 @@ $api.interceptors.response.use(
         type: 'response'
       })
     }
-    if (response?.data?.statusBD === 'loading') {
-      const errorData: ErrorEventEmitter = { action: 'navigation', href: '?modal=bd-loading' }
-
-      eventEmitter.emit('request-error', errorData)
-    }
-    if (response?.data?.data.statusBD === 'error') {
-      const errorData: ErrorEventEmitter = { action: 'navigation', href: '?modal=bd-error' }
-      eventEmitter.emit('request-error', errorData)
-    }
-
-    if (response?.data?.status === 'error') {
-    }
 
     return response
   },
