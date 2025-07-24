@@ -101,7 +101,6 @@ export class TelegramAuthGuard implements CanActivate {
     // console.log('user telegram', user);
     // 8) Кладём пользователя в request.user
 
-    console.info('user with role', userWithRole)
     req.user = userWithRole
     return true
   }
