@@ -265,4 +265,127 @@ export class AllowedPhoneService {
         }
       : null
   }
+
+  /**
+   * Привязать разрешенный телефон к пользователю
+   */
+  async bindPhoneToUser(phone: string, userId: number) {
+    // Проверяем существование пользователя
+    const user = await this.prisma.user.findUnique({
+      where: { id: userId }
+    })
+
+    if (!user) {
+      throw new NotFoundException('Пользователь не найден')
+    }
+
+    // Проверяем существование разрешенного телефона
+    const allowedPhone = await this.prisma.allowedPhone.findUnique({
+      where: { phone }
+    })
+
+    if (!allowedPhone) {
+      throw new NotFoundException('Разрешенный телефон не найден')
+    }
+
+    // Проверяем, не привязан ли уже этот телефон к другому пользователю
+    if (allowedPhone.userId && allowedPhone.userId !== userId) {
+      throw new Error('Этот телефон уже привязан к другому пользователю')
+    }
+
+    // Проверяем, не привязан ли уже пользователь к другому телефону
+    const existingUserPhone = await this.prisma.allowedPhone.findUnique({
+      where: { userId }
+    })
+
+    if (existingUserPhone && existingUserPhone.phone !== phone) {
+      throw new Error('Пользователь уже привязан к другому телефону')
+    }
+
+    // Привязываем телефон к пользователю
+    const updatedPhone = await this.prisma.allowedPhone.update({
+      where: { phone },
+      data: { userId },
+      include: {
+        user: {
+          select: {
+            id: true,
+            telegramId: true,
+            phone: true
+          }
+        }
+      }
+    })
+
+    return updatedPhone
+  }
+
+  /**
+   * Отвязать телефон от пользователя
+   */
+  async unbindPhoneFromUser(phone: string) {
+    const allowedPhone = await this.prisma.allowedPhone.findUnique({
+      where: { phone }
+    })
+
+    if (!allowedPhone) {
+      throw new NotFoundException('Разрешенный телефон не найден')
+    }
+
+    if (!allowedPhone.userId) {
+      throw new Error('Телефон не привязан к пользователю')
+    }
+
+    // Отвязываем телефон от пользователя
+    const updatedPhone = await this.prisma.allowedPhone.update({
+      where: { phone },
+      data: { userId: null }
+    })
+
+    return updatedPhone
+  }
+
+  /**
+   * Получить пользователя по разрешенному телефону
+   */
+  async getUserByAllowedPhone(phone: string) {
+    const allowedPhone = await this.prisma.allowedPhone.findUnique({
+      where: { phone },
+      include: {
+        user: {
+          select: {
+            id: true,
+            telegramId: true,
+            phone: true,
+            createdAt: true,
+            active: true
+          }
+        }
+      }
+    })
+
+    if (!allowedPhone) {
+      throw new NotFoundException('Разрешенный телефон не найден')
+    }
+
+    return allowedPhone.user
+  }
+
+  /**
+   * Получить разрешенный телефон пользователя
+   */
+  async getAllowedPhoneByUser(userId: number) {
+    const user = await this.prisma.user.findUnique({
+      where: { id: userId },
+      include: {
+        allowedPhone: true
+      }
+    })
+
+    if (!user) {
+      throw new NotFoundException('Пользователь не найден')
+    }
+
+    return user.allowedPhone
+  }
 }

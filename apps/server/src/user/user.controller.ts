@@ -95,4 +95,44 @@ export class UserController {
   getDeletedUsers(@OrganizationId() organizationId?: number) {
     return this.usersService.getDeletedUsers(organizationId)
   }
+
+  /**
+   * Получить пользователя с информацией о разрешенном телефоне
+   */
+  @UseGuards(TelegramAuthGuard, OrganizationRolesGuard)
+  @Get(':id/with-allowed-phone')
+  @Roles('ADMIN', 'OWNER', 'IT')
+  findOneWithAllowedPhone(@Param('id') id: string) {
+    return this.usersService.findOneWithAllowedPhone(+id)
+  }
+
+  /**
+   * Получить всех пользователей с информацией о разрешенных телефонах
+   */
+  @UseGuards(TelegramAuthGuard, OrganizationRolesGuard)
+  @Get('with-allowed-phones')
+  @Roles('ADMIN', 'OWNER', 'IT')
+  findAllWithAllowedPhones(@Query() query: GetUsersDto, @OrganizationId() organizationId?: number) {
+    return this.usersService.findAllWithAllowedPhones(query, organizationId)
+  }
+
+  /**
+   * Получить пользователей, у которых есть привязанные разрешенные телефоны
+   */
+  @UseGuards(TelegramAuthGuard, OrganizationRolesGuard)
+  @Get('with-allowed-phones/list')
+  @Roles('ADMIN', 'OWNER', 'IT')
+  findUsersWithAllowedPhones(@OrganizationId() organizationId?: number) {
+    return this.usersService.findUsersWithAllowedPhones(organizationId)
+  }
+
+  /**
+   * Получить пользователей без привязанных разрешенных телефонов
+   */
+  @UseGuards(TelegramAuthGuard, OrganizationRolesGuard)
+  @Get('without-allowed-phones/list')
+  @Roles('ADMIN', 'OWNER', 'IT')
+  findUsersWithoutAllowedPhones(@OrganizationId() organizationId?: number) {
+    return this.usersService.findUsersWithoutAllowedPhones(organizationId)
+  }
 }

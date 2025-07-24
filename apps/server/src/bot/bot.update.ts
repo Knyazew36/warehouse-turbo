@@ -21,10 +21,13 @@ export class BotUpdate {
     // Проверяем, авторизован ли пользователь
     const telegramId = String(ctx.from.id)
     const user = await this.prisma.user.findUnique({
-      where: { telegramId }
+      where: { telegramId },
+      include: {
+        allowedPhone: true
+      }
     })
 
-    if (!user || user.phone === null) {
+    if (!user || !user.phone || user.allowedPhone === null) {
       await ctx.reply('👋 Привет! Для использования бота необходимо авторизоваться.', {
         reply_markup: {
           inline_keyboard: [
@@ -143,64 +146,80 @@ export class BotUpdate {
     const telegramId = String(ctx.from.id)
     console.info('phone', phone)
 
-    // // Проверяем, используется ли номер другим пользователем
-    // const existingAllowedPhone = await this.prisma.user.findUnique({
-    //   where: { phone: phone, telegramId: { not: telegramId } }
-    // })
+    // Проверяем, существует ли разрешенный телефон
+    const allowedPhone = await this.prisma.allowedPhone.findUnique({
+      where: { phone }
+    })
 
-    // if (existingAllowedPhone && existingAllowedPhone.phone) {
-    //   const existingUser = await this.prisma.user.findUnique({
-    //     where: { id: existingAllowedPhone.id }
-    //   })
-    //   if (existingUser && existingUser.telegramId !== telegramId) {
-    //     await ctx.reply('❌ Этот номер телефона уже используется другим пользователем.')
-    //     return
-    //   }
-    // }
+    if (!allowedPhone) {
+      await ctx.reply('❌ Этот номер телефона не разрешен для использования в системе.')
+      return
+    }
 
-    // Привязываем номер к пользователю
+    // Проверяем, не привязан ли уже этот телефон к другому пользователю
+    if (allowedPhone.userId) {
+      const existingUser = await this.prisma.user.findUnique({
+        where: { id: allowedPhone.userId }
+      })
+
+      if (existingUser && existingUser.telegramId !== telegramId) {
+        await ctx.reply('❌ Этот номер телефона уже привязан к другому пользователю.')
+        return
+      }
+    }
+
+    // Создаем или обновляем пользователя
     const user = await this.prisma.user.upsert({
       where: { telegramId },
       update: {
+        phone: phone,
         data: { ...contact }
-        // role: 'OPERATOR', // Убеждаемся, что пользователь получает роль OPERATOR
       },
       create: {
         telegramId,
+        phone: phone,
         data: { ...contact }
-        // role: 'OPERATOR', // Новые пользователи получают роль OPERATOR
       }
     })
 
-    // Создаем или обновляем запись телефона для бота
-    // const allowedPhone = await this.allowedPhoneService.addEmployeeToOrganization(phone, user.id)
+    // Привязываем разрешенный телефон к пользователю
+    try {
+      await this.allowedPhoneService.bindPhoneToUser(phone, user.id)
+      console.log(`✅ Phone ${phone} bound to user ${user.id}`)
+    } catch (error) {
+      console.error('Error binding phone to user:', error)
+      // Если привязка не удалась, но пользователь создан, все равно продолжаем
+    }
 
-    // Если телефон привязан к организации, создаем связь UserOrganization
-    // if (allowedPhone.organizationId) {
-    //   try {
-    //     await this.prisma.userOrganization.upsert({
-    //       where: {
-    //         userId_organizationId: {
-    //           userId: user.id,
-    //           organizationId: allowedPhone.organizationId
-    //         }
-    //       },
-    //       update: {
-    //         // Обновляем роль на OPERATOR если связь уже существует
-    //         role: 'OPERATOR'
-    //       },
-    //       create: {
-    //         userId: user.id,
-    //         organizationId: allowedPhone.organizationId,
-    //         role: 'OPERATOR',
-    //         isOwner: false
-    //       }
-    //     })
-    //     console.log(`✅ User ${user.id} added to organization ${allowedPhone.organizationId}`)
-    //   } catch (error) {
-    //     console.error('Error creating UserOrganization:', error)
-    //   }
-    // }
+    // Получаем организации, к которым у пользователя есть доступ
+    const accessibleOrganizations = await this.allowedPhoneService.getUserAccessibleOrganizations(phone)
+
+    // Создаем связи UserOrganization для всех доступных организаций
+    for (const orgData of accessibleOrganizations) {
+      try {
+        await this.prisma.userOrganization.upsert({
+          where: {
+            userId_organizationId: {
+              userId: user.id,
+              organizationId: orgData.organization.id
+            }
+          },
+          update: {
+            // Обновляем роль если связь уже существует
+            role: orgData.userRole || 'OPERATOR'
+          },
+          create: {
+            userId: user.id,
+            organizationId: orgData.organization.id,
+            role: orgData.userRole || 'OPERATOR',
+            isOwner: orgData.isOwner || false
+          }
+        })
+        console.log(`✅ User ${user.id} added to organization ${orgData.organization.id}`)
+      } catch (error) {
+        console.error(`Error creating UserOrganization for org ${orgData.organization.id}:`, error)
+      }
+    }
 
     const webappUrl = process.env.WEBAPP_URL || 'https://big-grain-tg.vercel.app'
 
@@ -238,10 +257,14 @@ export class BotUpdate {
   private async checkAuthorization(ctx: Context): Promise<boolean> {
     const telegramId = String(ctx.from.id)
     const user = await this.prisma.user.findUnique({
-      where: { telegramId }
+      where: { telegramId },
+      include: {
+        allowedPhone: true
+      }
     })
 
-    return user && user.phone !== null
+    // Проверяем, что пользователь существует, имеет телефон и привязан к разрешенному телефону
+    return user && user.phone && user.allowedPhone !== null
   }
 
   private async handleUnauthorizedMessage(ctx: Context) {

@@ -1,6 +1,6 @@
 import { Controller, Post, Body, UseGuards, Delete, Param, Get, Req } from '@nestjs/common'
 import { AllowedPhoneService } from './allowed-phone.service'
-import { AddPhoneDto } from './dto/add-phone.dto'
+import { AddPhoneDto, BindPhoneToUserDto, UnbindPhoneFromUserDto } from './dto/add-phone.dto'
 import { Roles } from './decorators/roles.decorator'
 import { RolesGuard } from './guards/roles.guard'
 import { TelegramAuthGuard } from './guards/telegram-auth.guard'
@@ -105,14 +105,74 @@ export class AllowedPhoneController {
   }
 
   /**
+   * Привязать разрешенный телефон к пользователю
+   */
+  @Post('bind-to-user')
+  @UseGuards(TelegramAuthGuard, RolesGuard)
+  @Roles('ADMIN', 'OWNER', 'IT')
+  async bindPhoneToUser(@Body() dto: BindPhoneToUserDto) {
+    const result = await this.allowedPhoneService.bindPhoneToUser(dto.phone, dto.userId)
+
+    return {
+      ...result,
+      message: 'Телефон успешно привязан к пользователю.'
+    }
+  }
+
+  /**
+   * Отвязать телефон от пользователя
+   */
+  @Post('unbind-from-user')
+  @UseGuards(TelegramAuthGuard, RolesGuard)
+  @Roles('ADMIN', 'OWNER', 'IT')
+  async unbindPhoneFromUser(@Body() dto: UnbindPhoneFromUserDto) {
+    const result = await this.allowedPhoneService.unbindPhoneFromUser(dto.phone)
+
+    return {
+      ...result,
+      message: 'Телефон успешно отвязан от пользователя.'
+    }
+  }
+
+  /**
+   * Получить пользователя по разрешенному телефону
+   */
+  @Get('user/:phone')
+  @UseGuards(TelegramAuthGuard)
+  @Roles('ADMIN', 'OWNER', 'IT')
+  async getUserByAllowedPhone(@Param('phone') phone: string) {
+    const user = await this.allowedPhoneService.getUserByAllowedPhone(phone)
+
+    return {
+      phone,
+      user
+    }
+  }
+
+  /**
+   * Получить разрешенный телефон пользователя
+   */
+  @Get('user/:userId/phone')
+  @UseGuards(TelegramAuthGuard)
+  @Roles('ADMIN', 'OWNER', 'IT')
+  async getAllowedPhoneByUser(@Param('userId') userId: string) {
+    const allowedPhone = await this.allowedPhoneService.getAllowedPhoneByUser(parseInt(userId))
+
+    return {
+      userId: parseInt(userId),
+      allowedPhone
+    }
+  }
+
+  /**
    * Получить все организации, к которым у пользователя есть доступ
    */
-  @Get('user/organizations')
+  @Get('user-accessible-organizations')
   @UseGuards(TelegramAuthGuard)
   async getUserAccessibleOrganizations(@Req() req: any) {
     const userPhone = req.user?.phone
     if (!userPhone) {
-      throw new Error('User phone not found')
+      throw new Error('User phone not found in request')
     }
 
     const organizations = await this.allowedPhoneService.getUserAccessibleOrganizations(userPhone)
@@ -124,14 +184,14 @@ export class AllowedPhoneController {
   }
 
   /**
-   * Проверить, есть ли у пользователя доступ к конкретной организации
+   * Проверить доступ пользователя к конкретной организации
    */
-  @Post('user/check-access')
+  @Post('check-user-access')
   @UseGuards(TelegramAuthGuard)
   async checkUserAccessToOrganization(@Body() dto: { organizationId: number }, @Req() req: any) {
     const userPhone = req.user?.phone
     if (!userPhone) {
-      throw new Error('User phone not found')
+      throw new Error('User phone not found in request')
     }
 
     const hasAccess = await this.allowedPhoneService.hasUserAccessToOrganization(userPhone, dto.organizationId)

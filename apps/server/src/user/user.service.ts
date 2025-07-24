@@ -291,57 +291,162 @@ export class UserService {
   }
 
   async getUserRole(telegramId: string, organizationId: number): Promise<{ role: Role }> {
-    //@ts-ignore
-    const organizations = await this.prisma.userOrganization.findMany({
-      where: { user: { telegramId } },
-      include: {
-        organization: true
-      },
-      orderBy: { createdAt: 'desc' }
+    const userOrg = await this.prisma.userOrganization.findFirst({
+      where: {
+        user: { telegramId },
+        organizationId
+      }
     })
 
-    if (organizations.length === 0) {
-      throw new NotFoundException(`organizations not found`)
+    if (!userOrg) {
+      throw new NotFoundException('User not found in organization')
     }
 
-    const currentOrganization = organizations.find(o => o.organizationId === organizationId)
-    if (!currentOrganization) {
-      throw new NotFoundException(`User #${telegramId} not found in organization #${organizationId}`)
+    return { role: userOrg.role }
+  }
+
+  /**
+   * Получить пользователя с информацией о разрешенном телефоне
+   */
+  async findOneWithAllowedPhone(id: number) {
+    const user = await this.prisma.user.findUnique({
+      where: { id },
+      include: {
+        allowedPhone: true,
+        userOrganizations: {
+          include: {
+            organization: true
+          }
+        }
+      }
+    })
+
+    if (!user) {
+      throw new NotFoundException(`User #${id} not found`)
     }
-    return { role: currentOrganization.role }
 
-    // const user = await this.prisma.user.findUnique({
-    //   where: { telegramId },
-    //   select: { id: true, userOrganizations: true }
-    // })
+    return user
+  }
 
-    // console.log('user getUserRole', user)
-    // if (!user) {
-    //   throw new NotFoundException(`User #${telegramId} not found`)
-    // }
+  /**
+   * Получить всех пользователей с информацией о разрешенных телефонах
+   */
+  async findAllWithAllowedPhones(query: GetUsersDto = {}, organizationId?: number) {
+    const { onlyEmployees, includeDeleted } = query
 
-    // const currentOrganization = user.userOrganizations
-    // //@ts-ignore
-    // return currentOrganization
+    let whereClause: any = {}
 
-    // // return { role: currentOrganization.role }
+    // Если указан organizationId, фильтруем пользователей по организации
+    if (organizationId) {
+      whereClause.userOrganizations = {
+        some: {
+          organizationId: organizationId
+        }
+      }
+    }
 
-    // if (!currentOrganization) {
-    //   throw new NotFoundException(`User #${telegramId} not found in organization #${organizationId}`)
-    // }
+    // Если запрошены только сотрудники, фильтруем по ролям OPERATOR и ADMIN
+    if (onlyEmployees) {
+      if (organizationId) {
+        whereClause.userOrganizations.some.role = {
+          not: [Role.GUEST, Role.BLOCKED]
+        }
+      } else {
+        whereClause.userOrganizations = {
+          some: {
+            role: {
+              not: [Role.GUEST, Role.BLOCKED]
+            }
+          }
+        }
+      }
+    }
 
-    // return { role: currentOrganization.role }
+    // По умолчанию показываем только активных пользователей
+    if (!includeDeleted) {
+      whereClause.active = true
+    }
 
-    // const userOrganization = currentOrganization.userOrganizations.find(uo => uo.userId === user.id)
+    return this.prisma.user.findMany({
+      where: whereClause,
+      orderBy: { createdAt: 'desc' },
+      include: {
+        allowedPhone: true,
+        ...(organizationId
+          ? {
+              userOrganizations: {
+                where: { organizationId }
+              }
+            }
+          : {
+              userOrganizations: {
+                include: {
+                  organization: true
+                }
+              }
+            })
+      }
+    })
+  }
 
-    // // const userOrganization = await this.prisma.userOrganization.findFirst({
-    // //   where: { userId: user.id, organizationId }
-    // // })
+  /**
+   * Получить пользователей, у которых есть привязанные разрешенные телефоны
+   */
+  async findUsersWithAllowedPhones(organizationId?: number) {
+    let whereClause: any = {
+      allowedPhone: {
+        isNot: null
+      }
+    }
 
-    // if (!userOrganization) {
-    //   throw new NotFoundException(`User #${telegramId} not found in organization #${organizationId}`)
-    // }
+    if (organizationId) {
+      whereClause.userOrganizations = {
+        some: {
+          organizationId: organizationId
+        }
+      }
+    }
 
-    // return { role: userOrganization.role }
+    return this.prisma.user.findMany({
+      where: whereClause,
+      orderBy: { createdAt: 'desc' },
+      include: {
+        allowedPhone: true,
+        userOrganizations: {
+          include: {
+            organization: true
+          }
+        }
+      }
+    })
+  }
+
+  /**
+   * Получить пользователей без привязанных разрешенных телефонов
+   */
+  async findUsersWithoutAllowedPhones(organizationId?: number) {
+    let whereClause: any = {
+      allowedPhone: null
+    }
+
+    if (organizationId) {
+      whereClause.userOrganizations = {
+        some: {
+          organizationId: organizationId
+        }
+      }
+    }
+
+    return this.prisma.user.findMany({
+      where: whereClause,
+      orderBy: { createdAt: 'desc' },
+      include: {
+        userOrganizations: {
+          include: {
+            organization: true
+          }
+        }
+      }
+    })
   }
 }
