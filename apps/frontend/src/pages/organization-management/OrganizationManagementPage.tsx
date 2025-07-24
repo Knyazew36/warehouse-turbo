@@ -37,27 +37,27 @@ const OrganizationManagementPage: React.FC = () => {
 
   console.info('availableData', availableData)
 
-  useEffect(() => {
-    // Если у пользователя только одна организация (созданная или приглашенная) и он еще не выбрал организацию, автоматически выбираем её
-    if (allOrganizations.length === 1 && !organizationId) {
-      if (myOrganizations.length === 1) {
-        handleSelectOrganization(myOrganizations[0])
-      } else if (invitedOrganizations.length === 1) {
-        // Если есть только приглашение, автоматически присоединяемся
-        setAutoJoining(true)
-        setTimeout(() => {
-          handleJoinOrganization(invitedOrganizations[0])
-        }, 1000) // Небольшая задержка, чтобы пользователь увидел приглашение
-      }
-    }
-  }, [allOrganizations, myOrganizations, invitedOrganizations, organizationId])
+  // useEffect(() => {
+  //   // Если у пользователя только одна организация (созданная или приглашенная) и он еще не выбрал организацию, автоматически выбираем её
+  //   if (allOrganizations.length === 1 && !organizationId) {
+  //     if (myOrganizations.length === 1) {
+  //       handleSelectOrganization(myOrganizations[0])
+  //     } else if (invitedOrganizations.length === 1) {
+  //       // Если есть только приглашение, автоматически присоединяемся
+  //       setAutoJoining(true)
+  //       setTimeout(() => {
+  //         handleJoinOrganization(invitedOrganizations[0])
+  //       }, 1000) // Небольшая задержка, чтобы пользователь увидел приглашение
+  //     }
+  //   }
+  // }, [allOrganizations, myOrganizations, invitedOrganizations, organizationId])
 
   // Если пользователь уже выбрал организацию и у него только одна, перенаправляем на меню
-  useEffect(() => {
-    if (organizationId && allOrganizations.length === 1 && !currentOrganization?.role) {
-      navigate('/menu')
-    }
-  }, [organizationId, allOrganizations.length, navigate])
+  // useEffect(() => {
+  //   if (organizationId && allOrganizations.length === 1 && !currentOrganization?.role) {
+  //     navigate('/menu')
+  //   }
+  // }, [organizationId, allOrganizations.length, navigate])
 
   const handleCreateOrganization = () => {
     if (!formData.name.trim()) {
@@ -108,7 +108,6 @@ const OrganizationManagementPage: React.FC = () => {
       <PageHeader title='Управление организациями' />
 
       <div className='space-y-4'>
-        {/* Кнопка создания новой организации */}
         <div className='flex justify-between items-center'>
           <h2 className='text-lg font-semibold text-gray-800 dark:text-neutral-200'>Мои организации</h2>
           <Button
@@ -120,7 +119,6 @@ const OrganizationManagementPage: React.FC = () => {
           </Button>
         </div>
 
-        {/* Форма создания организации */}
         {showCreateForm && (
           <div className='bg-white border border-gray-200 rounded-lg p-4 dark:bg-neutral-900 dark:border-neutral-700'>
             <h3 className='text-md font-medium text-gray-800 dark:text-neutral-200 mb-3'>Новая организация</h3>
@@ -192,30 +190,6 @@ const OrganizationManagementPage: React.FC = () => {
                         <span>Роль: {userOrg.role}</span>
                         <span>Создана: {new Date(userOrg.organization.createdAt).toLocaleDateString()}</span>
                       </div>
-                    </div>
-                    <div className='flex space-x-2'>
-                      <Button
-                        variant='outline'
-                        size='sm'
-                        onClick={e => {
-                          e.stopPropagation()
-                          hapticFeedback.impactOccurred('light')
-                          // TODO: Навигация к управлению пользователями
-                        }}
-                      >
-                        <Users className='w-4 h-4' />
-                      </Button>
-                      <Button
-                        variant='outline'
-                        size='sm'
-                        onClick={e => {
-                          e.stopPropagation()
-                          hapticFeedback.impactOccurred('light')
-                          // TODO: Навигация к настройкам
-                        }}
-                      >
-                        <Settings className='w-4 h-4' />
-                      </Button>
                     </div>
                   </div>
                 </div>
