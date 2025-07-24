@@ -298,6 +298,10 @@ export class UserService {
       }
     })
 
+    console.info('userOrg', userOrg)
+    console.info('telegramId', telegramId)
+    console.info('organizationId', organizationId)
+
     if (!userOrg) {
       throw new NotFoundException('User not found in organization')
     }
