@@ -78,7 +78,7 @@ const OrganizationManagementPage: React.FC = () => {
 
   const handleSelectOrganization = (organization: IUserOrganization) => {
     setCurrentOrganization(organization)
-    setOrganizationId(organization.id)
+    setOrganizationId(organization.organizationId)
     navigate('/menu')
   }
 
