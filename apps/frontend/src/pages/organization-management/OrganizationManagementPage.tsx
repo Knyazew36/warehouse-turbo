@@ -102,7 +102,7 @@ const OrganizationManagementPage: React.FC = () => {
   }
 
   return (
-    <Page back>
+    <Page back={!!currentOrganization}>
       <PageHeader title='Управление организациями' />
 
       <div className='space-y-4'>
