@@ -10,6 +10,7 @@ import { eventEmitter } from './eventEmitter'
 import { ErrorEventEmitter } from './type'
 import { logout } from '@/features/logout/model/logout'
 import { useNavigate } from 'react-router-dom'
+import { useBottomSheetStore } from '@/shared/bottom-sheet/model/store.bottom-sheet'
 
 export const useErrorHandler = () => {
   const navigate = useNavigate()
@@ -43,6 +44,13 @@ export const useErrorHandler = () => {
     }
     if (error.action === 'pay-modal') {
       // setModalPayment(true)
+    }
+    if (error.action === 'bottom-sheet') {
+      useBottomSheetStore.setState({
+        isOpen: true,
+        title: error.message,
+        variant: 'error'
+      })
     }
   }
 }

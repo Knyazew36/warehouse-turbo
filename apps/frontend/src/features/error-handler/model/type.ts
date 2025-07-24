@@ -1,6 +1,6 @@
 export interface ErrorEventEmitter {
-	message?: string
-	action: 'modal' | 'logout' | 'navigation' | 'console' | 'pay-modal'
-	href?: string
-	isNavigateBackOnClick?: boolean
+  message?: string
+  action: 'modal' | 'logout' | 'navigation' | 'console' | 'pay-modal' | 'bottom-sheet'
+  href?: string
+  isNavigateBackOnClick?: boolean
 }

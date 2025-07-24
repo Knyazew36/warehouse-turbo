@@ -1,9 +1,9 @@
-import axios, { AxiosError } from 'axios'
+import axios, { AxiosError, AxiosResponse } from 'axios'
 
 import { ErrorEventEmitter, eventEmitter } from '@/features/error-handler'
 
 import log from './log'
-import { ErrorResponse } from './type'
+import { ErrorResponse, BaseResponse } from './type'
 import { toast } from 'sonner'
 // import { json } from 'stream/consumers'
 import React from 'react'
@@ -55,7 +55,7 @@ $api.interceptors.request.use(
 
 // Интерцептор для ответов
 $api.interceptors.response.use(
-  response => {
+  (response: AxiosResponse<BaseResponse<any>>) => {
     if (!isProduction) {
       log({
         name: response.config.url ?? 'undefined url',
@@ -64,11 +64,20 @@ $api.interceptors.response.use(
       })
     }
 
+    if (response.data?.user?.allowedPhone === false) {
+      const errorData: ErrorEventEmitter = {
+        action: 'bottom-sheet',
+        message:
+          'Для продолжения работы необходимо разрешить доступ к телефону в боте приложения, без данного разрешения вы не увидите приглашения в организации. Для разрешения доступа к телефону перейдите в настройки бота и разрешите доступ к телефону.'
+      }
+      eventEmitter.emit('request-error', errorData)
+    }
+
     return response
   },
-  error => {
-    handleResponseError(error as AxiosError<ErrorResponse>)
-    logErrorDetails(error as AxiosError)
+  (error: AxiosError<ErrorResponse>) => {
+    handleResponseError(error)
+    logErrorDetails(error)
     toast(error?.response?.data?.message || error?.message, {
       style: { backgroundColor: '#FB2C36', color: '#fff' },
       description: import.meta.env.DEV
