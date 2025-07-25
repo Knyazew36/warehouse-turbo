@@ -122,17 +122,6 @@ export class UserService {
         }
       })
 
-      // 3. Отключаем все напоминания пользователя
-      await prisma.reminder.updateMany({
-        where: { userId: id },
-        data: { enabled: false }
-      })
-
-      // 4. Удаляем настройки уведомлений
-      await prisma.notificationSetting.deleteMany({
-        where: { userId: id }
-      })
-
       // 5. Мягкое удаление пользователя - помечаем как неактивного
       const deletedUser = await prisma.user.update({
         where: { id },
@@ -167,15 +156,11 @@ export class UserService {
     // Начинаем транзакцию для атомарного удаления
     await this.prisma.$transaction(async prisma => {
       // 1. Удаляем все связанные данные пользователя
-      await prisma.notificationLog.deleteMany({ where: { userId: id } })
-      await prisma.reminder.deleteMany({ where: { userId: id } })
+
       await prisma.accessRequest.deleteMany({ where: { userId: id } })
       await prisma.accessRequest.deleteMany({ where: { processedById: id } })
       await prisma.shiftReport.deleteMany({ where: { userId: id } })
       await prisma.receipt.deleteMany({ where: { operatorId: id } })
-
-      // 3. Удаляем настройки уведомлений
-      await prisma.notificationSetting.deleteMany({ where: { userId: id } })
 
       // 4. Удаляем самого пользователя
       await prisma.user.delete({ where: { id } })

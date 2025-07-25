@@ -19,17 +19,12 @@ enum Role {
 model User {
   id         Int    @id @default(autoincrement())
   telegramId String @unique
-  // phone      String? @unique - убираем это поле
 
-  data            Json?
-  // role            Role                 @default(GUEST)
-  reminders       Reminder[]
-  settings        NotificationSetting?
-  receipts        Receipt[]
-  shiftReports    ShiftReport[] // факт подтверждения смены
-  createdAt       DateTime             @default(now())
-  updatedAt       DateTime             @updatedAt
-  NotificationLog NotificationLog[]
+  data         Json?
+  receipts     Receipt[]
+  shiftReports ShiftReport[] // факт подтверждения смены
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
 
   active            Boolean         @default(true)
   accessRequests    AccessRequest[]
@@ -49,6 +44,7 @@ model Organization {
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
   active      Boolean  @default(true)
+  settings    Json?
 
   // Связи
   userOrganizations UserOrganization[]
@@ -105,35 +101,6 @@ model Receipt {
   // Связь с организацией
   organizationId Int
   organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
-}
-
-model Reminder {
-  id        Int      @id @default(autoincrement())
-  user      User     @relation(fields: [userId], references: [id])
-  userId    Int
-  text      String
-  cron      String
-  enabled   Boolean  @default(true)
-  createdAt DateTime @default(now())
-}
-
-model NotificationSetting {
-  id              Int  @id @default(autoincrement())
-  user            User @relation(fields: [userId], references: [id])
-  userId          Int  @unique
-  intervalMinutes Int  @default(30)
-  maxRetries      Int  @default(3)
-}
-
-model NotificationLog {
-  id            Int       @id @default(autoincrement())
-  user          User      @relation(fields: [userId], references: [id])
-  userId        Int
-  type          String
-  status        String
-  attempts      Int       @default(0)
-  lastAttemptAt DateTime?
-  createdAt     DateTime  @default(now())
 }
 
 model ShiftReport {
