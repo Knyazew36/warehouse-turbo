@@ -147,26 +147,26 @@ export class BotUpdate {
     console.info('phone', phone)
 
     // Проверяем, существует ли разрешенный телефон
-    const allowedPhone = await this.prisma.allowedPhone.findUnique({
-      where: { phone }
-    })
+    // const allowedPhone = await this.prisma.allowedPhone.findUnique({
+    //   where: { phone }
+    // })
 
-    if (!allowedPhone) {
-      await ctx.reply('❌ Этот номер телефона не разрешен для использования в системе.')
-      return
-    }
+    // if (!allowedPhone) {
+    //   await ctx.reply('❌ Этот номер телефона не разрешен для использования в системе.')
+    //   return
+    // }
 
-    // Проверяем, не привязан ли уже этот телефон к другому пользователю
-    if (allowedPhone.userId) {
-      const existingUser = await this.prisma.user.findUnique({
-        where: { id: allowedPhone.userId }
-      })
+    // // Проверяем, не привязан ли уже этот телефон к другому пользователю
+    // if (allowedPhone.userId) {
+    //   const existingUser = await this.prisma.user.findUnique({
+    //     where: { id: allowedPhone.userId }
+    //   })
 
-      if (existingUser && existingUser.telegramId !== telegramId) {
-        await ctx.reply('❌ Этот номер телефона уже привязан к другому пользователю.')
-        return
-      }
-    }
+    //   if (existingUser && existingUser.telegramId !== telegramId) {
+    //     await ctx.reply('❌ Этот номер телефона уже привязан к другому пользователю.')
+    //     return
+    //   }
+    // }
 
     // Создаем или обновляем пользователя
     const user = await this.prisma.user.upsert({
