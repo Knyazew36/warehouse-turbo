@@ -146,28 +146,6 @@ export class BotUpdate {
     const telegramId = String(ctx.from.id)
     console.info('phone', phone)
 
-    // Проверяем, существует ли разрешенный телефон
-    // const allowedPhone = await this.prisma.allowedPhone.findUnique({
-    //   where: { phone }
-    // })
-
-    // if (!allowedPhone) {
-    //   await ctx.reply('❌ Этот номер телефона не разрешен для использования в системе.')
-    //   return
-    // }
-
-    // // Проверяем, не привязан ли уже этот телефон к другому пользователю
-    // if (allowedPhone.userId) {
-    //   const existingUser = await this.prisma.user.findUnique({
-    //     where: { id: allowedPhone.userId }
-    //   })
-
-    //   if (existingUser && existingUser.telegramId !== telegramId) {
-    //     await ctx.reply('❌ Этот номер телефона уже привязан к другому пользователю.')
-    //     return
-    //   }
-    // }
-
     // Создаем или обновляем пользователя
     const user = await this.prisma.user.upsert({
       where: { telegramId },
@@ -180,12 +158,23 @@ export class BotUpdate {
       }
     })
 
-    // Привязываем разрешенный телефон к пользователю
+    // Создаем allowedPhone, если его еще нет, и привязываем к пользователю
     try {
+      // Сначала создаем allowedPhone, если его нет
+      const allowedPhone = await this.prisma.allowedPhone.upsert({
+        where: { phone },
+        update: {},
+        create: {
+          phone,
+          comment: `Автоматически создан при авторизации пользователя ${user.telegramId}`
+        }
+      })
+
+      // Затем привязываем к пользователю
       await this.allowedPhoneService.bindPhoneToUser(phone, user.id)
-      console.log(`✅ Phone ${phone} bound to user ${user.id}`)
+      console.log(`✅ Phone ${phone} created and bound to user ${user.id}`)
     } catch (error) {
-      console.error('Error binding phone to user:', error)
+      console.error('Error creating/binding phone to user:', error)
       // Если привязка не удалась, но пользователь создан, все равно продолжаем
     }
 
