@@ -71,6 +71,10 @@ const ServiceProvider = ({ children }: ServiceProviderProps) => {
         <Toaster />
         <BottomSheetSuccess
           {...bottomSheetStore}
+          onClose={() => {
+            bottomSheetStore?.onClose?.()
+            bottomSheetStore.close()
+          }}
           title={bottomSheetStore.title}
           description={bottomSheetStore.description}
         />
