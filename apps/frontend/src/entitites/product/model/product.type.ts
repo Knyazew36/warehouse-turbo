@@ -8,4 +8,5 @@ export interface Product {
   createdAt: Date
   updatedAt: Date
   active: boolean
+  organizationId: number
 }

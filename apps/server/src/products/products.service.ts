@@ -39,12 +39,16 @@ export class ProductsService {
   async findAll(onlyActive = true, organizationId?: number): Promise<Product[]> {
     const whereClause: any = {}
 
+    // console.info('onlyActive', onlyActive)
+    console.info('organizationId', organizationId)
+    console.info(typeof organizationId)
+
     if (onlyActive) {
       whereClause.active = true
     }
 
-    if (organizationId) {
-      whereClause.organizationId = organizationId
+    if (organizationId !== undefined && organizationId !== null) {
+      whereClause.organizationId = Number(organizationId)
     }
 
     return this.prisma.product.findMany({
