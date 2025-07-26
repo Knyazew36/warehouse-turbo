@@ -14,9 +14,9 @@ import ErrorText from '@/shared/ui/error-text/ui/ErrorText'
 
 type FormValues = {
   name: string
-  minThreshold: number | null
+  minThreshold: number | undefined
   unit: string
-  quantity: number | null
+  quantity: number | undefined
 }
 const CreateProductPage = () => {
   const navigate = useNavigate()
@@ -28,7 +28,7 @@ const CreateProductPage = () => {
     reset,
     formState: { errors, isSubmitting, isValid }
   } = useForm<FormValues>({
-    defaultValues: { name: '', minThreshold: 0, quantity: 0, unit: 'ед' }
+    defaultValues: { name: '', minThreshold: undefined, quantity: undefined, unit: 'ед' }
   })
   const { mutateAsync: createProduct } = useCreateProduct()
   const [buttonLoading, setButtonLoading] = useState(false)
@@ -37,8 +37,8 @@ const CreateProductPage = () => {
       setButtonLoading(true)
       await createProduct({
         name: data.name,
-        quantity: Number(data.quantity) || 0,
-        minThreshold: Number(data.minThreshold) || 0,
+        quantity: data.quantity || 0,
+        minThreshold: data.minThreshold || 0,
         unit: `${data.unit.trim()[0].toLowerCase()}${data.unit.trim().slice(1)}` || 'ед'
       })
 
