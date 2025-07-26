@@ -3,9 +3,10 @@ import { Page } from '@/components/Page'
 import { useCreateOrganization } from '@/entitites/organization/api/organization.api'
 import { ICreateOrganization } from '@/entitites/organization/model/organization.type'
 import PageHeader from '@/shared/ui/page-header/ui/PageHeader'
-import { Building2, ArrowLeft } from 'lucide-react'
+import { Building2, ArrowLeft, Info } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 import { hapticFeedback } from '@telegram-apps/sdk-react'
+import InfoMessage from '@/shared/ui/info/ui/Info'
 
 const CreateOrganizationPage: React.FC = () => {
   const navigate = useNavigate()
@@ -114,24 +115,15 @@ const CreateOrganizationPage: React.FC = () => {
         </div>
 
         {/* Информация */}
-        <div className='bg-blue-50 dark:bg-blue-900/10 rounded-lg p-4'>
-          <div className='flex items-start space-x-3'>
-            <div className='p-1 bg-blue-100 dark:bg-blue-900/20 rounded'>
-              <Building2 className='w-4 h-4 text-blue-600 dark:text-blue-400' />
-            </div>
-            <div>
-              <h3 className='text-sm font-medium text-blue-900 dark:text-blue-100 mb-1'>
-                Что происходит после создания?
-              </h3>
-              <ul className='text-sm text-blue-800 dark:text-blue-200 space-y-1'>
-                <li>• Вы станете владельцем склада</li>
-                <li>• Сможете добавлять товары и управлять ими</li>
-                <li>• Сможете приглашать других пользователей</li>
-                <li>• Получите полный доступ к настройкам</li>
-              </ul>
-            </div>
-          </div>
-        </div>
+        <InfoMessage
+          title='Что происходит после создания?'
+          items={[
+            'Вы станете владельцем склада',
+            'Сможете добавлять товары и управлять ими',
+            'Сможете приглашать других пользователей',
+            'Получите полный доступ к настройкам'
+          ]}
+        />
       </div>
     </Page>
   )

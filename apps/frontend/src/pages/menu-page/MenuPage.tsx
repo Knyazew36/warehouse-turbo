@@ -176,7 +176,7 @@ const MenuPage: FC = () => {
     },
     {
       to: '/organization-management',
-      title: 'Организации',
+      title: 'Мои склады',
       color: 'purple',
       icon: (
         <svg
