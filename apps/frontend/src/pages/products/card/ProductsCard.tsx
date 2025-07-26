@@ -1,5 +1,6 @@
 import { Product } from '@/entitites/product/model/product.type'
 import InputNumber from '@/shared/input-number/InputNumber'
+import { formatNumber } from '@/shared/utils/formatNumber'
 import clsx from 'clsx'
 import { FC } from 'react'
 
@@ -35,9 +36,9 @@ const ProductsCard: FC<IProductsCard> = ({ data, variant = 'default' }) => {
       <div className='text-center'>
         <span className='block text-sm text-gray-500 dark:text-neutral-500'>остаток на складе</span>
 
-        <h3 className='text-3xl sm:text-4xl lg:text-5xl font-semibold text-gray-800 dark:text-neutral-200'>{`${
+        <h3 className='text-3xl sm:text-4xl lg:text-5xl font-semibold text-gray-800 dark:text-neutral-200'>{`${formatNumber(
           data.quantity
-        } ${data.unit ? data.unit : ''}`}</h3>
+        )} ${data.unit ? data.unit : ''}`}</h3>
         {variant === 'change' && (
           <div className='flex flex-col gap-2 mt-4'>
             <span className='block text-sm text-gray-500 dark:text-neutral-500'>Израсходовано</span>
@@ -66,7 +67,7 @@ const ProductsCard: FC<IProductsCard> = ({ data, variant = 'default' }) => {
                   d='m7.247 4.86-4.796 5.481c-.566.647-.106 1.659.753 1.659h9.592a1 1 0 0 0 .753-1.659l-4.796-5.48a1 1 0 0 0-1.506 0z'
                 />
               </svg> */}
-              <span className='inline-block  text-sm'>{data.minThreshold}</span>
+              <span className='inline-block  text-sm'>{formatNumber(data.minThreshold)}</span>
             </span>
             <span className='block text-sm text-gray-500 dark:text-neutral-500'>мин. остаток</span>
           </dt>

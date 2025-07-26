@@ -1,6 +1,7 @@
 import { Page } from '@/components/Page'
 import React, { Fragment } from 'react'
 import { useStatistics } from '@/entitites/receipt/api/receipt.api'
+import { formatNumber } from '@/shared/utils/formatNumber'
 import PageHeader from '@/shared/ui/page-header/ui/PageHeader'
 import Loader from '@/shared/loader/ui/Loader'
 import { getFullName } from '@/shared/utils/getFullName'
@@ -112,7 +113,7 @@ const IncomingStatistics = () => {
                     <Fragment key={product.product?.id}>
                       <dt className='sm:py-1 text-sm text-gray-500 dark:text-neutral-500'>{product.product?.name}</dt>
                       <dd className='pb-3 sm:py-1 min-h-8 text-sm text-gray-800 dark:text-neutral-200'>
-                        {product.quantity} {product.product?.unit}
+                        {formatNumber(product.quantity)} {product.product?.unit}
                       </dd>
                     </Fragment>
                   ))}

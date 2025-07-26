@@ -83,13 +83,13 @@ const OrganizationManagementPage: React.FC = () => {
   }
 
   const handleJoinOrganization = (organization: IOrganization) => {
-    joinOrganization(organization.organizationId, {
+    joinOrganization(organization.organizationId || organization.id, {
       onSuccess: userOrg => {
         hapticFeedback.notificationOccurred('success')
         setAutoJoining(false)
         // После присоединения автоматически выбираем эту организацию
         setCurrentOrganization(userOrg)
-        setOrganizationId(userOrg.organizationId)
+        setOrganizationId(userOrg.organizationId || organization.id)
         navigate('/menu')
       },
       onError: () => {

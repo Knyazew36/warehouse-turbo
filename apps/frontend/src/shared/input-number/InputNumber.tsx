@@ -43,23 +43,38 @@ const InputNumber: React.FC<InputNumberProps> = ({
   }
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    // Удаляем все символы, кроме цифр и знака минус (если min < 0)
     let inputValue = e.target.value
-    // Если разрешены отрицательные значения, разрешаем минус на первом месте
+
+    // Разрешаем ввод десятичных чисел (точка) и отрицательных чисел
     if (min !== undefined && min < 0) {
-      inputValue = inputValue.replace(/[^\d-]/g, '')
+      // Разрешаем цифры, точку и минус
+      inputValue = inputValue.replace(/[^\d.-]/g, '')
       // Не допускаем более одного минуса и только в начале
       inputValue = inputValue.replace(/(?!^)-/g, '')
+      // Не допускаем более одной точки
+      const dotCount = (inputValue.match(/\./g) || []).length
+      if (dotCount > 1) {
+        const parts = inputValue.split('.')
+        inputValue = parts[0] + '.' + parts.slice(1).join('')
+      }
     } else {
-      inputValue = inputValue.replace(/\D/g, '')
+      // Разрешаем цифры и точку для положительных чисел
+      inputValue = inputValue.replace(/[^\d.]/g, '')
+      // Не допускаем более одной точки
+      const dotCount = (inputValue.match(/\./g) || []).length
+      if (dotCount > 1) {
+        const parts = inputValue.split('.')
+        inputValue = parts[0] + '.' + parts.slice(1).join('')
+      }
     }
+
     // Обновляем значение input
-    if (inputValue === '') {
+    if (inputValue === '' || inputValue === '-') {
       onChange(undefined)
     } else {
       const v = Number(inputValue)
       if (isNaN(v)) {
-        onChange(0)
+        onChange(undefined)
       } else {
         if (min !== undefined && v < min) {
           onChange(min)
@@ -88,7 +103,7 @@ const InputNumber: React.FC<InputNumberProps> = ({
             className='w-full p-0 bg-transparent border-0 text-gray-800 focus:ring-0 [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none dark:text-white'
             style={{ MozAppearance: 'textfield' }}
             type='number'
-            value={value === 0 ? '' : value ?? ''}
+            value={value ?? ''}
             onChange={handleInputChange}
             disabled={disabled}
             inputMode='decimal'

@@ -286,6 +286,7 @@ export class OrganizationService {
       invitedOrganizations = await this.prisma.organization.findMany({
         where: {
           active: true,
+
           allowedPhones: {
             some: {
               allowedPhone: {

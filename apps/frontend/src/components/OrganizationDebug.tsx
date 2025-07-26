@@ -21,7 +21,7 @@ const OrganizationDebug: React.FC = () => {
         <div>Has Organization: {hasOrganization ? 'Yes' : 'No'}</div>
         <div>Organization ID: {organizationId || 'null'}</div>
         <div>Store Organization ID: {orgId || 'null'}</div>
-        <div>Current Org Name: {currentOrganization?.organization.name || 'null'}</div>
+        <div>Current Org Name: {currentOrganization?.organization?.name || 'null'}</div>
         <div>User Role: {currentOrganization?.role || 'null'}</div>
       </div>
     </div>

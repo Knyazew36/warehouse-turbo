@@ -1,5 +1,6 @@
 import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert'
 import { useProducts } from '@/entitites/product/api/product.api'
+import { formatNumber } from '@/shared/utils/formatNumber'
 import { LucideMailWarning } from 'lucide-react'
 import { Link } from 'react-router-dom'
 
@@ -19,8 +20,8 @@ const AlertProductLowStock = () => {
       <AlertDescription>
         {lowStockProducts.map(p => (
           <div key={p.id}>
-            <span className='font-medium'>{p.name}</span> остаток: {p.quantity} {p.unit === 'ед' ? '' : p.unit}{' '}
-            (минимум: {p.minThreshold} {p.unit === 'ед' ? '' : p.unit})
+            <span className='font-medium'>{p.name}</span> остаток: {formatNumber(p.quantity)}{' '}
+            {p.unit === 'ед' ? '' : p.unit} (минимум: {formatNumber(p.minThreshold)} {p.unit === 'ед' ? '' : p.unit})
           </div>
         ))}
       </AlertDescription>

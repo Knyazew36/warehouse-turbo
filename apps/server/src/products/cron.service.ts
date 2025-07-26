@@ -155,10 +155,15 @@ export class CronService {
   private async sendNotifications(organization: any, lowStockProducts: any[], users: any[]) {
     // Формируем текст уведомления
     const productList = lowStockProducts
-      .map(
-        product =>
-          `• ${product.name}: ${product.quantity} ${product.unit || 'ед'} (минимум: ${product.minThreshold} ${product.unit || 'ед'})`
-      )
+      .map(product => {
+        const formatNumber = (value: number) => {
+          if (Number.isInteger(value)) {
+            return value.toString()
+          }
+          return Number(value.toFixed(2)).toString()
+        }
+        return `• ${product.name}: ${formatNumber(product.quantity)} ${product.unit || 'ед'} (минимум: ${formatNumber(product.minThreshold)} ${product.unit || 'ед'})`
+      })
       .join('\n')
 
     const message = `⚠️ **${organization.name}**\n\nНа складе заканчиваются следующие товары:\n\n${productList}`

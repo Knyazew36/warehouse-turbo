@@ -39,7 +39,7 @@ const CreateProductPage = () => {
         name: data.name,
         quantity: data.quantity || 0,
         minThreshold: data.minThreshold || 0,
-        unit: `${data.unit.trim()[0].toUpperCase()}${data.unit.trim().slice(1)}` || 'ед'
+        unit: `${data.unit.trim()[0].toLowerCase()}${data.unit.trim().slice(1)}` || 'ед'
       })
 
       open({

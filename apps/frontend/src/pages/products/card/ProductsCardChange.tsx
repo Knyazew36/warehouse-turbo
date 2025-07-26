@@ -1,5 +1,6 @@
 import { Product } from '@/entitites/product/model/product.type'
 import InputNumber from '@/shared/input-number/InputNumber'
+import { formatNumber } from '@/shared/utils/formatNumber'
 import clsx from 'clsx'
 import { FC, useState } from 'react'
 import ProductDelete from '../delete/ProductDelete'
@@ -116,9 +117,9 @@ const ProductsCardChange: FC<IProductsCard> = ({
       <div className='text-center'>
         <span className='block text-sm text-gray-500 dark:text-neutral-500'>остаток на складе</span>
 
-        <h3 className='text-3xl sm:text-4xl lg:text-5xl font-semibold text-gray-800 dark:text-neutral-200'>{`${
+        <h3 className='text-3xl sm:text-4xl lg:text-5xl font-semibold text-gray-800 dark:text-neutral-200'>{`${formatNumber(
           data.quantity
-        } ${data.unit ? data.unit : ''}`}</h3>
+        )} ${data.unit ? data.unit : ''}`}</h3>
 
         {withInputNumber && (
           <div className='flex flex-col gap-2 mt-4'>

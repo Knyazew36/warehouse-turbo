@@ -14,6 +14,7 @@ import { Settings, UserPlus } from 'lucide-react'
 import { useUserRole } from '@/entitites/user/api/user.api'
 import { useOrganization } from '@/entitites/organization/api/organization.api'
 import { useOrganizationStore } from '@/entitites/organization/model/organization.store'
+import Loader from '@/shared/loader/ui/Loader'
 
 const MenuPage: FC = () => {
   const { isAdmin, isOwner, isIT, isOperator, role } = useAuthStore()
@@ -21,17 +22,18 @@ const MenuPage: FC = () => {
   const user = initDataUser()
   const userId = user?.id?.toString()
 
-  const { data: userRole, isLoading } = useUserRole({ id: userId || '' })
+  const { data: userRole, isLoading, isPending } = useUserRole({ id: userId || '' })
 
   // Если роль еще не загружена, показываем загрузку
-  if (!role || isLoading) {
+  if (!role || isLoading || isPending) {
     return (
-      <div className='flex items-center justify-center min-h-screen'>
-        <div className='text-center'>
-          <div className='animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900 mx-auto'></div>
-          <p className='mt-2 text-sm text-gray-500'>Загрузка...</p>
-        </div>
-      </div>
+      <Loader />
+      // <div className='flex items-center justify-center min-h-screen'>
+      //   <div className='text-center'>
+      //     <div className='animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900 mx-auto'></div>
+      //     <p className='mt-2 text-sm text-gray-500'>Загрузка...</p>
+      //   </div>
+      // </div>
     )
   }
 

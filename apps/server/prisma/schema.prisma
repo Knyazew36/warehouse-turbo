@@ -73,8 +73,8 @@ model UserOrganization {
 model Product {
   id           Int       @id @default(autoincrement())
   name         String
-  quantity     Int
-  minThreshold Int
+  quantity     Float
+  minThreshold Float
   unit         String?   @default("ед")
   category     String?
   createdAt    DateTime  @default(now())
