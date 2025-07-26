@@ -102,6 +102,11 @@ const InputNumber: React.FC<InputNumberProps> = ({
   const handleFocus = () => {
     // Сбрасываем флаг первого ввода при фокусе
     setIsFirstInput(true)
+
+    // Выделяем весь текст при фокусе
+    if (inputRef.current) {
+      inputRef.current.select()
+    }
   }
 
   return (
@@ -117,6 +122,7 @@ const InputNumber: React.FC<InputNumberProps> = ({
         <div className='w-full flex justify-between items-center gap-x-3'>
           <input
             {...inputProps}
+            ref={inputRef}
             className='w-full p-0 bg-transparent border-0 text-gray-800 focus:ring-0 [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none dark:text-white'
             style={{ MozAppearance: 'textfield' }}
             type='number'

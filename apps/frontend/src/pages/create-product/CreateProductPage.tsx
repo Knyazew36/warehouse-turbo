@@ -28,7 +28,7 @@ const CreateProductPage = () => {
     reset,
     formState: { errors, isSubmitting, isValid }
   } = useForm<FormValues>({
-    defaultValues: { name: '', minThreshold: null, quantity: null, unit: 'ед' }
+    defaultValues: { name: '', minThreshold: 0, quantity: 0, unit: 'ед' }
   })
   const { mutateAsync: createProduct } = useCreateProduct()
   const [buttonLoading, setButtonLoading] = useState(false)
@@ -82,9 +82,9 @@ const CreateProductPage = () => {
             <Controller
               control={control}
               name='quantity'
-              // rules={{
-              //   min: { value: 0, message: 'Не может быть меньше 0' }
-              // }}
+              rules={{
+                min: { value: 0, message: 'Не может быть меньше 0' }
+              }}
               render={({ field }) => (
                 <InputNumber
                   label='Сейчас на складе'
@@ -112,10 +112,10 @@ const CreateProductPage = () => {
             <Controller
               control={control}
               name='minThreshold'
-              // rules={{
-              //   required: 'Мин. остаток обязателен',
-              //   min: { value: 0, message: 'Не может быть меньше 0' }
-              // }}
+              rules={{
+                required: 'Мин. остаток обязателен',
+                min: { value: 0, message: 'Не может быть меньше 0' }
+              }}
               render={({ field }) => (
                 <InputNumber
                   label='Минимальный остаток'
