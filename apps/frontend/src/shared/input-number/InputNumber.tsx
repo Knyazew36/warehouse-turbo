@@ -1,6 +1,6 @@
 // src/shared/input-number/InputNumber.tsx
 import { hapticFeedback } from '@telegram-apps/sdk-react'
-import React from 'react'
+import React, { useState, useRef } from 'react'
 
 export interface InputNumberProps extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 'onChange' | 'value'> {
   /** Значение поля */
@@ -26,6 +26,9 @@ const InputNumber: React.FC<InputNumberProps> = ({
   label,
   ...inputProps
 }) => {
+  const [isFirstInput, setIsFirstInput] = useState(true)
+  const inputRef = useRef<HTMLInputElement>(null)
+
   const handleDecrement = () => {
     const currentValue = value ?? 0
     const next = currentValue - step
@@ -44,6 +47,13 @@ const InputNumber: React.FC<InputNumberProps> = ({
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     let inputValue = e.target.value
+
+    // Если это первый ввод и значение равно 0, очищаем поле
+    if (isFirstInput && value === 0 && inputValue === '0') {
+      e.target.value = ''
+      setIsFirstInput(false)
+      return
+    }
 
     // Разрешаем ввод десятичных чисел (точка) и отрицательных чисел
     if (min !== undefined && min < 0) {
@@ -85,6 +95,13 @@ const InputNumber: React.FC<InputNumberProps> = ({
         }
       }
     }
+
+    setIsFirstInput(false)
+  }
+
+  const handleFocus = () => {
+    // Сбрасываем флаг первого ввода при фокусе
+    setIsFirstInput(true)
   }
 
   return (
@@ -103,11 +120,12 @@ const InputNumber: React.FC<InputNumberProps> = ({
             className='w-full p-0 bg-transparent border-0 text-gray-800 focus:ring-0 [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none dark:text-white'
             style={{ MozAppearance: 'textfield' }}
             type='number'
-            value={value === 0 ? '' : (value ?? '')}
+            value={value ?? ''}
             onChange={handleInputChange}
             disabled={disabled}
             inputMode='decimal'
             placeholder='0'
+            onFocus={handleFocus}
           />
           <div className='flex justify-end items-center gap-x-1.5'>
             <button
