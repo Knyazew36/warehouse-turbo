@@ -99,6 +99,8 @@ const InputNumber: React.FC<InputNumberProps> = ({
     //   }
     // }
     const v = Number(inputValue)
+
+    console.info(v)
     if (min !== undefined && v < min) {
       onChange(min)
     } else if (max !== undefined && v > max) {
