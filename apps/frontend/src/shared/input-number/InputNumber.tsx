@@ -30,8 +30,8 @@ const InputNumber: React.FC<InputNumberProps> = ({
   const inputRef = useRef<HTMLInputElement>(null)
 
   const handleDecrement = () => {
-    const currentValue = value ?? 0
-    const next = currentValue - step
+    const currentValue = value ?? null
+    const next = currentValue ? currentValue - step : 0
     if (min !== undefined && next < min) return
     onChange(next)
     hapticFeedback.impactOccurred('light')
@@ -48,35 +48,35 @@ const InputNumber: React.FC<InputNumberProps> = ({
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     let inputValue = e.target.value
 
-    // // Если это первый ввод и значение равно 0, очищаем поле
-    // if (isFirstInput && value === 0 && inputValue === '0') {
-    //   e.target.value = ''
-    //   setIsFirstInput(false)
-    //   return
-    // }
+    // Если это первый ввод и значение равно 0, очищаем поле
+    if (isFirstInput && value === 0 && inputValue === '0') {
+      e.target.value = ''
+      setIsFirstInput(false)
+      return
+    }
 
-    // // Разрешаем ввод десятичных чисел (точка) и отрицательных чисел
-    // if (min !== undefined && min < 0) {
-    //   // Разрешаем цифры, точку и минус
-    //   inputValue = inputValue.replace(/[^\d.-]/g, '')
-    //   // Не допускаем более одного минуса и только в начале
-    //   inputValue = inputValue.replace(/(?!^)-/g, '')
-    //   // Не допускаем более одной точки
-    //   const dotCount = (inputValue.match(/\./g) || []).length
-    //   if (dotCount > 1) {
-    //     const parts = inputValue.split('.')
-    //     inputValue = parts[0] + '.' + parts.slice(1).join('')
-    //   }
-    // } else {
-    //   // Разрешаем цифры и точку для положительных чисел
-    //   inputValue = inputValue.replace(/[^\d.]/g, '')
-    //   // Не допускаем более одной точки
-    //   const dotCount = (inputValue.match(/\./g) || []).length
-    //   if (dotCount > 1) {
-    //     const parts = inputValue.split('.')
-    //     inputValue = parts[0] + '.' + parts.slice(1).join('')
-    //   }
-    // }
+    // Разрешаем ввод десятичных чисел (точка) и отрицательных чисел
+    if (min !== undefined && min < 0) {
+      // Разрешаем цифры, точку и минус
+      inputValue = inputValue.replace(/[^\d.-]/g, '')
+      // Не допускаем более одного минуса и только в начале
+      inputValue = inputValue.replace(/(?!^)-/g, '')
+      // Не допускаем более одной точки
+      const dotCount = (inputValue.match(/\./g) || []).length
+      if (dotCount > 1) {
+        const parts = inputValue.split('.')
+        inputValue = parts[0] + '.' + parts.slice(1).join('')
+      }
+    } else {
+      // Разрешаем цифры и точку для положительных чисел
+      inputValue = inputValue.replace(/[^\d.]/g, '')
+      // Не допускаем более одной точки
+      const dotCount = (inputValue.match(/\./g) || []).length
+      if (dotCount > 1) {
+        const parts = inputValue.split('.')
+        inputValue = parts[0] + '.' + parts.slice(1).join('')
+      }
+    }
 
     // Обновляем значение input
     if (inputValue === '' || inputValue === '-') {
