@@ -18,6 +18,7 @@ const ReportPage = () => {
 
   const [searchTerm, setSearchTerm] = useState('')
   const [consumptions, setConsumptions] = useState<{ [productId: number]: number }>({})
+  const [comments, setComments] = useState<{ [productId: number]: string }>({})
 
   const filteredData = useMemo(() => {
     const term = searchTerm.trim().toLowerCase()
@@ -32,12 +33,19 @@ const ReportPage = () => {
     setConsumptions(prev => ({ ...prev, [productId]: validatedValue }))
   }
 
+  const handleCommentChange = (productId: number, comment: string) => {
+    setComments(prev => ({ ...prev, [productId]: comment }))
+  }
+
   const handleCancel = () => {
     const reset: { [productId: number]: number } = {}
+    const resetComments: { [productId: number]: string } = {}
     data.forEach(product => {
       reset[product.id] = 0
+      resetComments[product.id] = ''
     })
     setConsumptions(reset)
+    setComments(resetComments)
   }
 
   const onSubmit = async () => {
@@ -46,7 +54,8 @@ const ReportPage = () => {
         .filter(([_, consumed]) => consumed > 0)
         .map(([productId, consumed]) => ({
           productId: Number(productId),
-          consumed: Number(consumed)
+          consumed: Number(consumed),
+          comment: comments[Number(productId)] || undefined
         }))
     }
     try {
@@ -94,10 +103,8 @@ const ReportPage = () => {
                 min={0}
                 max={card.quantity}
                 comment={{
-                  text: card.comment || '',
-                  onChange: (text: string) => {
-                    setConsumptions(prev => ({ ...prev, [card.id]: text }))
-                  }
+                  text: comments[card.id] || '',
+                  onChange: (text: string) => handleCommentChange(card.id, text)
                 }}
               />
             ))

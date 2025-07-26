@@ -21,7 +21,8 @@ export class ShiftsService {
           organizationId,
           consumptions: consumptions.map(c => ({
             productId: c.productId,
-            consumed: c.consumed
+            consumed: c.consumed,
+            comment: c.comment || null
           }))
         }
       })

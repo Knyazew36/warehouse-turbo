@@ -1,4 +1,4 @@
-import { IsArray, ArrayMinSize, ValidateNested, IsNumber, Min, IsPositive } from 'class-validator'
+import { IsArray, ArrayMinSize, ValidateNested, IsNumber, Min, IsPositive, IsOptional, IsString } from 'class-validator'
 import { Type } from 'class-transformer'
 
 export class ConsumptionDto {
@@ -9,6 +9,10 @@ export class ConsumptionDto {
   @IsPositive()
   @Min(0.01)
   consumed: number
+
+  @IsOptional()
+  @IsString()
+  comment?: string
 }
 
 export class CreateShiftReportDto {

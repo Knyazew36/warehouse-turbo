@@ -154,10 +154,14 @@ const ProductsCardChange: FC<IProductsCard> = ({
         )}
 
         {comment && (
-          <InputDefault
-            value={comment.text}
-            onChange={comment.onChange}
-          />
+          <div className='mt-4'>
+            <InputDefault
+              value={comment.text}
+              onChange={comment.onChange}
+              placeholder='Добавить комментарий к товару...'
+              label='Комментарий'
+            />
+          </div>
         )}
       </div>
     </div>

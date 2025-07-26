@@ -12,4 +12,5 @@ export interface ShiftReport {
 export interface Consumption {
   productId: number
   consumed: number
+  comment?: string
 }
