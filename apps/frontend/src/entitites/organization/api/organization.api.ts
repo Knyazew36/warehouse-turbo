@@ -1,3 +1,4 @@
+import { AxiosResponse } from 'axios'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { apiDomain } from '@/shared/api/model/constants'
 import $api from '@/shared/api/model/request'
@@ -9,6 +10,8 @@ import {
   IAddUserToOrganization,
   Role
 } from '../model/organization.type'
+import { Consumption } from '@/entitites/shift/model/shift.type'
+import { BaseResponse } from '@/shared/api'
 
 const ORGANIZATION_KEYS = {
   all: ['organizations'] as const,

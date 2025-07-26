@@ -26,15 +26,7 @@ const MenuPage: FC = () => {
 
   // Если роль еще не загружена, показываем загрузку
   if (!role || isLoading || isPending) {
-    return (
-      <Loader />
-      // <div className='flex items-center justify-center min-h-screen'>
-      //   <div className='text-center'>
-      //     <div className='animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900 mx-auto'></div>
-      //     <p className='mt-2 text-sm text-gray-500'>Загрузка...</p>
-      //   </div>
-      // </div>
-    )
+    return <Loader />
   }
 
   console.info(isAdmin, isOwner, isIT, isOperator, role)
@@ -186,7 +178,6 @@ const MenuPage: FC = () => {
       to: '/organization-management',
       title: 'Организации',
       color: 'purple',
-      isDevelop: true,
       icon: (
         <svg
           xmlns='http://www.w3.org/2000/svg'
