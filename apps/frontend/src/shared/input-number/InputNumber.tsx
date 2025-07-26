@@ -87,6 +87,13 @@ const InputNumber: React.FC<InputNumberProps> = ({
     }
   }
 
+  const handleFocus = (e: React.FocusEvent<HTMLInputElement>) => {
+    // Если значение равно 0, очищаем поле при фокусе
+    if (value === 0) {
+      e.target.value = ''
+    }
+  }
+
   return (
     <div className='flex flex-col gap-1 w-full'>
       {label && (
@@ -103,8 +110,9 @@ const InputNumber: React.FC<InputNumberProps> = ({
             className='w-full p-0 bg-transparent border-0 text-gray-800 focus:ring-0 [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none dark:text-white'
             style={{ MozAppearance: 'textfield' }}
             type='number'
-            value={value ?? ''}
+            value={value === 0 ? '' : (value ?? '')}
             onChange={handleInputChange}
+            onFocus={handleFocus}
             disabled={disabled}
             inputMode='decimal'
             placeholder='0'
