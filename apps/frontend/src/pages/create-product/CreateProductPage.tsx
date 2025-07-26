@@ -82,9 +82,9 @@ const CreateProductPage = () => {
             <Controller
               control={control}
               name='quantity'
-              rules={{
-                min: { value: 0, message: 'Не может быть меньше 0' }
-              }}
+              // rules={{
+              //   min: { value: 0, message: 'Не может быть меньше 0' }
+              // }}
               render={({ field }) => (
                 <InputNumber
                   label='Сейчас на складе'
@@ -112,10 +112,10 @@ const CreateProductPage = () => {
             <Controller
               control={control}
               name='minThreshold'
-              rules={{
-                required: 'Мин. остаток обязателен',
-                min: { value: 0, message: 'Не может быть меньше 0' }
-              }}
+              // rules={{
+              //   required: 'Мин. остаток обязателен',
+              //   min: { value: 0, message: 'Не может быть меньше 0' }
+              // }}
               render={({ field }) => (
                 <InputNumber
                   label='Минимальный остаток'
