@@ -15,6 +15,7 @@ import { useUserRole } from '@/entitites/user/api/user.api'
 import { useOrganization } from '@/entitites/organization/api/organization.api'
 import { useOrganizationStore } from '@/entitites/organization/model/organization.store'
 import Loader from '@/shared/loader/ui/Loader'
+import Header from '@/shared/ui/header/ui/Header'
 
 const MenuPage: FC = () => {
   const { isAdmin, isOwner, isIT, isOperator, role } = useAuthStore()
@@ -242,6 +243,7 @@ const MenuPage: FC = () => {
   return (
     <Page back={false}>
       <div className='flex flex-col flex-1 pt-4'>
+        <Header />
         <AlertProductLowStock />
 
         <Link
