@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { Page } from '@/components/Page'
 import { useCreateOrganization } from '@/entitites/organization/api/organization.api'
 import { ICreateOrganization } from '@/entitites/organization/model/organization.type'
@@ -7,14 +7,21 @@ import { Building2, ArrowLeft, Info } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 import { hapticFeedback } from '@telegram-apps/sdk-react'
 import InfoMessage from '@/shared/ui/info/ui/Info'
+import { useOrganizationStore } from '@/entitites/organization/model/organization.store'
 
 const CreateOrganizationPage: React.FC = () => {
   const navigate = useNavigate()
   const { mutate: createOrganization, isPending } = useCreateOrganization()
+  const { setOrganizationLoading, clearCache } = useOrganizationStore()
   const [formData, setFormData] = useState<ICreateOrganization>({
     name: '',
     description: ''
   })
+
+  // Сбрасываем состояние загрузки при монтировании компонента
+  useEffect(() => {
+    setOrganizationLoading(false)
+  }, [setOrganizationLoading])
 
   const handleCreateOrganization = () => {
     if (!formData.name.trim()) {
@@ -22,19 +29,23 @@ const CreateOrganizationPage: React.FC = () => {
       return
     }
 
+    setOrganizationLoading(true)
     createOrganization(formData, {
       onSuccess: () => {
         setFormData({ name: '', description: '' })
+        clearCache() // Очищаем кэш для обновления данных
         hapticFeedback.notificationOccurred('success')
         navigate('/organization-management')
       },
       onError: () => {
+        setOrganizationLoading(false)
         hapticFeedback.notificationOccurred('error')
       }
     })
   }
 
   const handleBack = () => {
+    setOrganizationLoading(false)
     navigate('/organization-management')
   }
 

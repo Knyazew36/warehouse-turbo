@@ -18,14 +18,23 @@ import Loader from '@/shared/loader/ui/Loader'
 
 const MenuPage: FC = () => {
   const { isAdmin, isOwner, isIT, isOperator, role } = useAuthStore()
-  const { currentOrganization } = useOrganizationStore()
+  const { currentOrganization, isOrganizationLoading, setOrganizationLoading } = useOrganizationStore()
   const user = initDataUser()
   const userId = user?.id?.toString()
 
-  const { data: userRole, isLoading, isPending } = useUserRole({ id: userId || '' })
+  const { data: userRole, isLoading, isPending, error } = useUserRole({ id: userId || '' })
 
-  // Если роль еще не загружена, показываем загрузку
-  if (!role || isLoading || isPending) {
+  // Сбрасываем состояние загрузки организации после успешной загрузки роли или ошибки
+  useEffect(() => {
+    if ((!isLoading && !isPending && userRole) || error) {
+      if (isOrganizationLoading) {
+        setOrganizationLoading(false)
+      }
+    }
+  }, [isLoading, isPending, userRole, error, isOrganizationLoading, setOrganizationLoading])
+
+  // Если роль еще не загружена или организация загружается, показываем загрузку
+  if (!role || isLoading || isPending || isOrganizationLoading) {
     return <Loader />
   }
 

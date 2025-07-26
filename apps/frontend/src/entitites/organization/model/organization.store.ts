@@ -7,8 +7,10 @@ import { useEffect } from 'react'
 interface OrganizationStore {
   currentOrganization: IUserOrganization | null
   organizationId: number | null
+  isOrganizationLoading: boolean
   setCurrentOrganization: (organization: IUserOrganization | null) => void
   setOrganizationId: (id: number | null) => void
+  setOrganizationLoading: (loading: boolean) => void
   clearCurrentOrganization: () => void
   clearCache: () => void
 }
@@ -18,6 +20,7 @@ export const useOrganizationStore = create<OrganizationStore>()(
     set => ({
       currentOrganization: null,
       organizationId: null,
+      isOrganizationLoading: false,
       setCurrentOrganization: organization => {
         const newOrganizationId = organization?.organizationId || null
         set(
@@ -31,6 +34,9 @@ export const useOrganizationStore = create<OrganizationStore>()(
       },
       setOrganizationId: id => {
         set({ organizationId: id }, false, 'setOrganizationId')
+      },
+      setOrganizationLoading: loading => {
+        set({ isOrganizationLoading: loading }, false, 'setOrganizationLoading')
       },
       clearCurrentOrganization: () => {
         set(
