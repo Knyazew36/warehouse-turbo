@@ -28,7 +28,7 @@ const CreateProductPage = () => {
     reset,
     formState: { errors, isSubmitting, isValid }
   } = useForm<FormValues>({
-    defaultValues: { name: '', minThreshold: 0, quantity: 0, unit: 'ед' }
+    defaultValues: { name: '', minThreshold: '', quantity: '', unit: 'ед' }
   })
   const { mutateAsync: createProduct } = useCreateProduct()
   const [buttonLoading, setButtonLoading] = useState(false)
