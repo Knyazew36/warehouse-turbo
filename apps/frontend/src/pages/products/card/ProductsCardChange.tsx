@@ -9,6 +9,7 @@ import Switch from '@/shared/ui/switch/ui/Switch'
 import LoaderSection from '@/shared/loader/ui/LoaderSection'
 import Spinner from '@/shared/spinner/Spinner'
 import InputDefault from '@/shared/ui/input-default/ui/InputDefault'
+import { Textarea } from '@/components/ui/textarea'
 
 export interface IProductsCard {
   value?: number
@@ -155,11 +156,10 @@ const ProductsCardChange: FC<IProductsCard> = ({
 
         {comment && (
           <div className='mt-4'>
-            <InputDefault
+            <Textarea
               value={comment.text}
-              onChange={comment.onChange}
-              placeholder='Добавить комментарий к товару...'
-              label='Комментарий'
+              onChange={e => comment.onChange(e.target.value)}
+              placeholder='Комментарий...'
             />
           </div>
         )}
