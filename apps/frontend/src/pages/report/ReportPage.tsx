@@ -93,6 +93,12 @@ const ReportPage = () => {
                 data={card}
                 min={0}
                 max={card.quantity}
+                comment={{
+                  text: card.comment || '',
+                  onChange: (text: string) => {
+                    setConsumptions(prev => ({ ...prev, [card.id]: text }))
+                  }
+                }}
               />
             ))
           ) : (

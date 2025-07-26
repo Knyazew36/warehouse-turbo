@@ -8,6 +8,7 @@ import { useUpdateProduct } from '@/entitites/product/api/product.api'
 import Switch from '@/shared/ui/switch/ui/Switch'
 import LoaderSection from '@/shared/loader/ui/LoaderSection'
 import Spinner from '@/shared/spinner/Spinner'
+import InputDefault from '@/shared/ui/input-default/ui/InputDefault'
 
 export interface IProductsCard {
   value?: number
@@ -29,6 +30,11 @@ export interface IProductsCard {
     onSave?: (id: number, minThreshold: number) => void
     isLoading?: boolean
   }
+
+  comment?: {
+    text: string
+    onChange: (text: string) => void
+  }
 }
 
 const ProductsCardChange: FC<IProductsCard> = ({
@@ -44,7 +50,7 @@ const ProductsCardChange: FC<IProductsCard> = ({
   withSwitch,
   withSaveButton,
   onChangeActive,
-
+  comment,
   inputNumberLabel
 }) => {
   const { mutate: updateProduct, isPending } = useUpdateProduct()
@@ -145,6 +151,13 @@ const ProductsCardChange: FC<IProductsCard> = ({
               )}
             </div>
           </div>
+        )}
+
+        {comment && (
+          <InputDefault
+            value={comment.text}
+            onChange={comment.onChange}
+          />
         )}
       </div>
     </div>
