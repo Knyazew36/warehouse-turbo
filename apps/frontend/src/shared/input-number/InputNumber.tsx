@@ -1,7 +1,7 @@
 // src/shared/input-number/InputNumber.tsx
 import { hapticFeedback } from '@telegram-apps/sdk-react'
 import React, { useState, useRef } from 'react'
-
+import { useNumberFormat } from '@react-input/number-format'
 export interface InputNumberProps extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 'onChange' | 'value'> {
   /** Значение поля */
   value?: number | null
@@ -27,7 +27,10 @@ const InputNumber: React.FC<InputNumberProps> = ({
   ...inputProps
 }) => {
   const [isFirstInput, setIsFirstInput] = useState(true)
-  const inputRef = useRef<HTMLInputElement>(null)
+  const inputRef = useNumberFormat({
+    locales: 'ru',
+    maximumFractionDigits: 2
+  })
 
   const handleDecrement = () => {
     const currentValue = value ?? null
@@ -48,52 +51,60 @@ const InputNumber: React.FC<InputNumberProps> = ({
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     let inputValue = e.target.value
 
-    // Если это первый ввод и значение равно 0, очищаем поле
-    if (isFirstInput && value === 0 && inputValue === '0') {
-      e.target.value = ''
-      setIsFirstInput(false)
-      return
-    }
+    // // Если это первый ввод и значение равно 0, очищаем поле
+    // if (isFirstInput && value === 0 && inputValue === '0') {
+    //   e.target.value = ''
+    //   setIsFirstInput(false)
+    //   return
+    // }
 
     // Разрешаем ввод десятичных чисел (точка) и отрицательных чисел
-    if (min !== undefined && min < 0) {
-      // Разрешаем цифры, точку и минус
-      inputValue = inputValue.replace(/[^\d.-]/g, '')
-      // Не допускаем более одного минуса и только в начале
-      inputValue = inputValue.replace(/(?!^)-/g, '')
-      // Не допускаем более одной точки
-      const dotCount = (inputValue.match(/\./g) || []).length
-      if (dotCount > 1) {
-        const parts = inputValue.split('.')
-        inputValue = parts[0] + '.' + parts.slice(1).join('')
-      }
-    } else {
-      // Разрешаем цифры и точку для положительных чисел
-      inputValue = inputValue.replace(/[^\d.]/g, '')
-      // Не допускаем более одной точки
-      const dotCount = (inputValue.match(/\./g) || []).length
-      if (dotCount > 1) {
-        const parts = inputValue.split('.')
-        inputValue = parts[0] + '.' + parts.slice(1).join('')
-      }
-    }
+    // if (min !== undefined && min < 0) {
+    //   // Разрешаем цифры, точку и минус
+    //   inputValue = inputValue.replace(/[^\d.-]/g, '')
+    //   // Не допускаем более одного минуса и только в начале
+    //   inputValue = inputValue.replace(/(?!^)-/g, '')
+    //   // Не допускаем более одной точки
+    //   const dotCount = (inputValue.match(/\./g) || []).length
+    //   if (dotCount > 1) {
+    //     const parts = inputValue.split('.')
+    //     inputValue = parts[0] + '.' + parts.slice(1).join('')
+    //   }
+    // } else {
+    //   // Разрешаем цифры и точку для положительных чисел
+    //   inputValue = inputValue.replace(/[^\d.]/g, '')
+    //   // Не допускаем более одной точки
+    //   const dotCount = (inputValue.match(/\./g) || []).length
+    //   if (dotCount > 1) {
+    //     const parts = inputValue.split('.')
+    //     inputValue = parts[0] + '.' + parts.slice(1).join('')
+    //   }
+    // }
 
     // Обновляем значение input
-    if (inputValue === '' || inputValue === '-') {
-      onChange(undefined)
+    // if (inputValue === '' || inputValue === '-') {
+    //   onChange(undefined)
+    // } else {
+    //   const v = Number(inputValue)
+    //   if (isNaN(v)) {
+    //     onChange(undefined)
+    //   } else {
+    //     if (min !== undefined && v < min) {
+    //       onChange(min)
+    //     } else if (max !== undefined && v > max) {
+    //       onChange(max)
+    //     } else {
+    //       onChange(v)
+    //     }
+    //   }
+    // }
+    const v = Number(inputValue)
+    if (min !== undefined && v < min) {
+      onChange(min)
+    } else if (max !== undefined && v > max) {
+      onChange(max)
     } else {
-      const v = Number(inputValue)
-      if (isNaN(v)) {
-        onChange(undefined)
-      } else {
-        if (min !== undefined && v < min) {
-          onChange(min)
-        } else if (max !== undefined && v > max) {
-          onChange(max)
-        } else {
-          onChange(v)
-        }
-      }
+      onChange(v)
     }
 
     setIsFirstInput(false)

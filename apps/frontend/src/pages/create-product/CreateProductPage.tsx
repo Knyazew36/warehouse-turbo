@@ -26,6 +26,7 @@ const CreateProductPage = () => {
     control,
     handleSubmit,
     reset,
+    watch,
     formState: { errors, isSubmitting, isValid }
   } = useForm<FormValues>({
     defaultValues: { name: '', minThreshold: undefined, quantity: undefined, unit: 'ед' }
@@ -54,6 +55,9 @@ const CreateProductPage = () => {
       setButtonLoading(false)
     }
   }
+
+  console.info('tr', watch('minThreshold'))
+
   return (
     <Page back>
       <PageHeader title='Создать товар' />
@@ -113,8 +117,8 @@ const CreateProductPage = () => {
               control={control}
               name='minThreshold'
               rules={{
-                required: 'Мин. остаток обязателен',
-                min: { value: 0, message: 'Не может быть меньше 0' }
+                required: 'Мин. остаток обязателен'
+                // min: { value: 0, message: 'Не может быть меньше 0' }
               }}
               render={({ field }) => (
                 <InputNumber
