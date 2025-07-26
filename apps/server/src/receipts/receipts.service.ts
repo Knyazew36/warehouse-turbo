@@ -5,6 +5,7 @@ import { CreateReceiptDto } from './dto/create-receipt.dto'
 export interface StatisticsProduct {
   product: any // Можно заменить на Product из @prisma/client
   quantity: number
+  comment?: string // Добавляем поле для комментария
 }
 
 export interface StatisticsOperation {
@@ -120,10 +121,10 @@ export class ReceiptsService {
       }
     })
 
-    // Расходы (как раньше)
+    // Расходы (с комментариями)
     const outcomes = shiftReports.map(sr => {
       const user = userMap.get(sr.userId) || null
-      let consumptions: { product: any; quantity: number }[] = []
+      let consumptions: { product: any; quantity: number; comment?: string }[] = []
       try {
         let raw = sr.consumptions
         if (typeof raw === 'string') {
@@ -132,7 +133,8 @@ export class ReceiptsService {
         if (!Array.isArray(raw)) raw = []
         consumptions = raw.map((c: any) => ({
           product: productMap.get(c.productId) || null,
-          quantity: c.consumed
+          quantity: c.consumed,
+          comment: c.comment || undefined
         }))
       } catch {
         consumptions = []

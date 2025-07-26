@@ -17,6 +17,7 @@ export interface Receipt {
 export interface StatisticsProduct {
   product: Product | null
   quantity: number
+  comment?: string
 }
 
 export interface StatisticsOperation {

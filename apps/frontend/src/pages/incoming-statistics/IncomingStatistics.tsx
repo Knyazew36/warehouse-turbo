@@ -111,10 +111,18 @@ const IncomingStatistics = () => {
                   <div className='border-t border-gray-200 dark:border-neutral-700 my-2'></div>
                   {item.products.map(product => (
                     <Fragment key={product.product?.id}>
-                      <dt className='sm:py-1 text-sm text-gray-500 dark:text-neutral-500'>{product.product?.name}</dt>
-                      <dd className='pb-3 sm:py-1 min-h-8 text-sm text-gray-800 dark:text-neutral-200'>
-                        {formatNumber(product.quantity)} {product.product?.unit}
-                      </dd>
+                      <div className='flex flex-col odd:bg-gray-50 dark:odd:bg-neutral-800 p-2 rounded-md'>
+                        <dt className='sm:py-1 text-sm text-gray-500 dark:text-neutral-500'>{product.product?.name}</dt>
+                        <dd className='  text-sm text-gray-800 dark:text-neutral-200'>
+                          {formatNumber(product.quantity)} {product.product?.unit}
+                        </dd>
+                        {product.comment && (
+                          <Fragment>
+                            <dt className='sm:py-1 mt-2 text-sm text-gray-500 dark:text-neutral-500'>Комментарий:</dt>
+                            <dd className='   text-sm text-gray-800 dark:text-neutral-200'>{product.comment}</dd>
+                          </Fragment>
+                        )}
+                      </div>
                     </Fragment>
                   ))}
                 </dl>
