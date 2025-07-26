@@ -94,7 +94,7 @@ const CreateProductPage = () => {
                 />
               )}
             />
-            {errors.minThreshold && <p className='mt-1 text-xs text-red-500'>{errors.minThreshold.message}</p>}
+            {errors.quantity && <p className='mt-1 text-xs text-red-500'>{errors.quantity.message}</p>}
           </label>
 
           <Controller
@@ -114,10 +114,10 @@ const CreateProductPage = () => {
             <Controller
               control={control}
               name='minThreshold'
-              rules={{
-                required: 'Мин. остаток обязателен'
-                // min: { value: 0, message: 'Не может быть меньше 0' }
-              }}
+              // rules={{
+              //   required: 'Мин. остаток обязателен'
+              //   // min: { value: 0, message: 'Не может быть меньше 0' }
+              // }}
               render={({ field }) => (
                 <InputNumber
                   label='Минимальный остаток'
