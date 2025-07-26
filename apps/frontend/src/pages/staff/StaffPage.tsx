@@ -9,6 +9,7 @@ import clsx from 'clsx'
 import React, { useMemo, useState } from 'react'
 import Loader from '@/shared/loader/ui/Loader'
 import { useOrganizationStore } from '@/entitites/organization/model/organization.store'
+import MenuButton from '../menu-page/menu-button/MenuButton'
 
 const StaffPage = () => {
   const { data: employees, isLoading } = useUsersEmployees()
@@ -100,6 +101,30 @@ const StaffPage = () => {
       {filteredData && view === 'table' && filteredData.length > 0 && <UserTable data={filteredData} />}
 
       {filteredData && filteredData.length === 0 && <Empty title='Сотрудники не найдены' />}
+      <MenuButton
+        to={'/add-user'}
+        title='Добавить сотрудника'
+        color='neutral'
+        // isBlocked={!isIT && !isOwner && !isAdmin}
+        iconClassName='border-2 border-dotted border-neutral-700'
+        icon={
+          <svg
+            className='shrink-0 size-5'
+            xmlns='http://www.w3.org/2000/svg'
+            width='24'
+            height='24'
+            viewBox='0 0 24 24'
+            fill='none'
+            stroke='currentColor'
+            strokeWidth='2'
+            strokeLinecap='round'
+            strokeLinejoin='round'
+          >
+            <path d='M5 12h14' />
+            <path d='M12 5v14' />
+          </svg>
+        }
+      />
     </Page>
   )
 }
