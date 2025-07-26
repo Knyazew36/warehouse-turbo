@@ -4,7 +4,7 @@ import React, { useState, useRef } from 'react'
 
 export interface InputNumberProps extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 'onChange' | 'value'> {
   /** Значение поля */
-  value?: number
+  value?: number | null
   /** Коллбек изменения значения */
   onChange: (value: number | undefined) => void
   /** Шаг инкремента/декремента */
