@@ -2,7 +2,7 @@ import { Page } from '@/components/Page'
 import React, { FC, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 
-import { hapticFeedback, initDataUser } from '@telegram-apps/sdk-react'
+import { hapticFeedback, initDataUser, openTelegramLink } from '@telegram-apps/sdk-react'
 import AlertProductLowStock from '@/widgets/alert-product-low-stock/AlertProductLowStock'
 
 import { useAuthStore } from '@/entitites/auth/model/auth.store'
@@ -17,6 +17,7 @@ import { useOrganizationStore } from '@/entitites/organization/model/organizatio
 import Loader from '@/shared/loader/ui/Loader'
 import Header from '@/shared/ui/header/ui/Header'
 import BottomSheetSupport from '@/shared/bottom-sheet/bottom-sheet-support/BottomSheetSupport'
+import clsx from 'clsx'
 
 const MenuPage: FC = () => {
   const { isAdmin, isOwner, isIT, isOperator, role } = useAuthStore()
@@ -412,8 +413,28 @@ const MenuPage: FC = () => {
               </svg>
             }
           />
+          <button
+            onClick={() => {
+              openTelegramLink('https://t.me/Knyaz_sv')
+              hapticFeedback.impactOccurred('rigid')
+            }}
+            className='p-4 group relative overflow-hidden flex flex-col bg-white border border-gray-200 rounded-xl focus:outline-hidden dark:bg-neutral-900 dark:border-neutral-700'
+          >
+            <span
+              className={clsx(
+                'flex justify-center relative items-center size-12 xl:size-16 mx-auto text-orange-600 dark:text-orange-500 rounded-2xl bg-orange-50 dark:bg-orange-900'
+              )}
+            >
+              <MessageCircle className='shrink-0 size-5 xl:w-6 xl:h-6 text-orange-600 dark:text-orange-500' />
+            </span>
 
-          <BottomSheetSupport />
+            <div className='text-center  mt-2'>
+              <p className='truncate text-xs xl:text-sm font-medium text-gray-800 group-hover:text-pink-600 group-focus:text-pink-600 dark:text-neutral-200 dark:group-hover:text-neutral-400 dark:group-focus:text-neutral-400'>
+                Поддержка
+              </p>
+            </div>
+          </button>
+          {/* <BottomSheetSupport /> */}
         </div>
         {/* End Grid */}
       </div>
