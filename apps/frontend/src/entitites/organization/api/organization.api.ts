@@ -182,13 +182,27 @@ export const useUpdateUserRole = () => {
 // Получить организации, доступные пользователю (включая приглашения)
 export const useAvailableOrganizations = () => {
   return useQuery<{
-    myOrganizations: IUserOrganization[]
-    invitedOrganizations: IOrganization[]
+    data: {
+      myOrganizations: IUserOrganization[]
+      invitedOrganizations: IOrganization[]
+    }
+    user: BaseResponse<{
+      myOrganizations: IUserOrganization[]
+      invitedOrganizations: IOrganization[]
+    }>['user']
   }>({
     queryKey: [...ORGANIZATION_KEYS.my(), 'available'],
     queryFn: async () => {
-      const res = await $api.get(`${apiDomain}/organizations/available`)
-      return res.data.data
+      const res: AxiosResponse<
+        BaseResponse<{
+          myOrganizations: IUserOrganization[]
+          invitedOrganizations: IOrganization[]
+        }>
+      > = await $api.get(`${apiDomain}/organizations/available`)
+      return {
+        data: res.data.data,
+        user: res.data.user
+      }
     }
   })
 }

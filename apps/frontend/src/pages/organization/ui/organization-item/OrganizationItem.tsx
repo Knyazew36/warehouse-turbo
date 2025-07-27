@@ -6,19 +6,26 @@ import LoaderSection from '@/shared/loader/ui/LoaderSection'
 import { hapticFeedback } from '@telegram-apps/sdk-react'
 import OrganizationUserDeleteModal from '../organization-user-delete/OrganizationUserDelete.modal'
 import { Link } from 'react-router-dom'
+import clsx from 'clsx'
+import { Role } from '@/entitites/user/model/user.type'
 
 interface OrganizationItemProps {
   data: IUserOrganization
   handleSelectOrganization: (data: IUserOrganization) => void
   variant?: 'default' | 'change' | 'invite'
+  disableChange?: boolean
+
+  role: Role
 }
 
 const OrganizationItem: React.FC<OrganizationItemProps> = ({
   data,
   handleSelectOrganization,
-  variant
+  variant,
+  role
 }) => {
   const [isLoading, setIsLoading] = useState(false)
+  console.info('role', role)
 
   return (
     <button
@@ -50,7 +57,7 @@ const OrganizationItem: React.FC<OrganizationItemProps> = ({
           )}
         </div>
       </div>
-      {data.isOwner && (
+      {data.isOwner && variant !== 'change' && (
         <span className='inline-flex absolute top-3 right-3 items-center gap-x-1.5 py-1 px-2 rounded-full text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-800/30 dark:text-blue-500'>
           Владелец
         </span>
@@ -63,26 +70,30 @@ const OrganizationItem: React.FC<OrganizationItemProps> = ({
           }}
         >
           <div className='p-0.5 sm:p-1 inline-flex items-center bg-white border border-gray-200 lg:shadow-xs rounded-lg dark:bg-neutral-800 dark:border-neutral-700'>
-            {/* Button Icon */}
-            <div className='hs-tooltip inline-block'>
-              <Link
-                className='hs-tooltip-toggle size-7.5 inline-flex justify-center items-center gap-x-2 rounded-lg border border-transparent text-gray-500 hover:bg-gray-100 disabled:opacity-50 disabled:pointer-events-none dark:text-neutral-400 focus:outline-hidden focus:bg-gray-100 dark:hover:bg-neutral-700 dark:focus:bg-neutral-700'
-                to={`/organization/${data.organizationId}/edit`}
-              >
-                <SquarePen className='shrink-0 size-4' />
-              </Link>
-              <span
-                className='hs-tooltip-content hs-tooltip-shown:opacity-100 hs-tooltip-shown:visible opacity-0 inline-block absolute invisible z-20 py-1.5 px-2.5 bg-gray-900 text-xs text-white rounded-lg dark:bg-neutral-700 hidden'
-                role='tooltip'
-                style={{ position: 'fixed', left: 160, top: 51 }}
-                data-placement='bottom'
-              >
-                Изменить
-              </span>
-            </div>
-            {/* End Button Icon */}
+            {data.isOwner && (
+              <>
+                <div className='hs-tooltip inline-block'>
+                  <Link
+                    className={clsx(
+                      'hs-tooltip-toggle size-7.5 inline-flex justify-center items-center gap-x-2 rounded-lg border border-transparent text-gray-500 hover:bg-gray-100 disabled:opacity-50 disabled:pointer-events-none dark:text-neutral-400 focus:outline-hidden focus:bg-gray-100 dark:hover:bg-neutral-700 dark:focus:bg-neutral-700'
+                    )}
+                    to={`/organization/${data.organizationId}/edit`}
+                  >
+                    <SquarePen className='shrink-0 size-4' />
+                  </Link>
+                  <span
+                    className='hs-tooltip-content hs-tooltip-shown:opacity-100 hs-tooltip-shown:visible opacity-0 inline-block absolute invisible z-20 py-1.5 px-2.5 bg-gray-900 text-xs text-white rounded-lg dark:bg-neutral-700 hidden'
+                    role='tooltip'
+                    style={{ position: 'fixed', left: 160, top: 51 }}
+                    data-placement='bottom'
+                  >
+                    Изменить
+                  </span>
+                </div>
 
-            <div className='w-px h-5 mx-1 bg-gray-200 dark:bg-neutral-700' />
+                <div className='w-px h-5 mx-1 bg-gray-200 dark:bg-neutral-700' />
+              </>
+            )}
 
             {data.isOwner && (
               <OrganizationDeleteModal

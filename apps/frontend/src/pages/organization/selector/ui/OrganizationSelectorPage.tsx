@@ -8,7 +8,8 @@ import {
 import {
   ICreateOrganization,
   IUserOrganization,
-  IOrganization
+  IOrganization,
+  Role
 } from '@/entitites/organization/model/organization.type'
 import { Warehouse } from 'lucide-react'
 import Loader from '@/shared/loader/ui/Loader'
@@ -19,27 +20,26 @@ import OrganizationItem from '../../ui/organization-item/OrganizationItem'
 
 const OrganizationSelectorPage: React.FC = () => {
   const navigate = useNavigate()
-  const { data: availableData, isLoading, isPending } = useAvailableOrganizations()
+  const {
+    data: { data: availableData, user } = {
+      data: {
+        myOrganizations: [],
+        invitedOrganizations: []
+      },
+      user: undefined
+    },
+    isLoading,
+    isPending
+  } = useAvailableOrganizations()
   const { mutate: joinOrganization, isPending: isJoining } = useJoinOrganization()
 
-  const {
-    currentOrganization,
-    setCurrentOrganization,
-    setOrganizationId,
-    organizationId,
-    setOrganizationLoading,
-    clearCache
-  } = useOrganizationStore()
+  const { setCurrentOrganization, setOrganizationId, setOrganizationLoading, clearCache } =
+    useOrganizationStore()
 
   // Сбрасываем состояние загрузки при монтировании компонента
   useEffect(() => {
     setOrganizationLoading(false)
   }, [setOrganizationLoading])
-
-  const [formData, setFormData] = useState<ICreateOrganization>({
-    name: '',
-    description: ''
-  })
 
   // Извлекаем данные из ответа API
   const myOrganizations = availableData?.myOrganizations || []
@@ -132,11 +132,11 @@ const OrganizationSelectorPage: React.FC = () => {
                             </span>
 
                             <div className='grow'>
-                              <div className='font-medium text-gray-800 hover:text-blue-600 focus:outline-hidden focus:text-blue-600 dark:text-neutral-200 dark:hover:text-blue-500 dark:focus:text-blue-500'>
+                              <div className='font-medium text-start text-gray-800 hover:text-blue-600 focus:outline-hidden focus:text-blue-600 dark:text-neutral-200 dark:hover:text-blue-500 dark:focus:text-blue-500'>
                                 {organization.name}
                               </div>
                               {organization.description && (
-                                <p className='text-xs text-gray-500 dark:text-neutral-500 text-a'>
+                                <p className='text-xs text-gray-500 text-start dark:text-neutral-500 '>
                                   {organization.description}
                                 </p>
                               )}
@@ -157,6 +157,7 @@ const OrganizationSelectorPage: React.FC = () => {
                           <OrganizationItem
                             key={userOrg.organizationId}
                             data={userOrg}
+                            role={user?.role as Role}
                             handleSelectOrganization={handleSelectOrganization}
                             variant='change'
                           />

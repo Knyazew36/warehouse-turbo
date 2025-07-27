@@ -11,6 +11,7 @@ import { useBottomSheetStore } from '@/shared/bottom-sheet/model/store.bottom-sh
 import PageHeader from '@/shared/ui/page-header/ui/PageHeader'
 import Loader from '@/shared/loader/ui/Loader'
 import InfoMessage from '@/shared/ui/info/ui/Info'
+
 const ReportPage = () => {
   const navigate = useNavigate()
   const { data = [], isLoading, refetch } = useProducts(true)
@@ -124,12 +125,14 @@ const ReportPage = () => {
             disabledCancel={Object.values(consumptions).every(value => value === 0)}
           />
         )}
-        <InfoMessage
-          items={[
-            'Вы можете добавить несколько товаров в расход.',
-            'К товару можно добавить комментарий.'
-          ]}
-        />
+        {
+          <InfoMessage
+            items={[
+              'Вы можете добавить несколько товаров в расход.',
+              'К товару можно добавить комментарий.'
+            ]}
+          />
+        }
       </div>
     </Page>
   )

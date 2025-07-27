@@ -8,7 +8,8 @@ import {
 import {
   ICreateOrganization,
   IUserOrganization,
-  IOrganization
+  IOrganization,
+  Role
 } from '@/entitites/organization/model/organization.type'
 import { Warehouse } from 'lucide-react'
 import Loader from '@/shared/loader/ui/Loader'
@@ -19,7 +20,17 @@ import OrganizationItem from '../ui/organization-item/OrganizationItem'
 
 const OrganizationManagementPage: React.FC = () => {
   const navigate = useNavigate()
-  const { data: availableData, isLoading, isPending } = useAvailableOrganizations()
+  const {
+    data: { data: availableData, user: availableUser } = {
+      data: {
+        myOrganizations: [],
+        invitedOrganizations: []
+      },
+      user: undefined
+    },
+    isLoading,
+    isPending
+  } = useAvailableOrganizations()
   const { mutate: joinOrganization, isPending: isJoining } = useJoinOrganization()
 
   const {
@@ -132,11 +143,11 @@ const OrganizationManagementPage: React.FC = () => {
                             </span>
 
                             <div className='grow'>
-                              <div className='font-medium text-gray-800 hover:text-blue-600 focus:outline-hidden focus:text-blue-600 dark:text-neutral-200 dark:hover:text-blue-500 dark:focus:text-blue-500'>
+                              <div className='font-medium text-start text-gray-800 hover:text-blue-600 focus:outline-hidden focus:text-blue-600 dark:text-neutral-200 dark:hover:text-blue-500 dark:focus:text-blue-500'>
                                 {organization.name}
                               </div>
                               {organization.description && (
-                                <p className='text-xs text-gray-500 dark:text-neutral-500 text-a'>
+                                <p className='text-xs text-gray-500 text-start dark:text-neutral-500 '>
                                   {organization.description}
                                 </p>
                               )}
@@ -155,6 +166,7 @@ const OrganizationManagementPage: React.FC = () => {
                       <div className='flex flex-col gap-2'>
                         {myOrganizations.map(userOrg => (
                           <OrganizationItem
+                            role={availableUser?.role as Role}
                             key={userOrg.organizationId}
                             data={userOrg}
                             variant='default'
