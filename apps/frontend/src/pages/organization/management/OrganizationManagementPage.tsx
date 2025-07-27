@@ -150,7 +150,7 @@ const OrganizationManagementPage: React.FC = () => {
                   {myOrganizations?.length > 0 && (
                     <>
                       <p className='mt-1 text-sm text-gray-500 dark:text-neutral-500 text-center'>
-                        Выберите склад для просмотра и управления или создай новый
+                        Выбери склад для просмотра и управления или создай новый
                       </p>
                       <div className='flex flex-col gap-2'>
                         {myOrganizations.map(userOrg => (
@@ -196,16 +196,14 @@ const OrganizationManagementPage: React.FC = () => {
                     </>
                   )}
                 </div>
-                {/* End Guest Checkout Details */}
-                <div className='sticky bottom-4'>
-                  <Link
-                    onClick={() => hapticFeedback.impactOccurred('light')}
-                    to='/organization-create'
-                    className='py-3 px-4 w-full inline-flex justify-center items-center gap-x-2 sm:text-sm font-medium rounded-lg border border-transparent bg-indigo-600 text-white hover:bg-indigo-700 disabled:opacity-50 disabled:pointer-events-none focus:outline-hidden focus:bg-indigo-700'
-                  >
-                    Создать новый склад
-                  </Link>
-                </div>
+
+                <Link
+                  onClick={() => hapticFeedback.impactOccurred('light')}
+                  to='/organization-create'
+                  className='py-3 px-4 w-full inline-flex justify-center items-center gap-x-2 sm:text-sm font-medium rounded-lg border border-transparent bg-indigo-600 text-white hover:bg-indigo-700 disabled:opacity-50 disabled:pointer-events-none focus:outline-hidden focus:bg-indigo-700'
+                >
+                  Создать новый склад
+                </Link>
               </div>
             </div>
           </div>

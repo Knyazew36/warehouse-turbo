@@ -126,8 +126,8 @@ const OrganizationCreatePage: React.FC = () => {
         />
         <div className='sticky bottom-4'>
           <button
+            disabled={isPending || !formData.name.trim()}
             onClick={handleCreateOrganization}
-            disabled={isPending}
             className='py-3 px-4 w-full inline-flex justify-center items-center gap-x-2 sm:text-sm font-medium rounded-lg border border-transparent bg-indigo-600 text-white hover:bg-indigo-700 disabled:opacity-50 disabled:pointer-events-none focus:outline-hidden focus:bg-indigo-700'
           >
             {isPending ? 'Создание...' : 'Создать склад'}
