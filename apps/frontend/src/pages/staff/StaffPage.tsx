@@ -16,7 +16,7 @@ const StaffPage = () => {
   const { isPending } = useUserDelete()
   const [searchTerm, setSearchTerm] = useState('')
   const [view, setView] = useState<'tile' | 'table'>('tile')
-
+  const { currentOrganization } = useOrganizationStore()
   const handleViewChange = (view: 'tile' | 'table') => {
     setView(view)
   }
@@ -93,12 +93,15 @@ const StaffPage = () => {
         filteredData.length > 0 &&
         filteredData.map(item => (
           <UserCard
+            organizationId={currentOrganization!.organizationId}
             key={item.id}
             data={item}
           />
         ))}
 
-      {filteredData && view === 'table' && filteredData.length > 0 && <UserTable data={filteredData} />}
+      {filteredData && view === 'table' && filteredData.length > 0 && (
+        <UserTable data={filteredData} />
+      )}
 
       {filteredData && filteredData.length === 0 && <Empty title='Сотрудники не найдены' />}
       <MenuButton
