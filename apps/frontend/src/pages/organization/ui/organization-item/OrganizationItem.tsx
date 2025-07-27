@@ -5,6 +5,7 @@ import OrganizationDeleteModal from '../organization-delete/OrganizationDelete.m
 import LoaderSection from '@/shared/loader/ui/LoaderSection'
 import { hapticFeedback } from '@telegram-apps/sdk-react'
 import OrganizationUserDeleteModal from '../organization-user-delete/OrganizationUserDelete.modal'
+import { Link } from 'react-router-dom'
 
 interface OrganizationItemProps {
   data: IUserOrganization
@@ -23,6 +24,7 @@ const OrganizationItem: React.FC<OrganizationItemProps> = ({
     <button
       className='py-3 px-3 overflow-hidden relative w-full inline-flex  items-center gap-x-1.5 sm:text-sm font-medium rounded-lg border border-gray-200 bg-white text-gray-800 shadow-2xs hover:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none focus:outline-hidden focus:bg-gray-50 dark:bg-neutral-900 dark:hover:bg-neutral-800 dark:focus:bg-neutral-800 dark:border-neutral-700 dark:text-neutral-300'
       onClick={() => {
+        hapticFeedback.impactOccurred('light')
         handleSelectOrganization(data)
       }}
     >
@@ -36,11 +38,11 @@ const OrganizationItem: React.FC<OrganizationItemProps> = ({
         </span>
 
         <div className='grow'>
-          <div className='font-medium text-gray-800 hover:text-blue-600 text-start focus:outline-hidden focus:text-blue-600 dark:text-neutral-200 dark:hover:text-blue-500 dark:focus:text-blue-500'>
+          <div className='font-medium  text-gray-800 hover:text-blue-600 text-start focus:outline-hidden focus:text-blue-600 dark:text-neutral-200 dark:hover:text-blue-500 dark:focus:text-blue-500'>
             {data.organization.name}
           </div>
           {data.organization.description && (
-            <p className='text-xs text-gray-500 dark:text-neutral-500  text-start'>
+            <p className='text-xs text-gray-500 text-start dark:text-neutral-500'>
               {data.organization.description}
             </p>
           )}
@@ -61,14 +63,12 @@ const OrganizationItem: React.FC<OrganizationItemProps> = ({
         <div className='p-0.5 sm:p-1 inline-flex items-center bg-white border border-gray-200 lg:shadow-xs rounded-lg dark:bg-neutral-800 dark:border-neutral-700'>
           {/* Button Icon */}
           <div className='hs-tooltip inline-block'>
-            <a
+            <Link
               className='hs-tooltip-toggle size-7.5 inline-flex justify-center items-center gap-x-2 rounded-lg border border-transparent text-gray-500 hover:bg-gray-100 disabled:opacity-50 disabled:pointer-events-none dark:text-neutral-400 focus:outline-hidden focus:bg-gray-100 dark:hover:bg-neutral-700 dark:focus:bg-neutral-700'
-              href='https://images.unsplash.com/photo-1635776062360-af423602aff3?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=560&q=80'
-              target='_blank'
-              download
+              to={`/organization/${data.organizationId}/edit`}
             >
               <SquarePen className='shrink-0 size-4' />
-            </a>
+            </Link>
             <span
               className='hs-tooltip-content hs-tooltip-shown:opacity-100 hs-tooltip-shown:visible opacity-0 inline-block absolute invisible z-20 py-1.5 px-2.5 bg-gray-900 text-xs text-white rounded-lg dark:bg-neutral-700 hidden'
               role='tooltip'

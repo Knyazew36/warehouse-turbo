@@ -23,17 +23,6 @@ const ORGANIZATION_KEYS = {
   users: (id: number) => [...ORGANIZATION_KEYS.all, 'users', id] as const
 }
 
-// Получить все организации
-export const useOrganizations = () => {
-  return useQuery<IOrganization[]>({
-    queryKey: ORGANIZATION_KEYS.lists(),
-    queryFn: async () => {
-      const res = await $api.get(`${apiDomain}/organizations`)
-      return res.data.data
-    }
-  })
-}
-
 // Получить мои организации
 export const useMyOrganizations = () => {
   return useQuery<IUserOrganization[]>({
@@ -42,18 +31,6 @@ export const useMyOrganizations = () => {
       const res = await $api.get(`${apiDomain}/organizations/my`)
       return res.data.data
     }
-  })
-}
-
-// Получить организацию по ID
-export const useOrganization = (id: number) => {
-  return useQuery<IOrganization>({
-    queryKey: ORGANIZATION_KEYS.detail(id),
-    queryFn: async () => {
-      const res = await $api.get(`${apiDomain}/organizations/${id}`)
-      return res.data.data
-    },
-    enabled: !!id
   })
 }
 
@@ -91,7 +68,7 @@ export const useUpdateOrganization = () => {
 
   return useMutation({
     mutationFn: async ({ id, data }: { id: number; data: IUpdateOrganization }) => {
-      const res = await $api.patch(`${apiDomain}/organizations/${id}`, data)
+      const res = await $api.post(`${apiDomain}/organizations/${id}/update`, data)
       return res.data.data
     },
     onSuccess: (_, { id }) => {
@@ -242,6 +219,19 @@ export const removeUserFromOrganization = async ({
     const response: AxiosResponse<BaseResponse<any>> = await $api.post(
       `${apiDomain}/organizations/${organizationId}/users/${userId}/remove`
     )
+    return response.data.data
+  } catch (error: any) {
+    const message = error?.response?.data?.message || 'Ошибка удаления пользователя из организации'
+    throw new Error(message)
+  }
+}
+
+export const getOrganizationById = async ({ id }: { id: number }) => {
+  try {
+    const response: AxiosResponse<BaseResponse<any>> = await $api.get(
+      `${apiDomain}/organizations/${id}`
+    )
+    console.info('asdf', response.data.data)
     return response.data.data
   } catch (error: any) {
     const message = error?.response?.data?.message || 'Ошибка удаления пользователя из организации'

@@ -52,11 +52,10 @@ export class OrganizationController {
   @Get(':id')
   @Roles(Role.ADMIN, Role.OWNER, Role.IT)
   async findOne(@Param('id', ParseIntPipe) id: number) {
-    const organization = await this.organizationService.findOne(id)
-    return { data: organization }
+    return await this.organizationService.findOne(id)
   }
 
-  @Patch(':id')
+  @Post(':id/update')
   @Roles(Role.ADMIN, Role.OWNER, Role.IT)
   async update(
     @Param('id', ParseIntPipe) id: number,

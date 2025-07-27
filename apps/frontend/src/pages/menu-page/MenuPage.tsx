@@ -10,9 +10,9 @@ import { Role } from '@/entitites/user/model/user.type'
 
 import MenuButton, { IMenuButton } from './menu-button/MenuButton'
 import { useNavigate } from 'react-router-dom'
-import { MessageCircle, Settings, UserPlus } from 'lucide-react'
+import { Info, MessageCircle, Settings, UserPlus } from 'lucide-react'
 import { useUserRole } from '@/entitites/user/api/user.api'
-import { useOrganization } from '@/entitites/organization/api/organization.api'
+
 import { useOrganizationStore } from '@/entitites/organization/model/organization.store'
 import Loader from '@/shared/loader/ui/Loader'
 import Header from '@/shared/ui/header/ui/Header'
@@ -188,7 +188,7 @@ const MenuPage: FC = () => {
       )
     },
     {
-      to: '/organization-change',
+      to: '/organization-selector',
       title: 'Мои склады',
       color: 'purple',
       icon: (
@@ -338,6 +338,7 @@ const MenuPage: FC = () => {
             </p>
           </div>
         </Link>
+        <div className='w-28 h-px mx-auto bg-gray-300 dark:bg-neutral-700 mt-8' />
 
         <div className='grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 xl:grid-cols-6 gap-2 lg:gap-4 mt-8'>
           {menuButtons.map(button => (
@@ -384,8 +385,39 @@ const MenuPage: FC = () => {
 
           {/* End Card */}
         </div>
+        <div className='w-28 h-px mx-auto bg-gray-300 dark:bg-neutral-700 mt-8' />
 
-        <div className='grid grid-cols-2 sm:grid-cols-4 md:grid-cols-5 xl:grid-cols-6 gap-2 lg:gap-4 mt-8'>
+        <div className='grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 xl:grid-cols-6 gap-2 lg:gap-4 mt-8'>
+          <MenuButton
+            to='/info-page'
+            title='Информация'
+            color='zinc'
+            icon={
+              <Info className='shrink-0 size-5 xl:w-6 xl:h-6 text-zinc-600 dark:text-zinc-500' />
+            }
+          />
+
+          <button
+            onClick={() => {
+              openTelegramLink('https://t.me/Knyaz_sv')
+              hapticFeedback.impactOccurred('rigid')
+            }}
+            className='p-4 group relative overflow-hidden flex flex-col bg-white border border-gray-200 rounded-xl focus:outline-hidden dark:bg-neutral-900 dark:border-neutral-700'
+          >
+            <span
+              className={clsx(
+                'flex justify-center relative items-center size-12 xl:size-16 mx-auto text-orange-600 dark:text-orange-500 rounded-2xl bg-orange-50 dark:bg-orange-900'
+              )}
+            >
+              <MessageCircle className='shrink-0 size-5 xl:w-6 xl:h-6 text-orange-600 dark:text-orange-500' />
+            </span>
+
+            <div className='text-center  mt-2'>
+              <p className='truncate text-xs xl:text-sm font-medium text-gray-800 group-hover:text-pink-600 group-focus:text-pink-600 dark:text-neutral-200 dark:group-hover:text-neutral-400 dark:group-focus:text-neutral-400'>
+                Поддержка
+              </p>
+            </div>
+          </button>
           <MenuButton
             to='/settings'
             title='Настройки'
@@ -413,27 +445,7 @@ const MenuPage: FC = () => {
               </svg>
             }
           />
-          <button
-            onClick={() => {
-              openTelegramLink('https://t.me/Knyaz_sv')
-              hapticFeedback.impactOccurred('rigid')
-            }}
-            className='p-4 group relative overflow-hidden flex flex-col bg-white border border-gray-200 rounded-xl focus:outline-hidden dark:bg-neutral-900 dark:border-neutral-700'
-          >
-            <span
-              className={clsx(
-                'flex justify-center relative items-center size-12 xl:size-16 mx-auto text-orange-600 dark:text-orange-500 rounded-2xl bg-orange-50 dark:bg-orange-900'
-              )}
-            >
-              <MessageCircle className='shrink-0 size-5 xl:w-6 xl:h-6 text-orange-600 dark:text-orange-500' />
-            </span>
 
-            <div className='text-center  mt-2'>
-              <p className='truncate text-xs xl:text-sm font-medium text-gray-800 group-hover:text-pink-600 group-focus:text-pink-600 dark:text-neutral-200 dark:group-hover:text-neutral-400 dark:group-focus:text-neutral-400'>
-                Поддержка
-              </p>
-            </div>
-          </button>
           {/* <BottomSheetSupport /> */}
         </div>
         {/* End Grid */}

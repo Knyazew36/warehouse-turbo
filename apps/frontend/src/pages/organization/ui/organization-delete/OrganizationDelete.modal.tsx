@@ -3,6 +3,7 @@ import { Dialog, DialogTrigger, DialogContent, DialogFooter } from '@/components
 import { DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog'
 import { DialogClose } from '@/components/ui/dialog'
 import { useDeleteOrganization } from '@/entitites/organization/api/organization.api'
+import { hapticFeedback } from '@telegram-apps/sdk-react'
 
 interface IOrganizationDeleteModalProps {
   /** ID удаляемого товара */
@@ -34,7 +35,10 @@ const OrganizationDeleteModal: React.FC<IOrganizationDeleteModalProps> = ({
       open={open}
       onOpenChange={setOpen}
     >
-      <DialogTrigger asChild>
+      <DialogTrigger
+        asChild
+        onClick={() => hapticFeedback.impactOccurred('light')}
+      >
         <div className='hs-tooltip inline-block'>
           <button
             type='button'

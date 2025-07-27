@@ -5,7 +5,11 @@ import {
   useCreateOrganization,
   useJoinOrganization
 } from '@/entitites/organization/api/organization.api'
-import { ICreateOrganization, IUserOrganization, IOrganization } from '@/entitites/organization/model/organization.type'
+import {
+  ICreateOrganization,
+  IUserOrganization,
+  IOrganization
+} from '@/entitites/organization/model/organization.type'
 import { Warehouse } from 'lucide-react'
 import Loader from '@/shared/loader/ui/Loader'
 import { hapticFeedback } from '@telegram-apps/sdk-react'
@@ -13,7 +17,7 @@ import { useOrganizationStore } from '@/entitites/organization/model/organizatio
 import { Link, useNavigate } from 'react-router-dom'
 import OrganizationItem from '../../ui/organization-item/OrganizationItem'
 
-const OrganizationChangePage: React.FC = () => {
+const OrganizationSelectorPage: React.FC = () => {
   const navigate = useNavigate()
   const { data: availableData, isLoading, isPending } = useAvailableOrganizations()
   const { mutate: joinOrganization, isPending: isJoining } = useJoinOrganization()
@@ -89,13 +93,17 @@ const OrganizationChangePage: React.FC = () => {
                 <div className='space-y-6'>
                   {allOrganizations.length > 0 && (
                     <div className='text-center'>
-                      <h2 className='font-medium text-xl text-gray-800 dark:text-neutral-200'>Мои склады</h2>
+                      <h2 className='font-medium text-xl text-gray-800 dark:text-neutral-200'>
+                        Мои склады
+                      </h2>
                     </div>
                   )}
 
                   {allOrganizations.length === 0 && (
                     <div className='text-center'>
-                      <h2 className='font-medium text-xl text-gray-800 dark:text-neutral-200'>У вас нет складов</h2>
+                      <h2 className='font-medium text-xl text-gray-800 dark:text-neutral-200'>
+                        У вас нет складов
+                      </h2>
                       <p className='mt-1 text-sm text-gray-500 dark:text-neutral-500'>
                         Создайте свой первый склад для управления
                       </p>
@@ -104,7 +112,9 @@ const OrganizationChangePage: React.FC = () => {
 
                   {invitedOrganizations?.length > 0 && (
                     <>
-                      <p className='mt-1 text-sm text-gray-500 dark:text-neutral-500 text-center'>Приглашения</p>
+                      <p className='mt-1 text-sm text-gray-500 dark:text-neutral-500 text-center'>
+                        Приглашения
+                      </p>
                       {invitedOrganizations.map(organization => (
                         <button
                           className='py-3 px-3 relative w-full inline-flex  items-center gap-x-1.5 sm:text-sm font-medium rounded-lg border border-gray-200 bg-white text-gray-800 shadow-2xs hover:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none focus:outline-hidden focus:bg-gray-50 dark:bg-neutral-900 dark:hover:bg-neutral-800 dark:focus:bg-neutral-800 dark:border-green-700 dark:text-neutral-300'
@@ -175,4 +185,4 @@ const OrganizationChangePage: React.FC = () => {
   )
 }
 
-export default OrganizationChangePage
+export default OrganizationSelectorPage
