@@ -3,7 +3,6 @@
  * Убирает лишние нули после точки, но оставляет до 2 знаков после запятой
  */
 export const formatNumber = (value: number): string => {
-  console.info(value)
   return value.toString()
   // if (Number.isInteger(value)) {
   //   return value.toString()

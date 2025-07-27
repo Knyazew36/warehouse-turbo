@@ -26,7 +26,13 @@ const MenuPage: FC = () => {
   const user = initDataUser()
   const userId = user?.id?.toString()
 
-  const { data: userRole, isLoading, isPending, error } = useUserRole({ id: userId || '' })
+  const {
+    data: userRole,
+    isLoading,
+    isPending,
+    error,
+    isFetching
+  } = useUserRole({ id: userId || '' })
 
   // Сбрасываем состояние загрузки организации после успешной загрузки роли или ошибки
   useEffect(() => {
@@ -217,7 +223,10 @@ const MenuPage: FC = () => {
   ]
 
   return (
-    <Page back={false}>
+    <Page
+      back={false}
+      isLoading={isFetching}
+    >
       <div className='flex flex-col flex-1 pt-4'>
         <Header />
         <AlertProductLowStock />

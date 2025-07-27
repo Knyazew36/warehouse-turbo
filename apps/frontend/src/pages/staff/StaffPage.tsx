@@ -12,7 +12,7 @@ import { useOrganizationStore } from '@/entitites/organization/model/organizatio
 import MenuButton from '../menu-page/menu-button/MenuButton'
 
 const StaffPage = () => {
-  const { data: employees, isLoading } = useUsersEmployees()
+  const { data: employees, isLoading, isFetching } = useUsersEmployees()
   const { isPending } = useUserDelete()
   const [searchTerm, setSearchTerm] = useState('')
   const [view, setView] = useState<'tile' | 'table'>('tile')
@@ -34,7 +34,10 @@ const StaffPage = () => {
   if (isLoading) return <Loader />
 
   return (
-    <Page back>
+    <Page
+      back
+      isLoading={isFetching}
+    >
       <PageHeader title='Сотрудники' />
       <div className=' space-y-3 mb-8'>
         <input

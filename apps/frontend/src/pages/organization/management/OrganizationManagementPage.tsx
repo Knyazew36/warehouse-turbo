@@ -29,7 +29,8 @@ const OrganizationManagementPage: React.FC = () => {
       user: undefined
     },
     isLoading,
-    isPending
+    isPending,
+    isFetching
   } = useAvailableOrganizations()
   const { mutate: joinOrganization, isPending: isJoining } = useJoinOrganization()
 
@@ -86,7 +87,7 @@ const OrganizationManagementPage: React.FC = () => {
     })
   }
 
-  if (isLoading || isPending || isJoining) {
+  if (isLoading || isPending || isJoining || isFetching) {
     return <Loader />
   }
 

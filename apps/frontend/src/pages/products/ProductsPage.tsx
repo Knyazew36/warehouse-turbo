@@ -16,7 +16,7 @@ import InputDefault from '@/shared/ui/input-default/ui/InputDefault'
 import Loader from '@/shared/loader/ui/Loader'
 
 export const ProductsPage = () => {
-  const { data = [], isLoading, refetch } = useProducts(true)
+  const { data = [], isLoading, isFetching } = useProducts(true)
   const [view, setView] = useState<'tile' | 'table'>('tile')
 
   const handleViewChange = (view: 'tile' | 'table') => {
@@ -36,7 +36,10 @@ export const ProductsPage = () => {
   }
 
   return (
-    <Page back>
+    <Page
+      back
+      isLoading={isFetching}
+    >
       <PageHeader title='Товары' />
 
       <div className='max-w-[85rem] py-10 pt-0 sm:px-6 lg:px-8 lg:py-14 mx-auto'>
