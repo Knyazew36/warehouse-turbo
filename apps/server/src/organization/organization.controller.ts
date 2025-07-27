@@ -60,7 +60,7 @@ export class OrganizationController {
     return { data: organization }
   }
 
-  @Delete(':id')
+  @Post('delete/:id')
   @Roles(Role.ADMIN, Role.OWNER, Role.IT)
   async remove(@Param('id', ParseIntPipe) id: number) {
     const organization = await this.organizationService.remove(id)
@@ -74,7 +74,7 @@ export class OrganizationController {
     return { data: userOrg }
   }
 
-  @Delete(':id/users/:userId')
+  @Post(':id/users/:userId/remove')
   @Roles(Role.ADMIN, Role.OWNER, Role.IT)
   async removeUserFromOrganization(
     @Param('id', ParseIntPipe) id: number,

@@ -9,7 +9,7 @@ import { hapticFeedback } from '@telegram-apps/sdk-react'
 import InfoMessage from '@/shared/ui/info/ui/Info'
 import { useOrganizationStore } from '@/entitites/organization/model/organization.store'
 
-const CreateOrganizationPage: React.FC = () => {
+const OrganizationCreatePage: React.FC = () => {
   const navigate = useNavigate()
   const { mutate: createOrganization, isPending } = useCreateOrganization()
   const { setOrganizationLoading, clearCache } = useOrganizationStore()
@@ -140,4 +140,4 @@ const CreateOrganizationPage: React.FC = () => {
   )
 }
 
-export default CreateOrganizationPage
+export default OrganizationCreatePage

@@ -6,23 +6,17 @@ import {
   useJoinOrganization
 } from '@/entitites/organization/api/organization.api'
 import { ICreateOrganization, IUserOrganization, IOrganization } from '@/entitites/organization/model/organization.type'
-import { Button } from '@/components/ui/button'
-import { Plus, Building2, Users, Settings, UserPlus, Warehouse } from 'lucide-react'
-import PageHeader from '@/shared/ui/page-header/ui/PageHeader'
+import { Warehouse } from 'lucide-react'
 import Loader from '@/shared/loader/ui/Loader'
-import Empty from '@/shared/empty/ui/Empty'
 import { hapticFeedback } from '@telegram-apps/sdk-react'
-import OrganizationSelector from '@/entitites/organization/ui/organization-selector/OrganizationSelector'
 import { useOrganizationStore } from '@/entitites/organization/model/organization.store'
 import { Link, useNavigate } from 'react-router-dom'
 
 const OrganizationManagementPage: React.FC = () => {
   const navigate = useNavigate()
   const { data: availableData, isLoading, isPending } = useAvailableOrganizations()
-  const { mutate: createOrganization, isPending: isCreating } = useCreateOrganization()
   const { mutate: joinOrganization, isPending: isJoining } = useJoinOrganization()
-  const [showCreateForm, setShowCreateForm] = useState(false)
-  const [autoJoining, setAutoJoining] = useState(false)
+
   const {
     currentOrganization,
     setCurrentOrganization,
@@ -47,26 +41,6 @@ const OrganizationManagementPage: React.FC = () => {
   const invitedOrganizations = availableData?.invitedOrganizations || []
   const allOrganizations = [...myOrganizations, ...invitedOrganizations]
 
-  const handleCreateOrganization = () => {
-    if (!formData.name.trim()) {
-      return
-    }
-
-    setOrganizationLoading(true)
-    createOrganization(formData, {
-      onSuccess: () => {
-        setFormData({ name: '', description: '' })
-        setShowCreateForm(false)
-        clearCache() // Очищаем кэш для обновления данных
-        hapticFeedback.notificationOccurred('success')
-      },
-      onError: () => {
-        setOrganizationLoading(false)
-        hapticFeedback.notificationOccurred('error')
-      }
-    })
-  }
-
   const handleSelectOrganization = (organization: IUserOrganization) => {
     hapticFeedback.impactOccurred('light')
     setOrganizationLoading(true)
@@ -83,7 +57,6 @@ const OrganizationManagementPage: React.FC = () => {
     joinOrganization(organization.organizationId || organization.id, {
       onSuccess: userOrg => {
         hapticFeedback.notificationOccurred('success')
-        setAutoJoining(false)
         clearCache() // Очищаем кэш для обновления данных
         // После присоединения автоматически выбираем эту организацию
         setCurrentOrganization(userOrg)
@@ -92,13 +65,12 @@ const OrganizationManagementPage: React.FC = () => {
       },
       onError: () => {
         hapticFeedback.notificationOccurred('error')
-        setAutoJoining(false)
         setOrganizationLoading(false)
       }
     })
   }
 
-  if (isLoading || isPending || isCreating || isJoining) {
+  if (isLoading || isPending || isJoining) {
     return <Loader />
   }
 

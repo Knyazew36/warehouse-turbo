@@ -18,9 +18,10 @@ import NotificationsSettingPage from '@/pages/notifications-setting/Notification
 import AddUserPage from '@/pages/add-user/ui/AddUserPage'
 import SettingsWarehousePage from '@/pages/seittings-warehouse/SettingsWarehousePage'
 import SettingsPage from '@/pages/settings/SettingsPage'
-import OrganizationManagementPage from '@/pages/organization-management/OrganizationManagementPage'
-import CreateOrganizationPage from '@/pages/organization-create/CreateOrganizationPage'
+import OrganizationManagementPage from '@/pages/organization/management/OrganizationManagementPage'
 import OrganizationSelector from '@/entitites/organization/ui/organization-selector/OrganizationSelector'
+import OrganizationCreatePage from '@/pages/organization/create/ui/OrganizationCreatePage'
+import OrganizationChangePage from '@/pages/organization/change/ui/OrganizationChangePage'
 
 interface Route {
   path: string
@@ -47,7 +48,8 @@ export const routes: Route[] = [
   { path: '/settings-warehouse', Component: SettingsWarehousePage, title: 'Init Data' },
   { path: '/settings', Component: SettingsPage, title: 'Init Data' },
   { path: '/organization-management', Component: OrganizationManagementPage, title: 'Organization Management' },
-  { path: '/organization-create', Component: CreateOrganizationPage, title: 'Create Organization' },
+  { path: '/organization-create', Component: OrganizationCreatePage, title: 'Create Organization' },
+  { path: '/organization-change', Component: OrganizationChangePage, title: 'Change Organization' },
   { path: '/organization-selector', Component: OrganizationSelector, title: 'Organization Settings' },
   { path: '/theme-params', Component: ThemeParamsPage, title: 'Theme Params' },
   { path: '/launch-params', Component: LaunchParamsPage, title: 'Launch Params' },

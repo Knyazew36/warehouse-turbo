@@ -108,7 +108,7 @@ export const useDeleteOrganization = () => {
 
   return useMutation({
     mutationFn: async (id: number) => {
-      await $api.delete(`${apiDomain}/organizations/${id}`)
+      await $api.post(`${apiDomain}/organizations/delete/${id}`)
     },
     onSuccess: (_, id) => {
       queryClient.invalidateQueries({ queryKey: ORGANIZATION_KEYS.detail(id) })
@@ -123,13 +123,23 @@ export const useAddUserToOrganization = () => {
   const queryClient = useQueryClient()
 
   return useMutation({
-    mutationFn: async ({ organizationId, data }: { organizationId: number; data: IAddUserToOrganization }) => {
+    mutationFn: async ({
+      organizationId,
+      data
+    }: {
+      organizationId: number
+      data: IAddUserToOrganization
+    }) => {
       const res = await $api.post(`${apiDomain}/organizations/${organizationId}/users`, data)
       return res.data.data
     },
     onSuccess: (_, { organizationId }) => {
-      queryClient.invalidateQueries({ queryKey: ORGANIZATION_KEYS.users(organizationId) })
-      queryClient.invalidateQueries({ queryKey: ORGANIZATION_KEYS.detail(organizationId) })
+      queryClient.invalidateQueries({
+        queryKey: ORGANIZATION_KEYS.users(organizationId)
+      })
+      queryClient.invalidateQueries({
+        queryKey: ORGANIZATION_KEYS.detail(organizationId)
+      })
     }
   })
 }
@@ -143,8 +153,12 @@ export const useRemoveUserFromOrganization = () => {
       await $api.delete(`${apiDomain}/organizations/${organizationId}/users/${userId}`)
     },
     onSuccess: (_, { organizationId }) => {
-      queryClient.invalidateQueries({ queryKey: ORGANIZATION_KEYS.users(organizationId) })
-      queryClient.invalidateQueries({ queryKey: ORGANIZATION_KEYS.detail(organizationId) })
+      queryClient.invalidateQueries({
+        queryKey: ORGANIZATION_KEYS.users(organizationId)
+      })
+      queryClient.invalidateQueries({
+        queryKey: ORGANIZATION_KEYS.detail(organizationId)
+      })
     }
   })
 }
@@ -165,15 +179,22 @@ export const useUpdateUserRole = () => {
       role: Role
       isOwner?: boolean
     }) => {
-      const res = await $api.patch(`${apiDomain}/organizations/${organizationId}/users/${userId}/role`, {
-        role,
-        isOwner
-      })
+      const res = await $api.patch(
+        `${apiDomain}/organizations/${organizationId}/users/${userId}/role`,
+        {
+          role,
+          isOwner
+        }
+      )
       return res.data.data
     },
     onSuccess: (_, { organizationId }) => {
-      queryClient.invalidateQueries({ queryKey: ORGANIZATION_KEYS.users(organizationId) })
-      queryClient.invalidateQueries({ queryKey: ORGANIZATION_KEYS.detail(organizationId) })
+      queryClient.invalidateQueries({
+        queryKey: ORGANIZATION_KEYS.users(organizationId)
+      })
+      queryClient.invalidateQueries({
+        queryKey: ORGANIZATION_KEYS.detail(organizationId)
+      })
     }
   })
 }
@@ -203,7 +224,27 @@ export const useJoinOrganization = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ORGANIZATION_KEYS.my() })
-      queryClient.invalidateQueries({ queryKey: [...ORGANIZATION_KEYS.my(), 'available'] })
+      queryClient.invalidateQueries({
+        queryKey: [...ORGANIZATION_KEYS.my(), 'available']
+      })
     }
   })
+}
+
+export const removeUserFromOrganization = async ({
+  organizationId,
+  userId
+}: {
+  organizationId: number
+  userId: number
+}) => {
+  try {
+    const response: AxiosResponse<BaseResponse<any>> = await $api.post(
+      `${apiDomain}/organizations/${organizationId}/users/${userId}/remove`
+    )
+    return response.data.data
+  } catch (error: any) {
+    const message = error?.response?.data?.message || 'Ошибка удаления пользователя из организации'
+    throw new Error(message)
+  }
 }

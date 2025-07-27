@@ -185,7 +185,7 @@ const MenuPage: FC = () => {
       )
     },
     {
-      to: '/organization-management',
+      to: '/organization-change',
       title: 'Мои склады',
       color: 'purple',
       icon: (

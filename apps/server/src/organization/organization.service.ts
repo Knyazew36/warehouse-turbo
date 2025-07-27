@@ -11,7 +11,10 @@ export class OrganizationService {
     console.log('🟢 OrganizationService создан', new Date().toISOString())
   }
 
-  async create(createOrganizationDto: CreateOrganizationDto, creatorUserId: number): Promise<Organization> {
+  async create(
+    createOrganizationDto: CreateOrganizationDto,
+    creatorUserId: number
+  ): Promise<Organization> {
     return await this.prisma.$transaction(async prisma => {
       // Создаем организацию
       const organization = await prisma.organization.create({
@@ -103,15 +106,23 @@ export class OrganizationService {
 
   async remove(id: number): Promise<Organization> {
     const organization = await this.findOne(id)
+    if (!organization) {
+      throw new NotFoundException(`Организация с ID ${id} не найдена`)
+    }
 
     // Мягкое удаление - помечаем как неактивную
-    return this.prisma.organization.update({
+    return this.prisma.organization.delete({
       where: { id },
-      data: { active: false }
+      include: {
+        userOrganizations: true
+      }
     })
   }
 
-  async addUserToOrganization(organizationId: number, addUserDto: AddUserToOrganizationDto): Promise<UserOrganization> {
+  async addUserToOrganization(
+    organizationId: number,
+    addUserDto: AddUserToOrganizationDto
+  ): Promise<UserOrganization> {
     const organization = await this.findOne(organizationId)
 
     // Проверяем, существует ли пользователь
@@ -442,7 +453,9 @@ export class OrganizationService {
     })
 
     if (deletedRelation.count === 0) {
-      throw new BadRequestException('Этот телефон не найден в списке разрешенных для данной организации')
+      throw new BadRequestException(
+        'Этот телефон не найден в списке разрешенных для данной организации'
+      )
     }
 
     // Если телефон больше не связан ни с одной организацией, удаляем его
