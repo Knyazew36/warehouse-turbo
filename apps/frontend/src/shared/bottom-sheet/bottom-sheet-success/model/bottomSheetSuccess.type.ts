@@ -4,5 +4,5 @@ export interface IBottomSheetSuccessProps {
 
   title?: string
   description?: string
-  variant?: 'success' | 'error' | 'warning'
+  variant?: 'success' | 'error' | 'warning' | 'auth'
 }

@@ -1,18 +1,12 @@
-// src/bot/bot.update.ts
 import { Update, Start, Command, Action, Ctx, On } from 'nestjs-telegraf'
 import { Context } from 'telegraf'
-import { ProductsService } from '../products/products.service'
 import { PrismaService } from 'nestjs-prisma'
-import { NotificationService } from './notification.service'
-// import { BotService } from './bot.service';
 import { AllowedPhoneService } from '../auth/allowed-phone.service'
 
 @Update()
 export class BotUpdate {
   constructor(
-    private readonly productsService: ProductsService,
     private readonly prisma: PrismaService,
-    private readonly notificationService: NotificationService,
     private readonly allowedPhoneService: AllowedPhoneService
   ) {}
 
@@ -142,7 +136,9 @@ export class BotUpdate {
       return
     }
 
-    const phone = contact.phone_number.startsWith('+') ? contact.phone_number : `+${contact.phone_number}`
+    const phone = contact.phone_number.startsWith('+')
+      ? contact.phone_number
+      : `+${contact.phone_number}`
     const telegramId = String(ctx.from.id)
     console.info('phone', phone)
 
@@ -179,7 +175,8 @@ export class BotUpdate {
     }
 
     // Получаем организации, к которым у пользователя есть доступ
-    const accessibleOrganizations = await this.allowedPhoneService.getUserAccessibleOrganizations(phone)
+    const accessibleOrganizations =
+      await this.allowedPhoneService.getUserAccessibleOrganizations(phone)
 
     // Создаем связи UserOrganization для всех доступных организаций
     for (const orgData of accessibleOrganizations) {

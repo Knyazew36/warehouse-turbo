@@ -4,5 +4,5 @@ export interface ErrorEventEmitter {
   action: 'modal' | 'logout' | 'navigation' | 'console' | 'pay-modal' | 'bottom-sheet'
   href?: string
   isNavigateBackOnClick?: boolean
-  variant?: 'success' | 'error' | 'warning'
+  variant?: 'success' | 'error' | 'warning' | 'auth'
 }

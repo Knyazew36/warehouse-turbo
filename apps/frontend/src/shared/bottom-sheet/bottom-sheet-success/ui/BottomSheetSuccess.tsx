@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react'
 import { Drawer, DrawerClose, DrawerContent } from '@/components/ui/drawer'
 import { IBottomSheetSuccessProps } from '../model/bottomSheetSuccess.type'
-import { hapticFeedback } from '@telegram-apps/sdk-react'
+import { hapticFeedback, requestContact } from '@telegram-apps/sdk-react'
 import clsx from 'clsx'
 
 const BottomSheetSuccess = ({
@@ -20,6 +20,9 @@ const BottomSheetSuccess = ({
         hapticFeedback.notificationOccurred('error')
       }
       if (variant === 'warning') {
+        hapticFeedback.notificationOccurred('warning')
+      }
+      if (variant === 'auth') {
         hapticFeedback.notificationOccurred('warning')
       }
     }
@@ -90,21 +93,37 @@ const BottomSheetSuccess = ({
             )}
           </div>
           {/* End Heading */}
-          <DrawerClose>
+          {variant !== 'auth' && (
+            <DrawerClose>
+              <button
+                onClick={() => {
+                  hapticFeedback.impactOccurred('rigid')
+                }}
+                className={clsx(
+                  'py-2.5  w-full sm:py-3 px-4  inline-flex justify-center items-center gap-x-2 font-medium sm:text-sm rounded-xl border border-transparent text-white hover:bg-green-600 disabled:opacity-50 disabled:pointer-events-none focus:outline-hidden focus:bg-green-600',
+                  variant === 'success' && 'bg-green-600 hover:bg-green-600',
+                  variant === 'error' && 'bg-red-600 hover:bg-red-600',
+                  variant === 'warning' && 'bg-yellow-600 hover:bg-yellow-600'
+                )}
+              >
+                Назад
+              </button>
+            </DrawerClose>
+          )}
+          {variant === 'auth' && (
             <button
               onClick={() => {
                 hapticFeedback.impactOccurred('rigid')
+                requestContact()
               }}
               className={clsx(
                 'py-2.5  w-full sm:py-3 px-4  inline-flex justify-center items-center gap-x-2 font-medium sm:text-sm rounded-xl border border-transparent text-white hover:bg-green-600 disabled:opacity-50 disabled:pointer-events-none focus:outline-hidden focus:bg-green-600',
-                variant === 'success' && 'bg-green-600 hover:bg-green-600',
-                variant === 'error' && 'bg-red-600 hover:bg-red-600',
-                variant === 'warning' && 'bg-yellow-600 hover:bg-yellow-600'
+                'bg-yellow-600 hover:bg-yellow-600'
               )}
             >
-              Назад
+              Авторизоваться
             </button>
-          </DrawerClose>
+          )}
         </div>
       </DrawerContent>
     </Drawer>

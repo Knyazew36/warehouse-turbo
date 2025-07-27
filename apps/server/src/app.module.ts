@@ -28,7 +28,10 @@ const dailyRotateFileTransport = new winston.transports.DailyRotateFile({
   maxSize: '10m', // максимальный размер файла
   maxFiles: '15d', // хранить файлы за последние 30 дней
   level: 'info', // уровень логирования
-  format: winston.format.combine(winston.format.timestamp({ format: 'YYYY-MM-DD HH:mm:ss' }), winston.format.json())
+  format: winston.format.combine(
+    winston.format.timestamp({ format: 'YYYY-MM-DD HH:mm:ss' }),
+    winston.format.json()
+  )
 })
 
 @Module({
@@ -49,7 +52,9 @@ const dailyRotateFileTransport = new winston.transports.DailyRotateFile({
             winston.format.timestamp(), // Добавляет метку времени
             winston.format.ms(), // Выводит время между логами
             winston.format.colorize(), // Раскрашивает логи (удобно в разработке)
-            winston.format.printf(({ timestamp, level, message, ms }) => `${timestamp} [${level}]: ${message} ${ms}`)
+            winston.format.printf(
+              ({ timestamp, level, message, ms }) => `${timestamp} [${level}]: ${message} ${ms}`
+            )
           )
         }),
         // Транспорт для логирования ошибок в файл
@@ -78,8 +83,8 @@ const dailyRotateFileTransport = new winston.transports.DailyRotateFile({
     ReceiptsModule,
     ScheduleModule.forRoot(),
     TelegrafModule.forRootAsync({
-      imports: [ConfigModule, PrismaModule], // <-- обязательно импортируем PrismaModule
-      inject: [ConfigService, PrismaService], // <-- инжектим оба
+      imports: [ConfigModule, PrismaModule],
+      inject: [ConfigService, PrismaService],
       useFactory: (cfg: ConfigService): TelegrafModuleOptions => {
         // Определяем токен в зависимости от окружения
         const nodeEnv = cfg.get<string>('NODE_ENV') || 'development'
@@ -93,10 +98,14 @@ const dailyRotateFileTransport = new winston.transports.DailyRotateFile({
         const token = isDev ? devToken : prodToken
         console.log('🐝 [BotModule] token=', isDev)
         if (!token) {
-          throw new Error(`Bot token not found for ${isDev ? 'development' : 'production'} environment`)
+          throw new Error(
+            `Bot token not found for ${isDev ? 'development' : 'production'} environment`
+          )
         }
 
-        console.log(`🐝 [BotModule] Environment: ${nodeEnv}, Using ${isDev ? 'DEV' : 'PROD'} bot token`)
+        console.log(
+          `🐝 [BotModule] Environment: ${nodeEnv}, Using ${isDev ? 'DEV' : 'PROD'} bot token`
+        )
 
         return {
           token
@@ -119,6 +128,10 @@ const dailyRotateFileTransport = new winston.transports.DailyRotateFile({
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
-    consumer.apply(LoggerMiddleware).forRoutes('*').apply(OrganizationContextMiddleware).forRoutes('*')
+    consumer
+      .apply(LoggerMiddleware)
+      .forRoutes('*')
+      .apply(OrganizationContextMiddleware)
+      .forRoutes('*')
   }
 }
