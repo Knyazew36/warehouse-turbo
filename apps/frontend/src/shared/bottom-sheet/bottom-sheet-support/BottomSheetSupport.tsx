@@ -49,21 +49,19 @@ const BottomSheetSupport = () => {
             </p>
           </div>
           {/* End Heading */}
-          <DrawerClose>
-            <button
-              onClick={e => {
-                e.stopPropagation()
-                hapticFeedback.impactOccurred('rigid')
-                openTelegramLink('https://t.me/Knyaz_sv')
-              }}
-              className={clsx(
-                'py-2.5  w-full sm:py-3 px-4  inline-flex justify-center items-center gap-x-2 font-medium sm:text-sm rounded-xl border border-transparent text-white hover:bg-orange-600 disabled:opacity-50 disabled:pointer-events-none focus:outline-hidden focus:bg-orange-600',
-                'bg-orange-600 hover:bg-orange-600'
-              )}
-            >
-              Перейти в чат
-            </button>
-          </DrawerClose>
+          <button
+            onClick={e => {
+              e.stopPropagation()
+              hapticFeedback.impactOccurred('rigid')
+              openTelegramLink('https://t.me/Knyaz_sv')
+            }}
+            className={clsx(
+              'py-2.5  w-full sm:py-3 px-4  inline-flex justify-center items-center gap-x-2 font-medium sm:text-sm rounded-xl border border-transparent text-white hover:bg-orange-600 disabled:opacity-50 disabled:pointer-events-none focus:outline-hidden focus:bg-orange-600',
+              'bg-orange-600 hover:bg-orange-600'
+            )}
+          >
+            Перейти в чат
+          </button>
         </div>
       </DrawerContent>
     </Drawer>
