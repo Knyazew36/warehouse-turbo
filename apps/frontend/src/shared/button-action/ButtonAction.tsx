@@ -57,15 +57,18 @@ const ButtonAction: FC<IProps> = ({
 
               <div className='inline-flex items-center gap-x-2'>
                 {onCancelClick && (
-                  <button
-                    disabled={disabledCancel}
-                    className='text-stone-300 disabled:opacity-50 disabled:pointer-events-none decoration-2 font-medium text-sm hover:underline focus:outline-hidden focus:underline dark:text-neutral-400'
-                    onClick={handleCancelClick}
-                  >
-                    Очистить
-                  </button>
+                  <>
+                    <button
+                      disabled={disabledCancel}
+                      className='text-stone-300 disabled:opacity-50 disabled:pointer-events-none decoration-2 font-medium text-sm hover:underline focus:outline-hidden focus:underline dark:text-neutral-400'
+                      onClick={handleCancelClick}
+                    >
+                      Очистить
+                    </button>
+                    <div className='w-px h-4 bg-stone-700 dark:bg-neutral-700'></div>
+                  </>
                 )}
-                <div className='w-px h-4 bg-stone-700 dark:bg-neutral-700'></div>
+
                 <button
                   disabled={disabledSuccess}
                   onClick={handleSuccessClick}

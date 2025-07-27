@@ -64,6 +64,10 @@ const OrganizationChangePage: React.FC = () => {
     )
   }
 
+  const handleCancel = () => {
+    setValue('name', data?.name || '')
+    setValue('description', data?.description || '')
+  }
   if (isLoading) {
     return <Loader />
   }
@@ -118,8 +122,12 @@ const OrganizationChangePage: React.FC = () => {
             </div>
           </div>
         </div>
-        <ButtonAction />
       </form>
+      <ButtonAction
+        isLoading={isPending}
+        onSuccessClick={handleSubmit(onSubmit)}
+        onCancelClick={handleCancel}
+      />
     </Page>
   )
 }

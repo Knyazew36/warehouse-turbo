@@ -5,12 +5,17 @@ import {
   useCreateOrganization,
   useJoinOrganization
 } from '@/entitites/organization/api/organization.api'
-import { ICreateOrganization, IUserOrganization, IOrganization } from '@/entitites/organization/model/organization.type'
+import {
+  ICreateOrganization,
+  IUserOrganization,
+  IOrganization
+} from '@/entitites/organization/model/organization.type'
 import { Warehouse } from 'lucide-react'
 import Loader from '@/shared/loader/ui/Loader'
 import { hapticFeedback } from '@telegram-apps/sdk-react'
 import { useOrganizationStore } from '@/entitites/organization/model/organization.store'
 import { Link, useNavigate } from 'react-router-dom'
+import OrganizationItem from '../ui/organization-item/OrganizationItem'
 
 const OrganizationManagementPage: React.FC = () => {
   const navigate = useNavigate()
@@ -88,13 +93,17 @@ const OrganizationManagementPage: React.FC = () => {
                 <div className='space-y-6'>
                   {allOrganizations.length > 0 && (
                     <div className='text-center'>
-                      <h2 className='font-medium text-xl text-gray-800 dark:text-neutral-200'>Мои склады</h2>
+                      <h2 className='font-medium text-xl text-gray-800 dark:text-neutral-200'>
+                        Мои склады
+                      </h2>
                     </div>
                   )}
 
                   {allOrganizations.length === 0 && (
                     <div className='text-center'>
-                      <h2 className='font-medium text-xl text-gray-800 dark:text-neutral-200'>У вас нет складов</h2>
+                      <h2 className='font-medium text-xl text-gray-800 dark:text-neutral-200'>
+                        У вас нет складов
+                      </h2>
                       <p className='mt-1 text-sm text-gray-500 dark:text-neutral-500'>
                         Создайте свой первый склад для управления
                       </p>
@@ -103,7 +112,9 @@ const OrganizationManagementPage: React.FC = () => {
 
                   {invitedOrganizations?.length > 0 && (
                     <>
-                      <p className='mt-1 text-sm text-gray-500 dark:text-neutral-500 text-center'>Приглашения</p>
+                      <p className='mt-1 text-sm text-gray-500 dark:text-neutral-500 text-center'>
+                        Приглашения
+                      </p>
                       {invitedOrganizations.map(organization => (
                         <button
                           className='py-3 px-3 relative w-full inline-flex  items-center gap-x-1.5 sm:text-sm font-medium rounded-lg border border-gray-200 bg-white text-gray-800 shadow-2xs hover:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none focus:outline-hidden focus:bg-gray-50 dark:bg-neutral-900 dark:hover:bg-neutral-800 dark:focus:bg-neutral-800 dark:border-green-700 dark:text-neutral-300'
@@ -143,35 +154,42 @@ const OrganizationManagementPage: React.FC = () => {
                       </p>
                       <div className='flex flex-col gap-2'>
                         {myOrganizations.map(userOrg => (
-                          <button
-                            className='py-3 px-3 relative w-full inline-flex  items-center gap-x-1.5 sm:text-sm font-medium rounded-lg border border-gray-200 bg-white text-gray-800 shadow-2xs hover:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none focus:outline-hidden focus:bg-gray-50 dark:bg-neutral-900 dark:hover:bg-neutral-800 dark:focus:bg-neutral-800 dark:border-neutral-700 dark:text-neutral-300'
-                            onClick={() => handleSelectOrganization(userOrg)}
-                          >
-                            <div className='flex gap-x-3'>
-                              <span className='flex shrink-0 justify-center items-center size-9.5 bg-white border border-gray-200 rounded-lg dark:bg-neutral-800 dark:border-neutral-700 dark:text-neutral-300'>
-                                <Warehouse
-                                  className='shrink-0 size-5'
-                                  strokeWidth={1.5}
-                                />
-                              </span>
+                          <OrganizationItem
+                            key={userOrg.organizationId}
+                            data={userOrg}
+                            variant='default'
+                            handleSelectOrganization={handleSelectOrganization}
+                          />
 
-                              <div className='grow'>
-                                <div className='font-medium text-gray-800 hover:text-blue-600 focus:outline-hidden focus:text-blue-600 dark:text-neutral-200 dark:hover:text-blue-500 dark:focus:text-blue-500'>
-                                  {userOrg.organization.name}
-                                </div>
-                                {userOrg.organization.description && (
-                                  <p className='text-xs text-gray-500 dark:text-neutral-500 text-a'>
-                                    {userOrg.organization.description}
-                                  </p>
-                                )}
-                              </div>
-                            </div>
-                            {userOrg.isOwner && (
-                              <span className='inline-flex absolute top-3 right-3 items-center gap-x-1.5 py-1 px-2 rounded-full text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-800/30 dark:text-blue-500'>
-                                Владелец
-                              </span>
-                            )}
-                          </button>
+                          // <button
+                          //   className='py-3 px-3 relative w-full inline-flex  items-center gap-x-1.5 sm:text-sm font-medium rounded-lg border border-gray-200 bg-white text-gray-800 shadow-2xs hover:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none focus:outline-hidden focus:bg-gray-50 dark:bg-neutral-900 dark:hover:bg-neutral-800 dark:focus:bg-neutral-800 dark:border-neutral-700 dark:text-neutral-300'
+                          //   onClick={() => handleSelectOrganization(userOrg)}
+                          // >
+                          //   <div className='flex gap-x-3'>
+                          //     <span className='flex shrink-0 justify-center items-center size-9.5 bg-white border border-gray-200 rounded-lg dark:bg-neutral-800 dark:border-neutral-700 dark:text-neutral-300'>
+                          //       <Warehouse
+                          //         className='shrink-0 size-5'
+                          //         strokeWidth={1.5}
+                          //       />
+                          //     </span>
+
+                          //     <div className='grow'>
+                          //       <div className='font-medium text-gray-800 hover:text-blue-600 focus:outline-hidden focus:text-blue-600 dark:text-neutral-200 dark:hover:text-blue-500 dark:focus:text-blue-500'>
+                          //         {userOrg.organization.name}
+                          //       </div>
+                          //       {userOrg.organization.description && (
+                          //         <p className='text-xs text-gray-500 dark:text-neutral-500 text-a'>
+                          //           {userOrg.organization.description}
+                          //         </p>
+                          //       )}
+                          //     </div>
+                          //   </div>
+                          //   {userOrg.isOwner && (
+                          //     <span className='inline-flex absolute top-3 right-3 items-center gap-x-1.5 py-1 px-2 rounded-full text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-800/30 dark:text-blue-500'>
+                          //       Владелец
+                          //     </span>
+                          //   )}
+                          // </button>
                         ))}
                       </div>
                       <div className='w-28 h-px mx-auto bg-gray-300 dark:bg-neutral-700' />

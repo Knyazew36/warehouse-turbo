@@ -237,7 +237,6 @@ const AddUserPage = () => {
                 </p> */}
 
                 <InfoMessage
-                  title='Подсказка'
                   items={[
                     'Каждый телефон создаст отдельного сотрудника.',
                     'Сотрудники при входе в приложение увидят приглашение в ваш склад.'
@@ -249,7 +248,7 @@ const AddUserPage = () => {
                 onClick={handleSubmit}
                 disabled={!hasValidPhones || hasInvalidPhones}
                 type='button'
-                className='w-full py-3 px-4 inline-flex h-12 justify-center items-center gap-x-2 text-sm font-medium rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-700 focus:outline-hidden focus:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none'
+                className='py-3 px-4 w-full inline-flex justify-center items-center gap-x-2 sm:text-sm font-medium rounded-lg border border-transparent bg-indigo-600 text-white hover:bg-indigo-700 disabled:opacity-50 disabled:pointer-events-none focus:outline-hidden focus:bg-indigo-700'
               >
                 {isLoading ? (
                   <Spinner />

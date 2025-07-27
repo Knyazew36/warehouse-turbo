@@ -102,22 +102,15 @@ const OrganizationCreatePage: React.FC = () => {
             </div>
 
             {/* Кнопки */}
-            <div className='flex space-x-3 pt-4'>
+            {/* <div className='flex space-x-3 pt-4'>
               <button
                 onClick={handleCreateOrganization}
                 disabled={isPending || !formData.name.trim()}
-                className='flex-1 px-4 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors font-medium'
+                className='py-3 px-4 w-full inline-flex justify-center items-center gap-x-2 sm:text-sm font-medium rounded-lg border border-transparent bg-indigo-600 text-white hover:bg-indigo-700 disabled:opacity-50 disabled:pointer-events-none focus:outline-hidden focus:bg-indigo-700'
               >
                 {isPending ? 'Создание...' : 'Создать склад'}
               </button>
-              <button
-                onClick={handleBack}
-                disabled={isPending}
-                className='px-4 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors dark:border-neutral-600 dark:text-neutral-300 dark:hover:bg-neutral-800'
-              >
-                Отмена
-              </button>
-            </div>
+            </div> */}
           </div>
         </div>
 
@@ -131,6 +124,15 @@ const OrganizationCreatePage: React.FC = () => {
             'Получите полный доступ к настройкам'
           ]}
         />
+        <div className='sticky bottom-4'>
+          <button
+            onClick={handleCreateOrganization}
+            disabled={isPending}
+            className='py-3 px-4 w-full inline-flex justify-center items-center gap-x-2 sm:text-sm font-medium rounded-lg border border-transparent bg-indigo-600 text-white hover:bg-indigo-700 disabled:opacity-50 disabled:pointer-events-none focus:outline-hidden focus:bg-indigo-700'
+          >
+            {isPending ? 'Создание...' : 'Создать склад'}
+          </button>
+        </div>
       </div>
     </Page>
   )
