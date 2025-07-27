@@ -127,11 +127,14 @@ export const useRemoveUserFromOrganization = () => {
 
   return useMutation({
     mutationFn: async ({ organizationId, userId }: { organizationId: number; userId: number }) => {
-      await $api.delete(`${apiDomain}/organizations/${organizationId}/users/${userId}`)
+      await $api.post(`${apiDomain}/organizations/${organizationId}/users/${userId}/remove`)
     },
     onSuccess: (_, { organizationId }) => {
       queryClient.invalidateQueries({
         queryKey: ORGANIZATION_KEYS.users(organizationId)
+      })
+      queryClient.invalidateQueries({
+        queryKey: ['employees']
       })
       queryClient.invalidateQueries({
         queryKey: ORGANIZATION_KEYS.detail(organizationId)

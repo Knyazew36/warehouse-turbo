@@ -3,21 +3,23 @@ import { Dialog, DialogTrigger, DialogContent, DialogFooter } from '@/components
 import { DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog'
 import { DialogClose } from '@/components/ui/dialog'
 import { useUserDelete } from '@/entitites/user/api/user.api'
+import { useRemoveUserFromOrganization } from '@/entitites/organization/api/organization.api'
 
 interface UserDeleteProps {
   /** ID удаляемого товара */
   userId: number
+  organizationId: number
   /** колбэк после успешного удаления */
   onSuccess?: () => void
 }
 
-const UserDelete: React.FC<UserDeleteProps> = ({ userId, onSuccess }) => {
+const UserDelete: React.FC<UserDeleteProps> = ({ userId, organizationId, onSuccess }) => {
   const [open, setOpen] = useState(false)
 
-  const { mutate: userDelete, isPending } = useUserDelete()
+  const { mutate: userDelete, isPending } = useRemoveUserFromOrganization()
 
   const handleDelete = async () => {
-    userDelete(userId)
+    userDelete({ organizationId, userId })
     onSuccess?.()
     setOpen(false)
   }
@@ -87,7 +89,8 @@ const UserDelete: React.FC<UserDeleteProps> = ({ userId, onSuccess }) => {
                 <DialogHeader>
                   <DialogTitle>Удалить пользователя?</DialogTitle>
                   <DialogDescription>
-                    Вы действительно хотите удалить этого пользователя? Действие нельзя будет отменить.
+                    Вы действительно хотите удалить этого пользователя? Действие нельзя будет
+                    отменить.
                   </DialogDescription>
                 </DialogHeader>
               </div>

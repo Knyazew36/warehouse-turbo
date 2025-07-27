@@ -7,6 +7,7 @@ import { useUpdateUser, useUserDelete, useUserRole, useUpdateUserRole } from '..
 import LoaderSection from '@/shared/loader/ui/LoaderSection'
 import UserDelete from '../delete/UserDelete'
 import { useOrganizationStore } from '@/entitites/organization/model/organization.store'
+import { getRole } from '@/shared/utils/getRole'
 
 const UserCard = ({ data }: { data: IUser }) => {
   const { currentOrganization } = useOrganizationStore()
@@ -38,7 +39,10 @@ const UserCard = ({ data }: { data: IUser }) => {
     >
       {userRole && userRole !== Role.OWNER && (
         <div className='absolute top-2 left-2'>
-          <UserDelete userId={data.id} />
+          <UserDelete
+            userId={data.id}
+            organizationId={currentOrganization!.organizationId}
+          />
         </div>
       )}
       {/* Header */}
@@ -66,130 +70,6 @@ const UserCard = ({ data }: { data: IUser }) => {
               }
             </span>
           )}
-        </div>
-        <div className='ms-auto'>
-          {/* <div className='hs-dropdown [--placement:bottom-right] relative inline-flex'>
-            <button
-              id='hs-pro-dupc1'
-              type='button'
-              className='size-7 inline-flex justify-center items-center gap-x-2 rounded-lg border border-transparent text-gray-500 hover:bg-gray-100 disabled:opacity-50 disabled:pointer-events-none focus:outline-hidden focus:bg-gray-100 dark:text-neutral-400 dark:hover:bg-neutral-700 dark:focus:bg-neutral-700'
-              aria-haspopup='menu'
-              aria-expanded='false'
-              aria-label='Dropdown'
-            >
-              <svg
-                className='shrink-0 size-4'
-                xmlns='http://www.w3.org/2000/svg'
-                width={24}
-                height={24}
-                viewBox='0 0 24 24'
-                fill='none'
-                stroke='currentColor'
-                strokeWidth={2}
-                strokeLinecap='round'
-                strokeLinejoin='round'
-              >
-                <circle
-                  cx={12}
-                  cy={12}
-                  r={1}
-                />
-                <circle
-                  cx={12}
-                  cy={5}
-                  r={1}
-                />
-                <circle
-                  cx={12}
-                  cy={19}
-                  r={1}
-                />
-              </svg>
-            </button>
-            <div
-              className='hs-dropdown-menu hs-dropdown-open:opacity-100 w-40 transition-[opacity,margin] duration opacity-0 hidden z-10 bg-white rounded-xl shadow-xl dark:bg-neutral-900'
-              role='menu'
-              aria-orientation='vertical'
-              aria-labelledby='hs-pro-dupc1'
-            >
-              <div className='p-1'>
-                <button
-                  type='button'
-                  className='w-full flex items-center gap-x-3 py-1.5 px-2 rounded-lg text-[13px] text-gray-800 hover:bg-gray-100 disabled:opacity-50 disabled:pointer-events-none focus:outline-hidden focus:bg-gray-100 dark:text-neutral-300 dark:hover:bg-neutral-800 dark:focus:bg-neutral-800'
-                >
-                  <svg
-                    className='shrink-0 size-3.5 mt-0.5'
-                    xmlns='http://www.w3.org/2000/svg'
-                    width={24}
-                    height={24}
-                    viewBox='0 0 24 24'
-                    fill='none'
-                    stroke='currentColor'
-                    strokeWidth={2}
-                    strokeLinecap='round'
-                    strokeLinejoin='round'
-                  >
-                    <circle
-                      cx={18}
-                      cy={5}
-                      r={3}
-                    />
-                    <circle
-                      cx={6}
-                      cy={12}
-                      r={3}
-                    />
-                    <circle
-                      cx={18}
-                      cy={19}
-                      r={3}
-                    />
-                    <line
-                      x1='8.59'
-                      x2='15.42'
-                      y1='13.51'
-                      y2='17.49'
-                    />
-                    <line
-                      x1='15.41'
-                      x2='8.59'
-                      y1='6.51'
-                      y2='10.49'
-                    />
-                  </svg>
-                  Share connection
-                </button>
-                <button
-                  type='button'
-                  className='w-full flex items-center gap-x-3 py-1.5 px-2 rounded-lg text-[13px] text-gray-800 hover:bg-gray-100 disabled:opacity-50 disabled:pointer-events-none focus:outline-hidden focus:bg-gray-100 dark:text-neutral-300 dark:hover:bg-neutral-800 dark:focus:bg-neutral-800'
-                >
-                  <svg
-                    className='shrink-0 size-3.5 mt-0.5'
-                    xmlns='http://www.w3.org/2000/svg'
-                    width={24}
-                    height={24}
-                    viewBox='0 0 24 24'
-                    fill='none'
-                    stroke='currentColor'
-                    strokeWidth={2}
-                    strokeLinecap='round'
-                    strokeLinejoin='round'
-                  >
-                    <path d='M9.88 9.88a3 3 0 1 0 4.24 4.24' />
-                    <path d='M10.73 5.08A10.43 10.43 0 0 1 12 5c7 0 10 7 10 7a13.16 13.16 0 0 1-1.67 2.68' />
-                    <path d='M6.61 6.61A13.526 13.526 0 0 0 2 12s3 7 10 7a9.74 9.74 0 0 0 5.39-1.61' />
-                    <line
-                      x1={2}
-                      x2={22}
-                      y1={2}
-                      y2={22}
-                    />
-                  </svg>
-                  Hide connection
-                </button>
-              </div>
-            </div>
-          </div> */}
         </div>
       </div>
       {/* End Header */}
@@ -224,7 +104,7 @@ const UserCard = ({ data }: { data: IUser }) => {
             <path d='M10 14h4' />
             <path d='M10 18h4' />
           </svg> */}
-          <p className='text-sm text-gray-500 dark:text-neutral-500'>{data.role}</p>
+          <p className='text-sm text-gray-500 dark:text-neutral-500'>{getRole(data.role!)}</p>
         </div>
       </div>
       {/* End Body */}
