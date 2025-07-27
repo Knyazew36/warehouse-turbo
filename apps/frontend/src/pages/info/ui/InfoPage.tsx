@@ -6,6 +6,7 @@ import {
   AccordionItem,
   AccordionTrigger
 } from '@/components/ui/accordion'
+
 const InfoPage = () => {
   return (
     <Page>
@@ -49,7 +50,7 @@ const InfoPage = () => {
             >
               <path d='M5 12h14' />
             </svg>
-            Accordion #1
+            Чем отличаются роли пользователей?
           </button>
           <div
             id='hs-basic-bordered-collapse-one'
@@ -59,10 +60,17 @@ const InfoPage = () => {
           >
             <div className='pb-4 px-5'>
               <p className='text-gray-800 dark:text-neutral-200'>
-                <em>This is the first item's accordion body.</em> It is hidden by default, until the
-                collapse plugin adds the appropriate classes that we use to style each element.
-                These classes control the overall appearance, as well as the showing and hiding via
-                CSS transitions.
+                <em>Владелец</em> - может управлять всеми складами и пользователями. Может удалить
+                или изменить склад.
+              </p>
+              <p className='text-gray-800 dark:text-neutral-200'>
+                <em>Администратор</em> - может управлять всеми складами и пользователями. Но не
+                может удалить или изменить склад. Может создавать и редактировать товары
+              </p>
+
+              <p className='text-gray-800 dark:text-neutral-200'>
+                <em>Пользователь</em> - может просматривать склад, создавать расходы, принимать
+                товары.
               </p>
             </div>
           </div>
@@ -105,7 +113,7 @@ const InfoPage = () => {
             >
               <path d='M5 12h14' />
             </svg>
-            Accordion #2
+            Для чего нужна авторизация по номеру телефона?
           </button>
           <div
             id='hs-basic-bordered-collapse-two'
@@ -115,22 +123,19 @@ const InfoPage = () => {
           >
             <div className='pb-4 px-5'>
               <p className='text-gray-800 dark:text-neutral-200'>
-                <em>This is the second item's accordion body.</em> It is hidden by default, until
-                the collapse plugin adds the appropriate classes that we use to style each element.
-                These classes control the overall appearance, as well as the showing and hiding via
-                CSS transitions.
+                Для того, чтобы пользователя могли приглашать в другие склады
               </p>
             </div>
           </div>
         </div>
         <div
           className='hs-accordion bg-white border border-gray-200 -mt-px first:rounded-t-lg last:rounded-b-lg dark:bg-neutral-800 dark:border-neutral-700'
-          id='hs-bordered-heading-three'
+          id='hs-bordered-heading-two'
         >
           <button
             className='hs-accordion-toggle hs-accordion-active:text-blue-600 inline-flex items-center gap-x-3 w-full font-semibold text-start text-gray-800 py-4 px-5 hover:text-gray-500 disabled:opacity-50 disabled:pointer-events-none dark:hs-accordion-active:text-blue-500 dark:text-neutral-200 dark:hover:text-neutral-400 dark:focus:outline-hidden dark:focus:text-neutral-400'
             aria-expanded='false'
-            aria-controls='hs-basic-bordered-collapse-three'
+            aria-controls='hs-basic-bordered-collapse-two'
           >
             <svg
               className='hs-accordion-active:hidden block size-3.5'
@@ -161,20 +166,18 @@ const InfoPage = () => {
             >
               <path d='M5 12h14' />
             </svg>
-            Accordion #3
+            Какие уведомления приходят в бот?
           </button>
           <div
-            id='hs-basic-bordered-collapse-three'
+            id='hs-basic-bordered-collapse-two'
             className='hs-accordion-content hidden w-full overflow-hidden transition-[height] duration-300'
             role='region'
-            aria-labelledby='hs-bordered-heading-three'
+            aria-labelledby='hs-bordered-heading-two'
           >
             <div className='pb-4 px-5'>
               <p className='text-gray-800 dark:text-neutral-200'>
-                <em>This is the third item's accordion body.</em> It is hidden by default, until the
-                collapse plugin adds the appropriate classes that we use to style each element.
-                These classes control the overall appearance, as well as the showing and hiding via
-                CSS transitions.
+                Уведомления приходят в бот, когда на складе товар пересек порог минимального
+                значения. Уведомление по умолчанию будет приходить в 9:00.
               </p>
             </div>
           </div>
