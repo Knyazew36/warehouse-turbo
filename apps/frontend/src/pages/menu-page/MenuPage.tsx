@@ -19,7 +19,8 @@ import Header from '@/shared/ui/header/ui/Header'
 
 const MenuPage: FC = () => {
   const { isAdmin, isOwner, isIT, isOperator, role } = useAuthStore()
-  const { currentOrganization, isOrganizationLoading, setOrganizationLoading } = useOrganizationStore()
+  const { currentOrganization, isOrganizationLoading, setOrganizationLoading } =
+    useOrganizationStore()
   const user = initDataUser()
   const userId = user?.id?.toString()
 
@@ -363,7 +364,7 @@ const MenuPage: FC = () => {
           </div>
         </Link>
 
-        <div className='grid grid-cols-2 sm:grid-cols-4 md:grid-cols-5 xl:grid-cols-6 gap-2 lg:gap-4 mt-8'>
+        <div className='grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 xl:grid-cols-6 gap-2 lg:gap-4 mt-8'>
           {menuButtons.map(button => (
             <MenuButton
               key={button.to}

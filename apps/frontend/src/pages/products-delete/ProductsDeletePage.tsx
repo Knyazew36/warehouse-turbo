@@ -8,6 +8,7 @@ import Loader from '@/shared/loader/ui/Loader'
 import ProductCreate from '../products/create/ProductCreate'
 import Empty from '@/shared/empty/ui/Empty'
 import ProductCardChangeForm from '../products/card/ProductCardChangeForm'
+import InfoMessage from '@/shared/ui/info/ui/Info'
 
 export const ProductsDeletePage = () => {
   const [searchTerm, setSearchTerm] = useState('')
@@ -59,6 +60,14 @@ export const ProductsDeletePage = () => {
         <div className='mt-8'>
           <ProductCreate />
         </div>
+
+        <InfoMessage
+          className='mt-4'
+          items={[
+            'Вы можете удалить товары из склада.',
+            'Если выключить поле "Активен", товар будет скрыт из списка товаров. Вам не будет приходить уведомление о его наличии.'
+          ]}
+        />
       </div>
     </Page>
   )

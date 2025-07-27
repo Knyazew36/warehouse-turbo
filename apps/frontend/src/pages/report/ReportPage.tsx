@@ -10,6 +10,7 @@ import { useProducts } from '@/entitites/product/api/product.api'
 import { useBottomSheetStore } from '@/shared/bottom-sheet/model/store.bottom-sheet'
 import PageHeader from '@/shared/ui/page-header/ui/PageHeader'
 import Loader from '@/shared/loader/ui/Loader'
+import InfoMessage from '@/shared/ui/info/ui/Info'
 const ReportPage = () => {
   const navigate = useNavigate()
   const { data = [], isLoading, refetch } = useProducts(true)
@@ -90,6 +91,7 @@ const ReportPage = () => {
             placeholder='Поиск товара...'
           />
         </div>
+
         <div className='grid sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 mt-8'>
           {filteredData.length > 0 ? (
             filteredData.map(card => (
@@ -122,6 +124,12 @@ const ReportPage = () => {
             disabledCancel={Object.values(consumptions).every(value => value === 0)}
           />
         )}
+        <InfoMessage
+          items={[
+            'Вы можете добавить несколько товаров в расход.',
+            'К товару можно добавить комментарий.'
+          ]}
+        />
       </div>
     </Page>
   )

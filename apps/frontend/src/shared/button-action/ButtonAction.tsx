@@ -4,6 +4,7 @@ import { Bounce, toast } from 'react-toastify'
 import { useNavigate } from 'react-router-dom'
 import Spinner from '../spinner/Spinner'
 import clsx from 'clsx'
+import { ChevronLeft, Undo2Icon } from 'lucide-react'
 
 interface IProps {
   onSuccessClick?: () => void
@@ -12,7 +13,13 @@ interface IProps {
   disabledCancel?: boolean
   isLoading?: boolean
 }
-const ButtonAction: FC<IProps> = ({ onSuccessClick, onCancelClick, disabledSuccess, disabledCancel, isLoading }) => {
+const ButtonAction: FC<IProps> = ({
+  onSuccessClick,
+  onCancelClick,
+  disabledSuccess,
+  disabledCancel,
+  isLoading
+}) => {
   const navigate = useNavigate()
 
   const handleSuccessClick = () => {
@@ -75,21 +82,7 @@ const ButtonAction: FC<IProps> = ({ onSuccessClick, onCancelClick, disabledSucce
                   aria-label='Close'
                 >
                   <span className='sr-only'>Close</span>
-                  <svg
-                    className='shrink-0 size-4'
-                    xmlns='http://www.w3.org/2000/svg'
-                    width='24'
-                    height='24'
-                    viewBox='0 0 24 24'
-                    fill='none'
-                    stroke='currentColor'
-                    strokeWidth='2'
-                    strokeLinecap='round'
-                    strokeLinejoin='round'
-                  >
-                    <path d='M18 6 6 18' />
-                    <path d='m6 6 12 12' />
-                  </svg>
+                  <ChevronLeft className='shrink-0 size-4' />
                 </button>
                 {/* End Close Button */}
               </div>

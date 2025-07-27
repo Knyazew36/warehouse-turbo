@@ -11,6 +11,7 @@ import { Modal } from '@telegram-apps/telegram-ui'
 import PageHeader from '@/shared/ui/page-header/ui/PageHeader'
 import InputDefault from '@/shared/ui/input-default/ui/InputDefault'
 import ErrorText from '@/shared/ui/error-text/ui/ErrorText'
+import InfoMessage from '@/shared/ui/info/ui/Info'
 
 type FormValues = {
   name: string
@@ -45,7 +46,8 @@ const CreateProductPage = () => {
 
       open({
         isOpen: true,
-        description: 'Товар успешно создан. Вы можете добавить еще один товар или вернуться на главную страницу.'
+        description:
+          'Товар успешно создан. Вы можете добавить еще один товар или вернуться на главную страницу.'
       })
       reset()
     } catch (e: any) {
@@ -94,7 +96,9 @@ const CreateProductPage = () => {
                 />
               )}
             />
-            {errors.quantity && <p className='mt-1 text-xs text-red-500'>{errors.quantity.message}</p>}
+            {errors.quantity && (
+              <p className='mt-1 text-xs text-red-500'>{errors.quantity.message}</p>
+            )}
           </label>
 
           <Controller
@@ -125,7 +129,9 @@ const CreateProductPage = () => {
                 />
               )}
             />
-            {errors.minThreshold && <p className='mt-1 text-xs text-red-500'>{errors.minThreshold.message}</p>}
+            {errors.minThreshold && (
+              <p className='mt-1 text-xs text-red-500'>{errors.minThreshold.message}</p>
+            )}
           </label>
         </div>
         {/* End Body */}
@@ -136,6 +142,13 @@ const CreateProductPage = () => {
           reset()
         }}
         isLoading={buttonLoading}
+      />
+
+      <InfoMessage
+        className='mt-4'
+        items={[
+          'Минимальный остаток - это количество товара, при котором будет отправлено уведомление о том, что товар заканчивается.'
+        ]}
       />
     </Page>
   )
