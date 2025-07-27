@@ -223,10 +223,7 @@ const MenuPage: FC = () => {
   ]
 
   return (
-    <Page
-      back={false}
-      isLoading={isFetching}
-    >
+    <Page back={false}>
       <div className='flex flex-col flex-1 pt-4'>
         <Header />
         <AlertProductLowStock />

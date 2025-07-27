@@ -51,7 +51,7 @@ const OrganizationItem: React.FC<OrganizationItemProps> = ({
 
           {/* <p className='text-neutral-200 font-medium'>{data.organization.name}</p> */}
           {data.organization.description && (
-            <p className='text-xs text-gray-500 text-start dark:text-neutral-500'>
+            <p className='text-xs text-gray-500 text-start dark:text-neutral-500 text-wrap max-w-[180px]'>
               {data.organization.description}
             </p>
           )}
@@ -64,7 +64,7 @@ const OrganizationItem: React.FC<OrganizationItemProps> = ({
       )}
       {variant === 'change' && (
         <div
-          className='absolute top-3 end-3 group-hover:opacity-100 lg:opacity-0'
+          className='absolute top-3 ml-2 end-3 group-hover:opacity-100 lg:opacity-0 '
           onClick={e => {
             e.stopPropagation()
           }}
