@@ -51,7 +51,8 @@ const BottomSheetSupport = () => {
           {/* End Heading */}
           <DrawerClose>
             <button
-              onClick={() => {
+              onClick={e => {
+                e.stopPropagation()
                 hapticFeedback.impactOccurred('rigid')
                 openTelegramLink('https://t.me/Knyaz_sv')
               }}
