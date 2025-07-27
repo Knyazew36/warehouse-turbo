@@ -7,11 +7,17 @@ import { ErrorResponse, BaseResponse } from './type'
 import { toast } from 'sonner'
 // import { json } from 'stream/consumers'
 import React from 'react'
-import { hapticFeedback, initData, isTMA, mockTelegramEnv, retrieveRawInitData } from '@telegram-apps/sdk'
+import {
+  hapticFeedback,
+  initData,
+  isTMA,
+  mockTelegramEnv,
+  retrieveRawInitData
+} from '@telegram-apps/sdk'
 import { getOrganizationIdFromStore } from '../middleware/organization.middleware'
 
 const initDataRaw = import.meta.env.DEV
-  ? 'user=%7B%22id%22%3A239676985%2C%22first_name%22%3A%22%D0%A1%D0%B5%D1%80%D0%B3%D0%B5%D0%B9%22%2C%22last_name%22%3A%22%D0%9A%D0%BD%D1%8F%D0%B7%D0%B5%D0%B2%22%2C%22username%22%3A%22Knyaz_sv%22%2C%22language_code%22%3A%22ru%22%2C%22is_premium%22%3Atrue%2C%22allows_write_to_pm%22%3Atrue%2C%22photo_url%22%3A%22https%3A%5C%2F%5C%2Ft.me%5C%2Fi%5C%2Fuserpic%5C%2F320%5C%2FdVwpqY8rwKcDgyKCeVKKd95SfUDZ89Fhpw-zbGDB6Rg.svg%22%7D&chat_instance=7502372238548063129&chat_type=sender&auth_date=1753514052&signature=7V0JKPuh2HSsQH5-t13o7E48NVYfVYutzmGa_2joNwWtW9KOgTpjEhCJK0gyF9d53PbLx3bPcQbCRlKMLsXEAg&hash=4d3e513c17050f89189b131054c330b9a652a7df8d35bd3bbcac4e195447fff4'
+  ? 'user=%7B%22id%22%3A239676985%2C%22first_name%22%3A%22%D0%A1%D0%B5%D1%80%D0%B3%D0%B5%D0%B9%22%2C%22last_name%22%3A%22%D0%9A%D0%BD%D1%8F%D0%B7%D0%B5%D0%B2%22%2C%22username%22%3A%22Knyaz_sv%22%2C%22language_code%22%3A%22ru%22%2C%22is_premium%22%3Atrue%2C%22allows_write_to_pm%22%3Atrue%2C%22photo_url%22%3A%22https%3A%5C%2F%5C%2Ft.me%5C%2Fi%5C%2Fuserpic%5C%2F320%5C%2FdVwpqY8rwKcDgyKCeVKKd95SfUDZ89Fhpw-zbGDB6Rg.svg%22%7D&chat_instance=6883731396038540970&chat_type=channel&auth_date=1753600931&signature=0Q_i2w8Mk-52LLSDNlZ7cEYCPtNNiCclAtwgVbR4O1XxsA5HfXj2-lUi39gvj1LPeDSelVnFvkmEOfl1xuedDQ&hash=cebee6d1d1887eb4ce2e61c0bde9ea8a033df88d895b5f4039852bf66e808166'
   : isTMA()
     ? retrieveRawInitData()
     : ''
@@ -102,7 +108,9 @@ $api.interceptors.response.use(
 // Логирование ошибок
 function logErrorDetails(error: AxiosError) {
   log({
-    name: axios.isAxiosError(error) ? (error.config?.url ?? 'undefined url') : 'Not instance of AxiosError',
+    name: axios.isAxiosError(error)
+      ? (error.config?.url ?? 'undefined url')
+      : 'Not instance of AxiosError',
     data: error,
     type: 'catch'
   })

@@ -10,12 +10,13 @@ import { Role } from '@/entitites/user/model/user.type'
 
 import MenuButton, { IMenuButton } from './menu-button/MenuButton'
 import { useNavigate } from 'react-router-dom'
-import { Settings, UserPlus } from 'lucide-react'
+import { MessageCircle, Settings, UserPlus } from 'lucide-react'
 import { useUserRole } from '@/entitites/user/api/user.api'
 import { useOrganization } from '@/entitites/organization/api/organization.api'
 import { useOrganizationStore } from '@/entitites/organization/model/organization.store'
 import Loader from '@/shared/loader/ui/Loader'
 import Header from '@/shared/ui/header/ui/Header'
+import BottomSheetSupport from '@/shared/bottom-sheet/bottom-sheet-support/BottomSheetSupport'
 
 const MenuPage: FC = () => {
   const { isAdmin, isOwner, isIT, isOperator, role } = useAuthStore()
@@ -45,7 +46,7 @@ const MenuPage: FC = () => {
   const menuButtons: IMenuButton[] = [
     {
       to: '/settings-warehouse',
-      title: 'Настройки склада',
+      title: 'Настройки',
       color: 'teal',
       isBlocked: isOperator,
 
@@ -79,7 +80,7 @@ const MenuPage: FC = () => {
     },
     {
       to: '/products',
-      title: 'Остаток на складе',
+      title: 'Остаток',
       color: 'indigo',
       icon: (
         <svg
@@ -158,7 +159,7 @@ const MenuPage: FC = () => {
     },
     {
       to: '/add-user',
-      title: 'Добавить сотрудников',
+      title: 'Добавить',
       color: 'lime',
       isBlocked: isOperator,
       icon: (
@@ -209,33 +210,6 @@ const MenuPage: FC = () => {
           <path d='M9 12h.01' />
           <path d='M9 15h.01' />
           <path d='M9 18h.01' />
-        </svg>
-      )
-    },
-    {
-      to: '/settings',
-      title: 'Настройки',
-      color: 'gray',
-      isDevelop: true,
-      icon: (
-        <svg
-          xmlns='http://www.w3.org/2000/svg'
-          className='shrink-0 size-5 xl:w-6 xl:h-6 text-gray-600 dark:text-gray-500'
-          width={24}
-          height={24}
-          viewBox='0 0 24 24'
-          fill='none'
-          stroke='currentColor'
-          strokeWidth={2}
-          strokeLinecap='round'
-          strokeLinejoin='round'
-        >
-          <path d='M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z' />
-          <circle
-            cx={12}
-            cy={12}
-            r={3}
-          />
         </svg>
       )
     }
@@ -408,6 +382,38 @@ const MenuPage: FC = () => {
           )}
 
           {/* End Card */}
+        </div>
+
+        <div className='grid grid-cols-2 sm:grid-cols-4 md:grid-cols-5 xl:grid-cols-6 gap-2 lg:gap-4 mt-8'>
+          <MenuButton
+            to='/settings'
+            title='Настройки'
+            color='gray'
+            isDevelop={true}
+            icon={
+              <svg
+                xmlns='http://www.w3.org/2000/svg'
+                className='shrink-0 size-5 xl:w-6 xl:h-6 text-gray-600 dark:text-gray-500'
+                width={24}
+                height={24}
+                viewBox='0 0 24 24'
+                fill='none'
+                stroke='currentColor'
+                strokeWidth={2}
+                strokeLinecap='round'
+                strokeLinejoin='round'
+              >
+                <path d='M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z' />
+                <circle
+                  cx={12}
+                  cy={12}
+                  r={3}
+                />
+              </svg>
+            }
+          />
+
+          <BottomSheetSupport />
         </div>
         {/* End Grid */}
       </div>

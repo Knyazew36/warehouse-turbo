@@ -6,7 +6,7 @@ import { TailwindColor, getColorClasses } from '@/shared/utils/colors'
 import LoaderSection from '@/shared/loader/ui/LoaderSection'
 
 export type IMenuButton = {
-  to: string
+  to?: string
   title: string
   icon: React.ReactNode
   color?: TailwindColor
@@ -17,6 +17,8 @@ export type IMenuButton = {
   isLoading?: boolean
 
   iconClassName?: string
+
+  onClick?: () => void
 }
 
 const MenuButton = ({
@@ -28,16 +30,21 @@ const MenuButton = ({
   isDevelop = false,
   withNotification = false,
   isLoading = false,
-  iconClassName
+  iconClassName,
+  onClick
 }: IMenuButton) => {
   return (
     <Link
-      to={to}
+      to={to ?? ''}
       className={clsx(
         'p-4 group relative overflow-hidden flex flex-col bg-white border border-gray-200 rounded-xl focus:outline-hidden dark:bg-neutral-900 dark:border-neutral-700',
-        (isBlocked || isDevelop || isLoading) && 'opacity-70 !pointer-events-none cursor-not-allowed'
+        (isBlocked || isDevelop || isLoading) &&
+          'opacity-70 !pointer-events-none cursor-not-allowed'
       )}
-      onClick={() => hapticFeedback.impactOccurred('rigid')}
+      onClick={() => {
+        hapticFeedback.impactOccurred('rigid')
+        onClick?.()
+      }}
     >
       {isLoading && <LoaderSection />}
       {isBlocked && <Blocked />}

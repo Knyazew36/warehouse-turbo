@@ -1,14 +1,5 @@
 import React, { useEffect } from 'react'
-import {
-  Drawer,
-  DrawerClose,
-  DrawerContent,
-  DrawerDescription,
-  DrawerFooter,
-  DrawerHeader,
-  DrawerTitle,
-  DrawerTrigger
-} from '@/components/ui/drawer'
+import { Drawer, DrawerClose, DrawerContent } from '@/components/ui/drawer'
 import { IBottomSheetSuccessProps } from '../model/bottomSheetSuccess.type'
 import { hapticFeedback } from '@telegram-apps/sdk-react'
 import clsx from 'clsx'
@@ -94,7 +85,9 @@ const BottomSheetSuccess = ({
             <h1 className='mb-1 md:mb-3 font-semibold text-xl md:text-2xl text-gray-800 dark:text-neutral-200'>
               {title}
             </h1>
-            {description && <p className='text-sm text-gray-500 dark:text-neutral-500'>{description}</p>}
+            {description && (
+              <p className='text-sm text-gray-500 dark:text-neutral-500'>{description}</p>
+            )}
           </div>
           {/* End Heading */}
           <DrawerClose>
