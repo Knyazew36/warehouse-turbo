@@ -114,7 +114,8 @@ const BottomSheetSuccess = ({
             <button
               onClick={() => {
                 hapticFeedback.impactOccurred('rigid')
-                requestContact()
+                const contact = requestContact()
+                console.log(contact)
               }}
               className={clsx(
                 'py-2.5  w-full sm:py-3 px-4  inline-flex justify-center items-center gap-x-2 font-medium sm:text-sm rounded-xl border border-transparent text-white hover:bg-green-600 disabled:opacity-50 disabled:pointer-events-none focus:outline-hidden focus:bg-green-600',
