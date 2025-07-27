@@ -187,6 +187,13 @@ export class OrganizationService {
       throw new BadRequestException('Нельзя удалить владельца организации')
     }
 
+    // Получаем пользователя с его allowedPhone
+    const user = await this.prisma.user.findUnique({
+      where: { id: userId },
+      include: { allowedPhone: true }
+    })
+
+    // Удаляем связь пользователя с организацией
     await this.prisma.userOrganization.delete({
       where: {
         userId_organizationId: {
@@ -195,6 +202,16 @@ export class OrganizationService {
         }
       }
     })
+
+    // Если у пользователя есть allowedPhone, удаляем связь с организацией
+    if (user?.allowedPhone) {
+      await this.prisma.allowedPhoneOrganization.deleteMany({
+        where: {
+          allowedPhoneId: user.allowedPhone.id,
+          organizationId: organizationId
+        }
+      })
+    }
   }
 
   async getUserOrganizations(userId: number): Promise<UserOrganization[]> {

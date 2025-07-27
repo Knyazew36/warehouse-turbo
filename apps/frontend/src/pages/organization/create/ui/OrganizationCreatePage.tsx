@@ -3,7 +3,7 @@ import { Page } from '@/components/Page'
 import { useCreateOrganization } from '@/entitites/organization/api/organization.api'
 import { ICreateOrganization } from '@/entitites/organization/model/organization.type'
 import PageHeader from '@/shared/ui/page-header/ui/PageHeader'
-import { Building2, ArrowLeft, Info } from 'lucide-react'
+import { Building2, ArrowLeft } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 import { hapticFeedback } from '@telegram-apps/sdk-react'
 import InfoMessage from '@/shared/ui/info/ui/Info'
@@ -51,15 +51,7 @@ const OrganizationCreatePage: React.FC = () => {
 
   return (
     <Page>
-      <div className='flex items-center space-x-3 border-b border-gray-200 dark:border-neutral-700 pb-4 mb-8'>
-        <button
-          onClick={handleBack}
-          className='p-2 hover:bg-gray-100 dark:hover:bg-neutral-800 rounded-lg transition-colors'
-        >
-          <ArrowLeft className='w-5 h-5 text-gray-600 dark:text-neutral-400' />
-        </button>
-        <h2 className='font-bold text-lg sm:text-xl text-gray-800 dark:text-neutral-200'>Создать склад</h2>
-      </div>
+      <PageHeader title='Создать склад' />
 
       <div className='space-y-6'>
         {/* Форма создания */}
@@ -69,7 +61,9 @@ const OrganizationCreatePage: React.FC = () => {
               <Building2 className='w-6 h-6 text-blue-600 dark:text-blue-400' />
             </div>
             <div>
-              <h2 className='text-xl font-semibold text-gray-900 dark:text-neutral-100'>Новый склад</h2>
+              <h2 className='text-xl font-semibold text-gray-900 dark:text-neutral-100'>
+                Новый склад
+              </h2>
               <p className='text-sm text-gray-500 dark:text-neutral-400'>
                 Создайте новый склад для управления товарами
               </p>
@@ -94,7 +88,9 @@ const OrganizationCreatePage: React.FC = () => {
 
             {/* Описание */}
             <div>
-              <label className='block text-sm font-medium text-gray-700 dark:text-neutral-300 mb-2'>Описание</label>
+              <label className='block text-sm font-medium text-gray-700 dark:text-neutral-300 mb-2'>
+                Описание
+              </label>
               <textarea
                 placeholder='Краткое описание склада (необязательно)'
                 value={formData.description}

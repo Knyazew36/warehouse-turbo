@@ -1,4 +1,14 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, ParseIntPipe, UseGuards } from '@nestjs/common'
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  ParseIntPipe,
+  UseGuards
+} from '@nestjs/common'
 import { OrganizationService } from './organization.service'
 import { CreateOrganizationDto } from './dto/create-organization.dto'
 import { UpdateOrganizationDto } from './dto/update-organization.dto'
@@ -21,13 +31,6 @@ export class OrganizationController {
     const organization = await this.organizationService.create(createOrganizationDto, user.id)
     return { data: organization }
   }
-
-  // @Get()
-  // @Roles(Role.ADMIN, Role.OWNER, Role.IT)
-  // async findAll() {
-  //   const organizations = await this.organizationService.findAll()
-  //   return { data: organizations }
-  // }
 
   @Get('my')
   async getMyOrganizations(@User() user: UserType) {
@@ -55,7 +58,10 @@ export class OrganizationController {
 
   @Patch(':id')
   @Roles(Role.ADMIN, Role.OWNER, Role.IT)
-  async update(@Param('id', ParseIntPipe) id: number, @Body() updateOrganizationDto: UpdateOrganizationDto) {
+  async update(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() updateOrganizationDto: UpdateOrganizationDto
+  ) {
     const organization = await this.organizationService.update(id, updateOrganizationDto)
     return { data: organization }
   }
@@ -69,7 +75,10 @@ export class OrganizationController {
 
   @Post(':id/users')
   @Roles(Role.ADMIN, Role.OWNER, Role.IT)
-  async addUserToOrganization(@Param('id', ParseIntPipe) id: number, @Body() addUserDto: AddUserToOrganizationDto) {
+  async addUserToOrganization(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() addUserDto: AddUserToOrganizationDto
+  ) {
     const userOrg = await this.organizationService.addUserToOrganization(id, addUserDto)
     return { data: userOrg }
   }
@@ -98,7 +107,12 @@ export class OrganizationController {
     @Param('userId', ParseIntPipe) userId: number,
     @Body() body: { role: Role; isOwner?: boolean }
   ) {
-    const userOrg = await this.organizationService.updateUserRole(id, userId, body.role, body.isOwner)
+    const userOrg = await this.organizationService.updateUserRole(
+      id,
+      userId,
+      body.role,
+      body.isOwner
+    )
     return { data: userOrg }
   }
 
@@ -113,21 +127,36 @@ export class OrganizationController {
 
   @Post(':id/allowed-phones')
   @Roles(Role.ADMIN, Role.OWNER, Role.IT)
-  async addAllowedPhone(@Param('id', ParseIntPipe) id: number, @Body() addAllowedPhoneDto: AddAllowedPhoneDto) {
-    const organization = await this.organizationService.addAllowedPhone(id, addAllowedPhoneDto.phone)
+  async addAllowedPhone(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() addAllowedPhoneDto: AddAllowedPhoneDto
+  ) {
+    const organization = await this.organizationService.addAllowedPhone(
+      id,
+      addAllowedPhoneDto.phone
+    )
     return { data: organization }
   }
 
   @Delete(':id/allowed-phones')
   @Roles(Role.ADMIN, Role.OWNER, Role.IT)
-  async removeAllowedPhone(@Param('id', ParseIntPipe) id: number, @Body() addAllowedPhoneDto: AddAllowedPhoneDto) {
-    const organization = await this.organizationService.removeAllowedPhone(id, addAllowedPhoneDto.phone)
+  async removeAllowedPhone(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() addAllowedPhoneDto: AddAllowedPhoneDto
+  ) {
+    const organization = await this.organizationService.removeAllowedPhone(
+      id,
+      addAllowedPhoneDto.phone
+    )
     return { data: organization }
   }
 
   @Get(':id/can-join/:userId')
   @Roles(Role.ADMIN, Role.OWNER, Role.IT)
-  async canUserJoinOrganization(@Param('id', ParseIntPipe) id: number, @Param('userId', ParseIntPipe) userId: number) {
+  async canUserJoinOrganization(
+    @Param('id', ParseIntPipe) id: number,
+    @Param('userId', ParseIntPipe) userId: number
+  ) {
     const canJoin = await this.organizationService.canUserJoinOrganization(id, userId)
     return { data: { canJoin } }
   }
