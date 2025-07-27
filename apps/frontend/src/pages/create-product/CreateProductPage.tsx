@@ -1,5 +1,5 @@
 import { Page } from '@/components/Page'
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useForm, Controller } from 'react-hook-form'
 import InputNumber from '@/shared/input-number/InputNumber'
 import { useNavigate } from 'react-router-dom'
@@ -20,7 +20,6 @@ type FormValues = {
   quantity: number | undefined
 }
 const CreateProductPage = () => {
-  const navigate = useNavigate()
   const { open } = useBottomSheetStore()
   const {
     register,
@@ -34,6 +33,11 @@ const CreateProductPage = () => {
   })
   const { mutateAsync: createProduct } = useCreateProduct()
   const [buttonLoading, setButtonLoading] = useState(false)
+
+  // Отслеживаем изменения quantity для отладки
+  const quantityValue = watch('quantity')
+  const formValues = watch()
+
   const onSubmit = async (data: FormValues) => {
     try {
       setButtonLoading(true)
@@ -49,13 +53,28 @@ const CreateProductPage = () => {
         description:
           'Товар успешно создан. Вы можете добавить еще один товар или вернуться на главную страницу.'
       })
-      reset()
+      hapticFeedback.notificationOccurred('success')
     } catch (e: any) {
       hapticFeedback.notificationOccurred('error')
-      reset()
     } finally {
       setButtonLoading(false)
+      // Сбрасываем форму после успешного создания
+      handleReset()
     }
+  }
+
+  const handleReset = () => {
+    // Сначала сбрасываем к defaultValues
+    reset()
+    // Затем принудительно устанавливаем нужные значения
+    setTimeout(() => {
+      reset({
+        name: '',
+        minThreshold: undefined,
+        quantity: undefined,
+        unit: 'ед'
+      })
+    }, 0)
   }
 
   return (
@@ -92,7 +111,10 @@ const CreateProductPage = () => {
               render={({ field }) => (
                 <InputNumber
                   label='Сейчас на складе'
-                  {...field}
+                  value={field.value}
+                  onChange={field.onChange}
+                  onBlur={field.onBlur}
+                  name={field.name}
                 />
               )}
             />
@@ -125,7 +147,10 @@ const CreateProductPage = () => {
               render={({ field }) => (
                 <InputNumber
                   label='Минимальный остаток'
-                  {...field}
+                  value={field.value}
+                  onChange={field.onChange}
+                  onBlur={field.onBlur}
+                  name={field.name}
                 />
               )}
             />
@@ -138,9 +163,7 @@ const CreateProductPage = () => {
       </form>
       <ButtonAction
         onSuccessClick={handleSubmit(onSubmit)}
-        onCancelClick={() => {
-          reset()
-        }}
+        onCancelClick={handleReset}
         isLoading={buttonLoading}
       />
 

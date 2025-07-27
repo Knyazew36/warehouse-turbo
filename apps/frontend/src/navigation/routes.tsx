@@ -9,7 +9,6 @@ import MenuPage from '@/pages/menu-page/MenuPage'
 import ReportPage from '@/pages/report/ReportPage'
 import IncomingPage from '@/pages/incoming/IncomingPage'
 import IncomingToWarehousePage from '@/pages/incoming-to-warehouse/IncomingToWarehousePage'
-import { ProductsDeletePage } from '@/pages/products-delete/ProductsDeletePage'
 import CreateProductPage from '@/pages/create-product/CreateProductPage'
 import IncomingStatistics from '@/pages/incoming-statistics/IncomingStatistics'
 import AuthPage from '@/pages/auth/AuthPage'
@@ -23,6 +22,7 @@ import OrganizationCreatePage from '@/pages/organization/create/ui/OrganizationC
 import InfoPage from '@/pages/info/ui/InfoPage'
 import OrganizationSelectorPage from '@/pages/organization/selector/ui/OrganizationSelectorPage'
 import OrganizationChangePage from '@/pages/organization/change/ui/OrganizationChange.page'
+import { ProductsChangePage } from '@/pages/products/change/ProductsChangePage'
 
 interface Route {
   path: string
@@ -38,7 +38,7 @@ export const routes: Route[] = [
   { path: '/staff', Component: StaffPage, title: 'Staff' },
   { path: '/add-user', Component: AddUserPage, title: 'Add User' },
   { path: '/products', Component: ProductsPage, title: 'Init Data' },
-  { path: '/products-delete', Component: ProductsDeletePage, title: 'Init Data' },
+  { path: '/products-change', Component: ProductsChangePage, title: 'Init Data' },
   { path: '/create-product', Component: CreateProductPage, title: 'Init Data' },
   { path: '/init-data', Component: InitDataPage, title: 'Init Data' },
   { path: '/report', Component: ReportPage, title: 'Init Data' },

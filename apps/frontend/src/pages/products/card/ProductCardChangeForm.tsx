@@ -49,7 +49,7 @@ const ProductCardChangeForm: FC<IProductsCard> = ({ data }) => {
         dto: {
           name: formData.name,
           unit: formData.unit,
-          minThreshold: formData.minThreshold,
+          minThreshold: +formData.minThreshold || 0,
           active: formData.active
         }
       },
@@ -61,14 +61,6 @@ const ProductCardChangeForm: FC<IProductsCard> = ({ data }) => {
     )
   }
 
-  const isLoading = isPending
-  const isChanged =
-    isDirty &&
-    (data.name !== watched.name ||
-      (data.unit ?? '') !== watched.unit ||
-      (data.minThreshold ?? 0) !== watched.minThreshold ||
-      data.active !== watched.active)
-
   return (
     <form
       onSubmit={handleSubmit(onSubmit)}
@@ -77,20 +69,22 @@ const ProductCardChangeForm: FC<IProductsCard> = ({ data }) => {
         !data.active && 'dark:bg-neutral-900/30'
       )}
     >
-      {isLoading && <LoaderSection />}
+      {isPending && <LoaderSection />}
       <div className='flex justify-between items-center'>
         <div>
           <ProductDelete productId={data.id} />
         </div>
 
         <div className='flex gap-x-2'>
-          <label className='sm:mt-2.5 inline-block text-sm text-gray-500 dark:text-neutral-500'>Активен?</label>
+          <label className='sm:mt-2.5 inline-block text-sm text-gray-500 dark:text-neutral-500'>
+            Активен?
+          </label>
           <Controller
             control={control}
             name='active'
             render={({ field }) => (
               <Switch
-                disabled={isLoading}
+                disabled={isPending}
                 defaultChecked={field.value}
                 onChange={(e: ChangeEvent<HTMLInputElement>) => field.onChange(e.target.checked)}
               />
@@ -99,10 +93,14 @@ const ProductCardChangeForm: FC<IProductsCard> = ({ data }) => {
         </div>
       </div>
 
-      <div className={clsx('flex flex-col gap-y-3', !data.active && 'opacity-30 pointer-events-none')}>
+      <div
+        className={clsx('flex flex-col gap-y-3', !data.active && 'opacity-30 pointer-events-none')}
+      >
         <div className='grid sm:grid-cols-12 gap-y-1.5 sm:gap-y-0 sm:gap-x-5'>
           <div className='sm:col-span-3'>
-            <label className='sm:mt-2.5 inline-block text-sm text-gray-500 dark:text-neutral-500'>Название</label>
+            <label className='sm:mt-2.5 inline-block text-sm text-gray-500 dark:text-neutral-500'>
+              Название
+            </label>
           </div>
           {/* End Col */}
           <div className='sm:col-span-9'>
@@ -164,11 +162,13 @@ const ProductCardChangeForm: FC<IProductsCard> = ({ data }) => {
                 <InputNumber
                   {...field}
                   min={0}
-                  disabled={isLoading}
+                  disabled={isPending}
                 />
               )}
             />
-            {errors.minThreshold && <p className='mt-1 text-xs text-red-500'>{errors.minThreshold.message}</p>}
+            {errors.minThreshold && (
+              <p className='mt-1 text-xs text-red-500'>{errors.minThreshold.message}</p>
+            )}
           </div>
           {/* End Col */}
         </div>
@@ -177,7 +177,7 @@ const ProductCardChangeForm: FC<IProductsCard> = ({ data }) => {
         <button
           type='submit'
           onClick={handleSubmit(onSubmit)}
-          disabled={isLoading || !isChanged || !isValid}
+          disabled={isPending || !isDirty || !isValid}
           className='py-2 h-10 w-30  justify-center  px-3 inline-flex items-center gap-x-2 text-sm font-medium rounded-lg border border-transparent bg-green-600 text-white hover:bg-green-700 focus:outline-hidden focus:bg-green-700 disabled:opacity-50 disabled:pointer-events-none'
         >
           Сохранить

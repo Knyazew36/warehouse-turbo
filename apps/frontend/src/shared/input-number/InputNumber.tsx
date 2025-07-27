@@ -1,8 +1,9 @@
 // src/shared/input-number/InputNumber.tsx
 import { hapticFeedback } from '@telegram-apps/sdk-react'
-import React, { useState, useRef } from 'react'
+import React, { useState } from 'react'
 import { useNumberFormat } from '@react-input/number-format'
-export interface InputNumberProps extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 'onChange' | 'value'> {
+export interface InputNumberProps
+  extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 'onChange' | 'value'> {
   /** Значение поля */
   value?: number | null
   /** Коллбек изменения значения */
@@ -33,8 +34,8 @@ const InputNumber: React.FC<InputNumberProps> = ({
   })
 
   const handleDecrement = () => {
-    const currentValue = value ?? null
-    const next = currentValue ? currentValue - step : 0
+    const currentValue = value ?? 0
+    const next = currentValue - step
     if (min !== undefined && next < min) return
     onChange(next)
     hapticFeedback.impactOccurred('light')
@@ -51,62 +52,26 @@ const InputNumber: React.FC<InputNumberProps> = ({
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     let inputValue = e.target.value
 
-    // // Если это первый ввод и значение равно 0, очищаем поле
-    // if (isFirstInput && value === 0 && inputValue === '0') {
-    //   e.target.value = ''
-    //   setIsFirstInput(false)
-    //   return
-    // }
+    // Если поле пустое, устанавливаем undefined
+    if (inputValue === '' || inputValue === '-') {
+      onChange(undefined)
+      setIsFirstInput(false)
+      return
+    }
 
-    // Разрешаем ввод десятичных чисел (точка) и отрицательных чисел
-    // if (min !== undefined && min < 0) {
-    //   // Разрешаем цифры, точку и минус
-    //   inputValue = inputValue.replace(/[^\d.-]/g, '')
-    //   // Не допускаем более одного минуса и только в начале
-    //   inputValue = inputValue.replace(/(?!^)-/g, '')
-    //   // Не допускаем более одной точки
-    //   const dotCount = (inputValue.match(/\./g) || []).length
-    //   if (dotCount > 1) {
-    //     const parts = inputValue.split('.')
-    //     inputValue = parts[0] + '.' + parts.slice(1).join('')
-    //   }
-    // } else {
-    //   // Разрешаем цифры и точку для положительных чисел
-    //   inputValue = inputValue.replace(/[^\d.]/g, '')
-    //   // Не допускаем более одной точки
-    //   const dotCount = (inputValue.match(/\./g) || []).length
-    //   if (dotCount > 1) {
-    //     const parts = inputValue.split('.')
-    //     inputValue = parts[0] + '.' + parts.slice(1).join('')
-    //   }
-    // }
-
-    // Обновляем значение input
-    // if (inputValue === '' || inputValue === '-') {
-    //   onChange(undefined)
-    // } else {
-    //   const v = Number(inputValue)
-    //   if (isNaN(v)) {
-    //     onChange(undefined)
-    //   } else {
-    //     if (min !== undefined && v < min) {
-    //       onChange(min)
-    //     } else if (max !== undefined && v > max) {
-    //       onChange(max)
-    //     } else {
-    //       onChange(v)
-    //     }
-    //   }
-    // }
     const v = Number(inputValue)
 
-    console.info(v)
-    if (min !== undefined && v < min) {
-      onChange(min)
-    } else if (max !== undefined && v > max) {
-      onChange(max)
+    // Проверяем, что это валидное число
+    if (isNaN(v)) {
+      onChange(undefined)
     } else {
-      onChange(v)
+      if (min !== undefined && v < min) {
+        onChange(min)
+      } else if (max !== undefined && v > max) {
+        onChange(max)
+      } else {
+        onChange(v)
+      }
     }
 
     setIsFirstInput(false)
@@ -121,7 +86,6 @@ const InputNumber: React.FC<InputNumberProps> = ({
       inputRef.current.select()
     }
   }
-
   return (
     <div className='flex flex-col gap-1 w-full'>
       {label && (
@@ -139,7 +103,7 @@ const InputNumber: React.FC<InputNumberProps> = ({
             className='w-full p-0 bg-transparent border-0 text-gray-800 focus:ring-0 [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none dark:text-white'
             style={{ MozAppearance: 'textfield' }}
             type='number'
-            value={value ?? ''}
+            value={value === undefined || value === null ? '' : value}
             onChange={handleInputChange}
             disabled={disabled}
             inputMode='decimal'

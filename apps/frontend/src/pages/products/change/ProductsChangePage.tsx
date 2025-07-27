@@ -1,16 +1,16 @@
 import { Page } from '@/components/Page'
 import React, { useMemo, useState } from 'react'
 import { useProducts, useUpdateProduct } from '@/entitites/product/api/product.api'
-import ProductsCardChange from '../products/card/ProductsCardChange'
+import ProductsCardChange from '../card/ProductsCardChange'
 import PageHeader from '@/shared/ui/page-header/ui/PageHeader'
 import InputDefault from '@/shared/ui/input-default/ui/InputDefault'
 import Loader from '@/shared/loader/ui/Loader'
-import ProductCreate from '../products/create/ProductCreate'
+import ProductCreate from '../create/ProductCreate'
 import Empty from '@/shared/empty/ui/Empty'
-import ProductCardChangeForm from '../products/card/ProductCardChangeForm'
+import ProductCardChangeForm from '../card/ProductCardChangeForm'
 import InfoMessage from '@/shared/ui/info/ui/Info'
 
-export const ProductsDeletePage = () => {
+export const ProductsChangePage = () => {
   const [searchTerm, setSearchTerm] = useState('')
   const { data = [], isLoading } = useProducts(false)
 
