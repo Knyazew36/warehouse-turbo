@@ -12,7 +12,7 @@ import InfoMessage from '@/shared/ui/info/ui/Info'
 
 export const ProductsChangePage = () => {
   const [searchTerm, setSearchTerm] = useState('')
-  const { data = [], isLoading } = useProducts(false)
+  const { data = [], isLoading, isFetching } = useProducts(false)
 
   const { mutate: updateProduct } = useUpdateProduct()
 
@@ -32,43 +32,44 @@ export const ProductsChangePage = () => {
   }
 
   return (
-    <Page back>
-      <div className='max-w-[85rem] py-10 pt-5 sm:px-6 lg:px-8 lg:py-14 mx-auto'>
-        <PageHeader
-          title='Редактирование товаров'
-          isLoading={isLoading}
-        />
-        {/* Поиск товара */}
-        <InputDefault
-          value={searchTerm}
-          onChange={setSearchTerm}
-        />
+    <Page
+      back
+      isLoading={isFetching}
+    >
+      <PageHeader
+        title='Редактирование товаров'
+        isLoading={isLoading}
+      />
+      {/* Поиск товара */}
+      <InputDefault
+        value={searchTerm}
+        onChange={setSearchTerm}
+      />
 
-        {/* Сетка товаров */}
-        <div className='grid sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 mt-8'>
-          {filteredData.length > 0 ? (
-            filteredData.map(card => (
-              <ProductCardChangeForm
-                key={card.id}
-                data={card}
-              />
-            ))
-          ) : (
-            <Empty title='Товары не найдены' />
-          )}
-        </div>
-        <div className='mt-8'>
-          <ProductCreate />
-        </div>
-
-        <InfoMessage
-          className='mt-4'
-          items={[
-            'Вы можете удалить товары из склада.',
-            'Если выключить поле "Активен", товар будет скрыт из списка товаров. Вам не будет приходить уведомление о его наличии.'
-          ]}
-        />
+      {/* Сетка товаров */}
+      <div className='grid sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 mt-8'>
+        {filteredData.length > 0 ? (
+          filteredData.map(card => (
+            <ProductCardChangeForm
+              key={card.id}
+              data={card}
+            />
+          ))
+        ) : (
+          <Empty title='Товары не найдены' />
+        )}
       </div>
+      <div className='mt-8'>
+        <ProductCreate />
+      </div>
+
+      <InfoMessage
+        className='mt-4'
+        items={[
+          'Вы можете удалить товары из склада.',
+          'Если выключить поле "Активен", товар будет скрыт из списка товаров. Вам не будет приходить уведомление о его наличии.'
+        ]}
+      />
     </Page>
   )
 }

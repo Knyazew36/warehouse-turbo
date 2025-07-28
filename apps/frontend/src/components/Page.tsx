@@ -43,7 +43,7 @@ export function Page({
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           transition={{ duration: 0.3 }}
-          className='fixed bottom-8 right-4 flex justify-center items-cebg-black'
+          className='fixed top-4 right-4 flex justify-center items-cebg-black'
         >
           <Spinner />
         </motion.div>
