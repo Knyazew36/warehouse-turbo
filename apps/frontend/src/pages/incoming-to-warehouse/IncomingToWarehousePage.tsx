@@ -10,6 +10,7 @@ import { useProducts } from '@/entitites/product/api/product.api'
 import { useBottomSheetStore } from '@/shared/bottom-sheet/model/store.bottom-sheet'
 import PageHeader from '@/shared/ui/page-header/ui/PageHeader'
 import Loader from '@/shared/loader/ui/Loader'
+import Empty from '@/shared/empty/ui/Empty'
 
 const IncomingToWarehousePage = () => {
   const navigate = useNavigate()
@@ -98,7 +99,7 @@ const IncomingToWarehousePage = () => {
               />
             ))
           ) : (
-            <p className='col-span-full text-center text-muted-foreground'>Товары не найдены</p>
+            <Empty title='Товары не найдены' />
           )}
         </div>
 

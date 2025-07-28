@@ -7,6 +7,7 @@ import { receiptCreate } from '@/entitites/receipt/api/receipt.api'
 import { useProducts } from '@/entitites/product/api/product.api'
 import { hapticFeedback } from '@telegram-apps/sdk-react'
 import Loader from '@/shared/loader/ui/Loader'
+import Empty from '@/shared/empty/ui/Empty'
 
 const IncomingPage = () => {
   const { data = [], isLoading, refetch } = useProducts(true)
@@ -84,7 +85,7 @@ const IncomingPage = () => {
               />
             ))
           ) : (
-            <p className='col-span-full text-center text-muted-foreground'>Товары не найдены</p>
+            <Empty title='Товары не найдены' />
           )}
         </div>
 
