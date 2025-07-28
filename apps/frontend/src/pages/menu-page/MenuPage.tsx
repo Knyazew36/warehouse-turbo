@@ -223,7 +223,10 @@ const MenuPage: FC = () => {
   ]
 
   return (
-    <Page back={false}>
+    <Page
+      back={false}
+      className='!pt-0'
+    >
       <div className='flex flex-col flex-1 pt-4'>
         <Header />
         <AlertProductLowStock />
