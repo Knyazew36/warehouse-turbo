@@ -54,7 +54,7 @@ export const useUpdateUserRole = () => {
       userId: number
       role: Role
     }) => {
-      const res = await $api.patch(
+      const res = await $api.post(
         `${apiDomain}/organizations/${organizationId}/users/${userId}/role`,
         { role }
       )

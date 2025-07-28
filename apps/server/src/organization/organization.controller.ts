@@ -99,7 +99,7 @@ export class OrganizationController {
     return { data: users }
   }
 
-  @Patch(':id/users/:userId/role')
+  @Post(':id/users/:userId/role')
   @Roles(Role.ADMIN, Role.OWNER, Role.IT)
   async updateUserRole(
     @Param('id', ParseIntPipe) id: number,

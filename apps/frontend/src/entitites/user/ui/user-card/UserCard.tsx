@@ -3,10 +3,9 @@ import { IUser, Role } from '../../model/user.type'
 import { getFullName } from '@/shared/utils/getFullName'
 import Select from '@/shared/ui/select/ui/Select'
 import { Controller, useForm } from 'react-hook-form'
-import { useUpdateUser, useUserDelete, useUserRole, useUpdateUserRole } from '../../api/user.api'
+import { useUserDelete, useUpdateUserRole } from '../../api/user.api'
 import LoaderSection from '@/shared/loader/ui/LoaderSection'
 import UserDelete from '../delete/UserDelete'
-import { useOrganizationStore } from '@/entitites/organization/model/organization.store'
 import { getRole } from '@/shared/utils/getRole'
 
 interface IProps {
@@ -17,15 +16,19 @@ interface IProps {
 
 const UserCard = ({ data, organizationId, currentUserId }: IProps) => {
   const { control, handleSubmit } = useForm({
-    // defaultValues: {
-    //   role: data.role || Role.GUEST
-    // },
     mode: 'onChange'
   })
 
-  const { mutate: updateUser, isPending } = useUpdateUser()
   const { mutate: updateUserRole, isPending: isUpdateRolePending } = useUpdateUserRole()
   const { isPending: isDeletePending } = useUserDelete()
+
+  const handleChangeRole = (role: Role) => {
+    updateUserRole({
+      organizationId,
+      userId: data.id,
+      role
+    })
+  }
 
   return (
     <div className='flex relative overflow-hidden  flex-col mb-4 bg-white border border-gray-200 rounded-xl dark:bg-neutral-900 dark:border-neutral-700 '>
@@ -76,26 +79,6 @@ const UserCard = ({ data, organizationId, currentUserId }: IProps) => {
           }
         </h3>
         <div className='inline-flex justify-center items-center gap-x-2'>
-          {/* <svg
-            className='shrink-0 size-4 text-gray-500 dark:text-neutral-500'
-            xmlns='http://www.w3.org/2000/svg'
-            width={24}
-            height={24}
-            viewBox='0 0 24 24'
-            fill='none'
-            stroke='currentColor'
-            strokeWidth={2}
-            strokeLinecap='round'
-            strokeLinejoin='round'
-          >
-            <path d='M6 22V4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v18Z' />
-            <path d='M6 12H4a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h2' />
-            <path d='M18 9h2a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2h-2' />
-            <path d='M10 6h4' />
-            <path d='M10 10h4' />
-            <path d='M10 14h4' />
-            <path d='M10 18h4' />
-          </svg> */}
           <p className='text-sm text-gray-500 dark:text-neutral-500'>{getRole(data.role!)}</p>
         </div>
       </div>
@@ -132,7 +115,7 @@ const UserCard = ({ data, organizationId, currentUserId }: IProps) => {
 
       {data?.role !== Role.OWNER && (
         <div className='py-3 overflow-hidden relative px-5 flex flex-col sm:flex-row sm:justify-between sm:items-center gap-y-1 sm:gap-y-0 gap-x-2 text-center sm:text-start border-t border-gray-200 dark:border-neutral-700'>
-          {isPending || isUpdateRolePending || (isDeletePending && <LoaderSection />)}
+          {isUpdateRolePending || (isDeletePending && <LoaderSection />)}
           <div>
             <p className='text-sm text-gray-500 dark:text-neutral-500'>Сменить роль</p>
           </div>
@@ -147,19 +130,11 @@ const UserCard = ({ data, organizationId, currentUserId }: IProps) => {
                   options={[
                     { value: Role.ADMIN, label: 'Админ' },
                     { value: Role.OPERATOR, label: 'Оператор' }
-                    // { value: Role.OWNER, label: 'Владелец' }
-                    // { value: Role.GUEST, label: 'Гость' }
                   ]}
                   value={field.value}
                   onChange={value => {
                     field.onChange(value)
-                    if (organizationId) {
-                      updateUserRole({
-                        organizationId,
-                        userId: data.id,
-                        role: value as Role
-                      })
-                    }
+                    handleChangeRole(value as Role)
                   }}
                 />
               )}
