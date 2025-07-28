@@ -61,8 +61,8 @@ export const useUpdateUserRole = () => {
       return res.data.data
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['user', 'employees'] })
-      queryClient.invalidateQueries({ queryKey: ['user-role'] })
+      queryClient.invalidateQueries({ queryKey: ['employees'] })
+      queryClient.invalidateQueries({ queryKey: ['user'] })
       hapticFeedback.notificationOccurred('success')
     },
     onError: () => {
@@ -79,6 +79,7 @@ export const useUserDelete = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['employees'] })
+      queryClient.invalidateQueries({ queryKey: ['user'] })
       hapticFeedback.notificationOccurred('success')
     },
     onError: () => {

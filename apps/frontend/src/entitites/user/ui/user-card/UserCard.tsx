@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { IUser, Role } from '../../model/user.type'
 import { getFullName } from '@/shared/utils/getFullName'
 import Select from '@/shared/ui/select/ui/Select'
@@ -15,12 +15,20 @@ interface IProps {
 }
 
 const UserCard = ({ data, organizationId, currentUserId }: IProps) => {
-  const { control, handleSubmit } = useForm({
-    mode: 'onChange'
+  const { control, handleSubmit, setValue } = useForm({
+    mode: 'onChange',
+    defaultValues: {
+      role: data.role || Role.OPERATOR
+    }
   })
 
   const { mutate: updateUserRole, isPending: isUpdateRolePending } = useUpdateUserRole()
   const { isPending: isDeletePending } = useUserDelete()
+
+  // Обновляем значение формы при изменении данных пользователя
+  useEffect(() => {
+    setValue('role', data.role || Role.OPERATOR)
+  }, [data.role, setValue])
 
   const handleChangeRole = (role: Role) => {
     updateUserRole({
@@ -115,7 +123,7 @@ const UserCard = ({ data, organizationId, currentUserId }: IProps) => {
 
       {data?.role !== Role.OWNER && (
         <div className='py-3 overflow-hidden relative px-5 flex flex-col sm:flex-row sm:justify-between sm:items-center gap-y-1 sm:gap-y-0 gap-x-2 text-center sm:text-start border-t border-gray-200 dark:border-neutral-700'>
-          {isUpdateRolePending || (isDeletePending && <LoaderSection />)}
+          {(isUpdateRolePending || isDeletePending) && <LoaderSection />}
           <div>
             <p className='text-sm text-gray-500 dark:text-neutral-500'>Сменить роль</p>
           </div>
