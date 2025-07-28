@@ -2,10 +2,7 @@ import React, { useState } from 'react'
 import { Dialog, DialogTrigger, DialogContent, DialogFooter } from '@/components/ui/dialog'
 import { DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog'
 import { DialogClose } from '@/components/ui/dialog'
-import {
-  removeUserFromOrganization,
-  useDeleteOrganization
-} from '@/entitites/organization/api/organization.api'
+import { useRemoveUserFromOrganization } from '@/entitites/organization/api/organization.api'
 import { LogOut } from 'lucide-react'
 
 interface IOrganizationDeleteModalProps {
@@ -26,7 +23,7 @@ const OrganizationUserDeleteModal: React.FC<IOrganizationDeleteModalProps> = ({
 }) => {
   const [open, setOpen] = useState(false)
   const [isDeleting, setIsDeleting] = useState(false)
-
+  const { mutate: removeUserFromOrganization } = useRemoveUserFromOrganization()
   const handleDelete = async () => {
     onStartDelete?.()
     removeUserFromOrganization({ organizationId, userId })

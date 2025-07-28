@@ -17,7 +17,7 @@ import {
 import { getOrganizationIdFromStore } from '../middleware/organization.middleware'
 
 const initDataRaw = import.meta.env.DEV
-  ? 'user=%7B%22id%22%3A239676985%2C%22first_name%22%3A%22%D0%A1%D0%B5%D1%80%D0%B3%D0%B5%D0%B9%22%2C%22last_name%22%3A%22%D0%9A%D0%BD%D1%8F%D0%B7%D0%B5%D0%B2%22%2C%22username%22%3A%22Knyaz_sv%22%2C%22language_code%22%3A%22ru%22%2C%22is_premium%22%3Atrue%2C%22allows_write_to_pm%22%3Atrue%2C%22photo_url%22%3A%22https%3A%5C%2F%5C%2Ft.me%5C%2Fi%5C%2Fuserpic%5C%2F320%5C%2FdVwpqY8rwKcDgyKCeVKKd95SfUDZ89Fhpw-zbGDB6Rg.svg%22%7D&chat_instance=6883731396038540970&chat_type=channel&auth_date=1753600931&signature=0Q_i2w8Mk-52LLSDNlZ7cEYCPtNNiCclAtwgVbR4O1XxsA5HfXj2-lUi39gvj1LPeDSelVnFvkmEOfl1xuedDQ&hash=cebee6d1d1887eb4ce2e61c0bde9ea8a033df88d895b5f4039852bf66e808166'
+  ? 'user=%7B%22id%22%3A239676985%2C%22first_name%22%3A%22%D0%A1%D0%B5%D1%80%D0%B3%D0%B5%D0%B9%22%2C%22last_name%22%3A%22%D0%9A%D0%BD%D1%8F%D0%B7%D0%B5%D0%B2%22%2C%22username%22%3A%22Knyaz_sv%22%2C%22language_code%22%3A%22ru%22%2C%22is_premium%22%3Atrue%2C%22allows_write_to_pm%22%3Atrue%2C%22photo_url%22%3A%22https%3A%5C%2F%5C%2Ft.me%5C%2Fi%5C%2Fuserpic%5C%2F320%5C%2FdVwpqY8rwKcDgyKCeVKKd95SfUDZ89Fhpw-zbGDB6Rg.svg%22%7D&chat_instance=8054910050683871210&chat_type=private&auth_date=1753687948&signature=nPlnsuZAkUfxrv8LO-hlLDm1Sqs_jkYjXoA8MiFpwLVn8Bln89SpWGHVvkFRDRASqw_HZjp-XHnQoVffNuVOBg&hash=eaec5d42c8411560c1e5e714195a8ced46fbaaa2f4737da568ef0642076b62a3'
   : isTMA()
     ? retrieveRawInitData()
     : ''

@@ -225,23 +225,31 @@ export const useJoinOrganization = () => {
   })
 }
 
-export const removeUserFromOrganization = async ({
-  organizationId,
-  userId
-}: {
-  organizationId: number
-  userId: number
-}) => {
-  try {
-    const response: AxiosResponse<BaseResponse<any>> = await $api.post(
-      `${apiDomain}/organizations/${organizationId}/users/${userId}/remove`
-    )
-    return response.data.data
-  } catch (error: any) {
-    const message = error?.response?.data?.message || 'Ошибка удаления пользователя из организации'
-    throw new Error(message)
-  }
-}
+// export const useRemoveUserFromOrganization = () => {
+//   return useMutation({
+//     mutationFn: async ({ organizationId, userId }: { organizationId: number; userId: number }) => {
+//       await $api.post(`${apiDomain}/organizations/${organizationId}/users/${userId}/remove`)
+//     }
+//   })
+// }
+
+// export const removeUserFromOrganization = async ({
+//   organizationId,
+//   userId
+// }: {
+//   organizationId: number
+//   userId: number
+// }) => {
+//   try {
+//     const response: AxiosResponse<BaseResponse<any>> = await $api.post(
+//       `${apiDomain}/organizations/${organizationId}/users/${userId}/remove`
+//     )
+//     return response.data.data
+//   } catch (error: any) {
+//     const message = error?.response?.data?.message || 'Ошибка удаления пользователя из организации'
+//     throw new Error(message)
+//   }
+// }
 
 export const getOrganizationById = async ({ id }: { id: number }) => {
   try {
