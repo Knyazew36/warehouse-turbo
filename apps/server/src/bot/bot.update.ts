@@ -13,31 +13,31 @@ export class BotUpdate {
   @Start()
   async onStart(@Ctx() ctx: Context) {
     // Проверяем, авторизован ли пользователь
-    const telegramId = String(ctx.from.id)
-    const user = await this.prisma.user.findUnique({
-      where: { telegramId },
-      include: {
-        allowedPhone: true
-      }
-    })
+    // const telegramId = String(ctx.from.id)
+    // const user = await this.prisma.user.findUnique({
+    //   where: { telegramId },
+    //   include: {
+    //     allowedPhone: true
+    //   }
+    // })
 
-    if (!user || user.allowedPhone === null) {
-      await ctx.reply('👋 Привет! Для использования бота необходимо авторизоваться.', {
-        reply_markup: {
-          inline_keyboard: [
-            [
-              {
-                text: '📱 Авторизоваться',
-                callback_data: 'request_phone'
-              }
-            ]
-          ]
-        }
-      })
-      return
-    }
+    // if (!user || user.allowedPhone === null) {
+    //   await ctx.reply('👋 Привет! Для использования бота необходимо авторизоваться.', {
+    //     reply_markup: {
+    //       inline_keyboard: [
+    //         [
+    //           {
+    //             text: '📱 Авторизоваться',
+    //             callback_data: 'request_phone'
+    //           }
+    //         ]
+    //       ]
+    //     }
+    //   })
+    //   return
+    // }
 
-    const webappUrl = process.env.WEBAPP_URL || 'https://big-grain-tg.vercel.app'
+    const webappUrl = process.env.WEBAPP_URL
 
     await ctx.reply('👋 Привет! Я бот для управления складом.', {
       reply_markup: {
@@ -78,55 +78,56 @@ export class BotUpdate {
     })
   }
 
-  @Command('phone')
-  async onPhoneCommand(@Ctx() ctx: Context) {
-    await this.handleUnauthorizedMessage(ctx)
-  }
+  // @Command('phone')
+  // async onPhoneCommand(@Ctx() ctx: Context) {
+  //   await this.handleUnauthorizedMessage(ctx)
+  // }
 
   @On('text')
   async onTextMessage(@Ctx() ctx: Context) {
-    await this.handleUnauthorizedMessage(ctx)
+    console.log('onTextMessage', ctx.message)
+    // await this.handleUnauthorizedMessage(ctx)
   }
 
-  @On('photo')
-  async onPhotoMessage(@Ctx() ctx: Context) {
-    await this.handleUnauthorizedMessage(ctx)
-  }
+  // @On('photo')
+  // async onPhotoMessage(@Ctx() ctx: Context) {
+  //   await this.handleUnauthorizedMessage(ctx)
+  // }
 
-  @On('video')
-  async onVideoMessage(@Ctx() ctx: Context) {
-    await this.handleUnauthorizedMessage(ctx)
-  }
+  // @On('video')
+  // async onVideoMessage(@Ctx() ctx: Context) {
+  //   await this.handleUnauthorizedMessage(ctx)
+  // }
 
-  @On('document')
-  async onDocumentMessage(@Ctx() ctx: Context) {
-    await this.handleUnauthorizedMessage(ctx)
-  }
+  // @On('document')
+  // async onDocumentMessage(@Ctx() ctx: Context) {
+  //   await this.handleUnauthorizedMessage(ctx)
+  // }
 
-  @On('audio')
-  async onAudioMessage(@Ctx() ctx: Context) {
-    await this.handleUnauthorizedMessage(ctx)
-  }
+  // @On('audio')
+  // async onAudioMessage(@Ctx() ctx: Context) {
+  //   await this.handleUnauthorizedMessage(ctx)
+  // }
 
-  @On('voice')
-  async onVoiceMessage(@Ctx() ctx: Context) {
-    await this.handleUnauthorizedMessage(ctx)
-  }
+  // @On('voice')
+  // async onVoiceMessage(@Ctx() ctx: Context) {
+  //   await this.handleUnauthorizedMessage(ctx)
+  // }
 
-  @On('sticker')
-  async onStickerMessage(@Ctx() ctx: Context) {
-    await this.handleUnauthorizedMessage(ctx)
-  }
+  // @On('sticker')
+  // async onStickerMessage(@Ctx() ctx: Context) {
+  //   await this.handleUnauthorizedMessage(ctx)
+  // }
 
-  @On('animation')
-  async onAnimationMessage(@Ctx() ctx: Context) {
-    await this.handleUnauthorizedMessage(ctx)
-  }
+  // @On('animation')
+  // async onAnimationMessage(@Ctx() ctx: Context) {
+  //   await this.handleUnauthorizedMessage(ctx)
+  // }
 
-  @On('location')
-  async onLocationMessage(@Ctx() ctx: Context) {
-    await this.handleUnauthorizedMessage(ctx)
-  }
+  // @On('location')
+  // async onLocationMessage(@Ctx() ctx: Context) {
+  //   await this.handleUnauthorizedMessage(ctx)
+  // }
 
   @On('contact')
   async onContact(@Ctx() ctx: Context) {
@@ -251,39 +252,39 @@ export class BotUpdate {
     return user && user.allowedPhone !== null
   }
 
-  private async handleUnauthorizedMessage(ctx: Context) {
-    // Проверяем, авторизован ли пользователь
-    const isAuthorized = await this.checkAuthorization(ctx)
+  // private async handleUnauthorizedMessage(ctx: Context) {
+  //   // Проверяем, авторизован ли пользователь
+  //   const isAuthorized = await this.checkAuthorization(ctx)
 
-    if (!isAuthorized) {
-      await ctx.reply('🔐 Для использования бота необходимо авторизоваться.', {
-        reply_markup: {
-          inline_keyboard: [
-            [
-              {
-                text: '📱 Авторизоваться',
-                callback_data: 'request_phone'
-              }
-            ]
-          ]
-        }
-      })
-      return
-    }
+  //   if (!isAuthorized) {
+  //     await ctx.reply('🔐 Для использования бота необходимо авторизоваться.', {
+  //       reply_markup: {
+  //         inline_keyboard: [
+  //           [
+  //             {
+  //               text: '📱 Авторизоваться',
+  //               callback_data: 'request_phone'
+  //             }
+  //           ]
+  //         ]
+  //       }
+  //     })
+  //     return
+  //   }
 
-    const webappUrl = process.env.WEBAPP_URL || 'https://big-grain-tg.vercel.app'
+  //   const webappUrl = process.env.WEBAPP_URL || 'https://big-grain-tg.vercel.app'
 
-    await ctx.reply('✅ Авторизация успешна! Вам открыт доступ к приложению.', {
-      reply_markup: {
-        inline_keyboard: [
-          [
-            {
-              text: '🚀 Открыть приложение',
-              web_app: { url: webappUrl }
-            }
-          ]
-        ]
-      }
-    })
-  }
+  //   await ctx.reply('✅ Авторизация успешна! Вам открыт доступ к приложению.', {
+  //     reply_markup: {
+  //       inline_keyboard: [
+  //         [
+  //           {
+  //             text: '🚀 Открыть приложение',
+  //             web_app: { url: webappUrl }
+  //           }
+  //         ]
+  //       ]
+  //     }
+  //   })
+  // }
 }

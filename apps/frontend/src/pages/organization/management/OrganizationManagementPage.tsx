@@ -93,7 +93,10 @@ const OrganizationManagementPage: React.FC = () => {
   }
 
   return (
-    <Page className='!p-0'>
+    <Page
+      className='!p-0'
+      back={false}
+    >
       <>
         <main
           id='content'
