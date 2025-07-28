@@ -24,10 +24,17 @@ const OrganizationDeleteModal: React.FC<IOrganizationDeleteModalProps> = ({
   const { mutate: deleteOrganization } = useDeleteOrganization()
 
   const handleDelete = async () => {
+    setIsDeleting(true)
     onStartDelete?.()
-    deleteOrganization(organizationId)
-    onSuccess?.()
-    setOpen(false)
+    deleteOrganization(organizationId, {
+      onSuccess: () => {
+        onSuccess?.()
+        setOpen(false)
+      },
+      onError: () => {
+        setIsDeleting(false)
+      }
+    })
   }
 
   return (

@@ -25,10 +25,20 @@ const OrganizationUserDeleteModal: React.FC<IOrganizationDeleteModalProps> = ({
   const [isDeleting, setIsDeleting] = useState(false)
   const { mutate: removeUserFromOrganization } = useRemoveUserFromOrganization()
   const handleDelete = async () => {
+    setIsDeleting(true)
     onStartDelete?.()
-    removeUserFromOrganization({ organizationId, userId })
-    onSuccess?.()
-    setOpen(false)
+    removeUserFromOrganization(
+      { organizationId, userId },
+      {
+        onSuccess: () => {
+          onSuccess?.()
+          setOpen(false)
+        },
+        onError: () => {
+          setIsDeleting(false)
+        }
+      }
+    )
   }
 
   return (
@@ -79,9 +89,9 @@ const OrganizationUserDeleteModal: React.FC<IOrganizationDeleteModalProps> = ({
               <div className='grow'>
                 <DialogHeader>
                   <DialogTitle>Выйти из склада?</DialogTitle>
-                  {/* <DialogDescription>
-                    Вы действительно хотите выйти из организации? Действие нельзя будет отменить.
-                  </DialogDescription> */}
+                  <DialogDescription>
+                    Вы действительно хотите выйти из этого склада? Вы потеряете доступ к нему.
+                  </DialogDescription>
                 </DialogHeader>
               </div>
             </div>
@@ -105,7 +115,7 @@ const OrganizationUserDeleteModal: React.FC<IOrganizationDeleteModalProps> = ({
                 isDeleting ? 'bg-red-400 cursor-not-allowed' : 'bg-red-500 hover:bg-red-600'
               }`}
             >
-              {isDeleting ? 'Удаление…' : 'Удалить склад'}
+              {isDeleting ? 'Выход…' : 'Выйти из склада'}
             </button>
           </DialogFooter>
         </div>

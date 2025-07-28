@@ -91,6 +91,8 @@ export const useDeleteOrganization = () => {
       queryClient.invalidateQueries({ queryKey: ORGANIZATION_KEYS.detail(id) })
       queryClient.invalidateQueries({ queryKey: ORGANIZATION_KEYS.lists() })
       queryClient.invalidateQueries({ queryKey: ORGANIZATION_KEYS.my() })
+      // Инвалидируем кэш для доступных организаций
+      queryClient.invalidateQueries({ queryKey: [...ORGANIZATION_KEYS.my(), 'available'] })
     }
   })
 }
@@ -139,6 +141,8 @@ export const useRemoveUserFromOrganization = () => {
       queryClient.invalidateQueries({
         queryKey: ORGANIZATION_KEYS.detail(organizationId)
       })
+      // Инвалидируем кэш для доступных организаций
+      queryClient.invalidateQueries({ queryKey: [...ORGANIZATION_KEYS.my(), 'available'] })
     }
   })
 }

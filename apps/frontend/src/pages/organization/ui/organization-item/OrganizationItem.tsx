@@ -9,6 +9,7 @@ import { Link } from 'react-router-dom'
 import clsx from 'clsx'
 import { Role } from '@/entitites/user/model/user.type'
 import { useOrganizationStore } from '@/entitites/organization/model/organization.store'
+import { useQueryClient } from '@tanstack/react-query'
 
 interface OrganizationItemProps {
   data: IUserOrganization
@@ -27,6 +28,7 @@ const OrganizationItem: React.FC<OrganizationItemProps> = ({
 }) => {
   const [isLoading, setIsLoading] = useState(false)
   const { currentOrganization, organizationId } = useOrganizationStore()
+  const queryClient = useQueryClient()
 
   return (
     <button
@@ -108,6 +110,22 @@ const OrganizationItem: React.FC<OrganizationItemProps> = ({
                 organizationId={data.organizationId}
                 onStartDelete={() => setIsLoading(true)}
                 onSuccess={() => {
+                  // Оптимистично обновляем кэш
+                  queryClient.setQueryData(
+                    [...['organizations'], 'my', 'available'],
+                    (oldData: any) => {
+                      if (!oldData) return oldData
+                      return {
+                        ...oldData,
+                        data: {
+                          ...oldData.data,
+                          myOrganizations: oldData.data.myOrganizations.filter(
+                            (org: any) => org.organizationId !== data.organizationId
+                          )
+                        }
+                      }
+                    }
+                  )
                   setTimeout(() => {
                     setIsLoading(false)
                   }, 600)
@@ -121,6 +139,22 @@ const OrganizationItem: React.FC<OrganizationItemProps> = ({
                 userId={data.userId}
                 onStartDelete={() => setIsLoading(true)}
                 onSuccess={() => {
+                  // Оптимистично обновляем кэш
+                  queryClient.setQueryData(
+                    [...['organizations'], 'my', 'available'],
+                    (oldData: any) => {
+                      if (!oldData) return oldData
+                      return {
+                        ...oldData,
+                        data: {
+                          ...oldData.data,
+                          myOrganizations: oldData.data.myOrganizations.filter(
+                            (org: any) => org.organizationId !== data.organizationId
+                          )
+                        }
+                      }
+                    }
+                  )
                   setTimeout(() => {
                     setIsLoading(false)
                   }, 600)

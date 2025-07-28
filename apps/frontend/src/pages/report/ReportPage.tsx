@@ -11,6 +11,7 @@ import { useBottomSheetStore } from '@/shared/bottom-sheet/model/store.bottom-sh
 import PageHeader from '@/shared/ui/page-header/ui/PageHeader'
 import Loader from '@/shared/loader/ui/Loader'
 import InfoMessage from '@/shared/ui/info/ui/Info'
+import Empty from '@/shared/empty/ui/Empty'
 
 const ReportPage = () => {
   const navigate = useNavigate()
@@ -112,7 +113,7 @@ const ReportPage = () => {
               />
             ))
           ) : (
-            <p className='col-span-full text-center text-muted-foreground'>Товары не найдены</p>
+            <Empty title='Товары не найдены' />
           )}
         </div>
 
