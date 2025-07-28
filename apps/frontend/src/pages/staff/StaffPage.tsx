@@ -22,8 +22,8 @@ const StaffPage = () => {
   }
   const filteredData = useMemo(() => {
     const term = searchTerm.trim().toLowerCase()
-    if (!term) return employees
-    return employees?.filter(
+    if (!term) return employees?.data
+    return employees?.data?.filter(
       item =>
         item.data?.username?.toLowerCase().includes(term) ||
         item.data?.first_name?.toLowerCase().includes(term) ||
@@ -99,6 +99,7 @@ const StaffPage = () => {
             organizationId={currentOrganization!.organizationId}
             key={item.id}
             data={item}
+            currentUserId={employees?.user?.id || 0}
           />
         ))}
 

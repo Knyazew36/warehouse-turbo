@@ -12,13 +12,14 @@ import { getRole } from '@/shared/utils/getRole'
 interface IProps {
   data: IUser
   organizationId: number
+  currentUserId: number
 }
 
-const UserCard = ({ data, organizationId }: IProps) => {
+const UserCard = ({ data, organizationId, currentUserId }: IProps) => {
   const { control, handleSubmit } = useForm({
-    defaultValues: {
-      role: data.role || Role.GUEST
-    },
+    // defaultValues: {
+    //   role: data.role || Role.GUEST
+    // },
     mode: 'onChange'
   })
 
@@ -26,14 +27,8 @@ const UserCard = ({ data, organizationId }: IProps) => {
   const { mutate: updateUserRole, isPending: isUpdateRolePending } = useUpdateUserRole()
   const { isPending: isDeletePending } = useUserDelete()
 
-  const onSubmit = (formData: any) => {
-    updateUser({ id: data.id, dto: {} })
-  }
   return (
-    <form
-      onSubmit={handleSubmit(onSubmit)}
-      className='flex relative overflow-hidden  flex-col mb-4 bg-white border border-gray-200 rounded-xl dark:bg-neutral-900 dark:border-neutral-700 '
-    >
+    <div className='flex relative overflow-hidden  flex-col mb-4 bg-white border border-gray-200 rounded-xl dark:bg-neutral-900 dark:border-neutral-700 '>
       {data?.role !== Role.OWNER && (
         <div className='absolute top-2 left-2'>
           <UserDelete
@@ -144,10 +139,11 @@ const UserCard = ({ data, organizationId }: IProps) => {
           <div>
             <Controller
               control={control}
+              disabled={currentUserId === data.id}
               name='role'
               render={({ field }) => (
                 <Select
-                  disabled={false}
+                  disabled={currentUserId === data.id}
                   options={[
                     { value: Role.ADMIN, label: 'Админ' },
                     { value: Role.OPERATOR, label: 'Оператор' }
@@ -171,7 +167,7 @@ const UserCard = ({ data, organizationId }: IProps) => {
           </div>
         </div>
       )}
-    </form>
+    </div>
   )
 }
 

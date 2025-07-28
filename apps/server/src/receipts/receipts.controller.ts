@@ -6,6 +6,8 @@ import { TelegramAuthGuard } from 'src/auth/guards/telegram-auth.guard'
 import { User } from 'src/auth/decorators/get-user.decorator'
 import { User as UserType } from '@prisma/client'
 import { OrganizationId } from '../organization/decorators/organization-id.decorator'
+import { Pagination } from '../common/decorators/pagination.decorator'
+import { PaginationDto } from '../common/dto/pagination.dto'
 
 @UseGuards(TelegramAuthGuard)
 @Controller('receipts')
@@ -26,8 +28,15 @@ export class ReceiptsController {
   }
 
   @Get('statistics')
-  async getStatistics(@Query() dto: GetStatisticsDto, @OrganizationId() organizationId?: number) {
-    const result = await this.receiptsService.getStatistics(dto, organizationId)
+  async getStatistics(
+    @Query() dto: GetStatisticsDto,
+    @Pagination() pagination: PaginationDto,
+    @OrganizationId() organizationId?: number
+  ) {
+    const result = await this.receiptsService.getStatistics(
+      { ...dto, ...pagination },
+      organizationId
+    )
     return result
   }
 }

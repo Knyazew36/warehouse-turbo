@@ -54,7 +54,8 @@ const IncomingToWarehousePage = () => {
       await receiptCreate({ receipts: payload })
       open({
         isOpen: true,
-        description: 'Поступление успешно создано'
+        description: 'Поступление успешно создано',
+        buttonText: 'Хорошо'
       })
       refetch()
       setArrivals({})

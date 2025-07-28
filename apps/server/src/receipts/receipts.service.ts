@@ -3,7 +3,7 @@ import { PrismaService } from 'nestjs-prisma'
 import { CreateReceiptDto } from './dto/create-receipt.dto'
 import { PaginationService } from '../common/services/pagination.service'
 import { GetStatisticsDto } from './dto/get-statistics.dto'
-import { PaginationResult } from '../common/dto/pagination.dto'
+import { PaginationResult, PaginationDto } from '../common/dto/pagination.dto'
 
 export interface StatisticsProduct {
   product: any // Можно заменить на Product из @prisma/client
@@ -63,7 +63,7 @@ export class ReceiptsService {
   }
 
   async getStatistics(
-    dto: GetStatisticsDto,
+    dto: GetStatisticsDto & PaginationDto,
     organizationId?: number
   ): Promise<PaginationResult<StatisticsOperation>> {
     const { start, end, ...paginationDto } = dto

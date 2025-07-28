@@ -38,11 +38,18 @@ const OrganizationItem: React.FC<OrganizationItemProps> = ({
         handleSelectOrganization(data)
       }}
     >
-      {organizationId && +organizationId === data.organizationId && (
-        <span className='inline-flex absolute bg-blue-600 text-white -top-3.5 right-2 items-center gap-x-1.5 py-0.5 px-2 rounded-full text-xs font-medium  '>
-          Текущий склад
-        </span>
-      )}
+      <div className='absolute -top-3 right-0 flex gap-x-1'>
+        {organizationId && +organizationId === data.organizationId && (
+          <span className='inline-flex  bg-blue-600 text-white  items-center gap-x-1.5 py-0.5 px-2 rounded-full text-xs font-medium  '>
+            Текущий склад
+          </span>
+        )}
+        {data.isOwner && variant === 'change' && (
+          <span className='inline-flex  bg-blue-600 text-white items-center gap-x-1.5 py-0.5 px-2 rounded-full text-xs font-medium  '>
+            Владелец
+          </span>
+        )}
+      </div>
 
       {isLoading && <LoaderSection className='rounded-lg ' />}
       <div className='flex gap-x-3  flex-1 relative'>

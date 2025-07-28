@@ -5,6 +5,7 @@ import $api from '@/shared/api/model/request'
 import { useAuthStore } from '@/entitites/auth/model/auth.store'
 import { hapticFeedback } from '@telegram-apps/sdk-react'
 import { Product } from '@/entitites/product/model/product.type'
+import { BaseResponse } from '@/shared/api'
 
 interface GetUserDto {
   role?: Role
@@ -44,8 +45,19 @@ export const useUpdateUser = () => {
 export const useUpdateUserRole = () => {
   const queryClient = useQueryClient()
   return useMutation({
-    mutationFn: async ({ organizationId, userId, role }: { organizationId: number; userId: number; role: Role }) => {
-      const res = await $api.patch(`${apiDomain}/organizations/${organizationId}/users/${userId}/role`, { role })
+    mutationFn: async ({
+      organizationId,
+      userId,
+      role
+    }: {
+      organizationId: number
+      userId: number
+      role: Role
+    }) => {
+      const res = await $api.patch(
+        `${apiDomain}/organizations/${organizationId}/users/${userId}/role`,
+        { role }
+      )
       return res.data.data
     },
     onSuccess: () => {
@@ -76,11 +88,14 @@ export const useUserDelete = () => {
 }
 
 export const useUsersEmployees = () => {
-  return useQuery<IUser[]>({
+  return useQuery<{ data: IUser[]; user: BaseResponse<IUser>['user'] }>({
     queryKey: ['employees'],
     queryFn: async () => {
       const res = await $api.get(`${apiDomain}/user/employees`)
-      return res.data.data
+      return {
+        data: res.data.data,
+        user: res.data.user as BaseResponse<IUser>['user']
+      }
     },
     retry: 3,
     retryDelay: 5000
