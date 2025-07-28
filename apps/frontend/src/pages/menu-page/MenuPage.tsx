@@ -16,7 +16,6 @@ import { useUserRole } from '@/entitites/user/api/user.api'
 import { useOrganizationStore } from '@/entitites/organization/model/organization.store'
 import Loader from '@/shared/loader/ui/Loader'
 import Header from '@/shared/ui/header/ui/Header'
-import BottomSheetSupport from '@/shared/bottom-sheet/bottom-sheet-support/BottomSheetSupport'
 import clsx from 'clsx'
 
 const MenuPage: FC = () => {
@@ -227,7 +226,7 @@ const MenuPage: FC = () => {
       back={false}
       className='!pt-0'
     >
-      <Header />
+      <Header role={role} />
       <AlertProductLowStock />
 
       <Link
@@ -451,8 +450,6 @@ const MenuPage: FC = () => {
             </svg>
           }
         />
-
-        {/* <BottomSheetSupport /> */}
       </div>
       {/* End Grid */}
     </Page>

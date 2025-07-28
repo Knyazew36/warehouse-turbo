@@ -1,5 +1,6 @@
 import React, { FC } from 'react'
 import { Product } from '@/entitites/product/model/product.type'
+import clsx from 'clsx'
 
 interface IProps {
   data: Product[]
@@ -67,7 +68,10 @@ const ProductsTable: FC<IProps> = ({ data }) => {
                 {data &&
                   data.map(item => (
                     <tr
-                      className='hover:bg-stone-100 cursor-pointer dark:hover:bg-neutral-700/50'
+                      className={clsx(
+                        'hover:bg-stone-100 cursor-pointer dark:hover:bg-neutral-700/50',
+                        item.quantity < item.minThreshold && ' bg-red-900'
+                      )}
                       key={item.id}
                     >
                       <td className='size-px py-3 px-5 relative'>

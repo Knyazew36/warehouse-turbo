@@ -1,8 +1,13 @@
-import React from 'react'
+import React, { FC } from 'react'
 import { useOrganizationStore } from '@/entitites/organization/model/organization.store'
 import { getRole } from '@/shared/utils/getRole'
+import { Role } from '@/entitites/user/model/user.type'
 
-const Header = () => {
+interface IProps {
+  role: Role
+}
+
+const Header: FC<IProps> = ({ role }) => {
   const { currentOrganization } = useOrganizationStore()
 
   return (
@@ -21,9 +26,9 @@ const Header = () => {
             {currentOrganization?.organization?.name}
           </span>
         </div>
-        {currentOrganization?.role && (
+        {role && (
           <span className='inline-flex mt-1  bg-blue-600 text-white  items-center gap-x-1.5 py-0.5 px-2 rounded-full text-xs font-medium  '>
-            Роль: {getRole(currentOrganization?.role)}
+            Роль: {getRole(role)}
           </span>
         )}
       </div>

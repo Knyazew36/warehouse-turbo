@@ -44,7 +44,7 @@ const OrganizationItem: React.FC<OrganizationItemProps> = ({
             Текущий склад
           </span>
         )}
-        {data.isOwner && variant === 'change' && (
+        {data.isOwner && (
           <span className='inline-flex  bg-blue-600 text-white items-center gap-x-1.5 py-0.5 px-2 rounded-full text-xs font-medium  '>
             Владелец
           </span>
@@ -61,22 +61,18 @@ const OrganizationItem: React.FC<OrganizationItemProps> = ({
         </span>
 
         <div className='grow flex-1'>
-          <div className='font-medium w-[36%] truncate text-gray-800 hover:text-blue-600 text-start focus:outline-hidden focus:text-blue-600 dark:text-neutral-200 dark:hover:text-blue-500 dark:focus:text-blue-500'>
+          <div className='font-medium w-[60%] truncate text-gray-800 hover:text-blue-600 text-start focus:outline-hidden focus:text-blue-600 dark:text-neutral-200 dark:hover:text-blue-500 dark:focus:text-blue-500'>
             {data.organization.name}
           </div>
 
           {data.organization.description && (
-            <p className='text-xs text-gray-500 text-start dark:text-neutral-500 max-w-[180px] wrap-break-word  text-wrap '>
+            <p className='text-xs text-gray-500 text-start dark:text-neutral-500 max-w-[280px] wrap-break-word  text-wrap '>
               {data.organization.description}
             </p>
           )}
         </div>
       </div>
-      {data.isOwner && variant !== 'change' && (
-        <span className='inline-flex absolute top-3 right-3 items-center gap-x-1.5 py-1 px-2 rounded-full text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-800/30 dark:text-blue-500'>
-          Владелец
-        </span>
-      )}
+
       {variant === 'change' && (
         <div
           className='absolute top-3 ml-2 end-3 group-hover:opacity-100 lg:opacity-0 '

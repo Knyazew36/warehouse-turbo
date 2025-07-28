@@ -70,6 +70,17 @@ $api.interceptors.response.use(
       })
     }
 
+    if (
+      (response.data?.user?.id && !response.data?.user?.role) ||
+      response.data?.data?.message === 'User not found in organization'
+    ) {
+      const errorData: ErrorEventEmitter = {
+        action: 'navigation',
+        href: '/'
+      }
+      eventEmitter.emit('request-error', errorData)
+    }
+
     if (response.data?.user?.allowedPhone === false) {
       const errorData: ErrorEventEmitter = {
         action: 'bottom-sheet',
