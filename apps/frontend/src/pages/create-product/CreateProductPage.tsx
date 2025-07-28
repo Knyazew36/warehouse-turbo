@@ -34,15 +34,11 @@ const CreateProductPage = () => {
   const { mutateAsync: createProduct } = useCreateProduct()
   const [buttonLoading, setButtonLoading] = useState(false)
 
-  // Отслеживаем изменения quantity для отладки
-  const quantityValue = watch('quantity')
-  const formValues = watch()
-
   const onSubmit = async (data: FormValues) => {
     try {
       setButtonLoading(true)
       await createProduct({
-        name: data.name,
+        name: data.name.trim(),
         quantity: data.quantity || 0,
         minThreshold: data.minThreshold || 0,
         unit: `${data.unit.trim()[0].toLowerCase()}${data.unit.trim().slice(1)}` || 'ед'
@@ -90,7 +86,14 @@ const CreateProductPage = () => {
           <Controller
             control={control}
             name='name'
-            rules={{ required: 'Название обязательно' }}
+            rules={{
+              required: 'Название обязательно',
+              validate: value => {
+                if (!value || value.trim().length === 0) {
+                  return 'Название обязательно'
+                }
+              }
+            }}
             render={({ field }) => (
               <InputDefault
                 label='Название'

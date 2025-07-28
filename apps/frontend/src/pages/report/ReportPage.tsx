@@ -66,7 +66,8 @@ const ReportPage = () => {
       await shiftCreate(payload.consumptions)
       open({
         isOpen: true,
-        description: 'Отчет успешно отправлен'
+        description: 'Отчет успешно отправлен',
+        buttonText: 'Хорошо'
       })
       navigate(-1)
     } catch (error) {

@@ -30,15 +30,19 @@ const ProductsCard: FC<IProductsCard> = ({ data, variant = 'default' }) => {
             data.quantity < data.minThreshold ? 'bg-red-500' : 'bg-gray-500'
           )}
         />
-        <span className='text-xs font-semibold uppercase text-gray-600 dark:text-white'>{data.name}</span>
+        <span className='text-xs font-semibold uppercase text-gray-600 dark:text-white'>
+          {data.name}
+        </span>
       </div>
 
       <div className='text-center'>
         <span className='block text-sm text-gray-500 dark:text-neutral-500'>остаток на складе</span>
 
-        <h3 className='text-3xl sm:text-4xl lg:text-5xl font-semibold text-gray-800 dark:text-neutral-200'>{`${formatNumber(
-          data.quantity
-        )} ${data.unit ? data.unit : ''}`}</h3>
+        <h3 className='text-3xl sm:text-4xl lg:text-5xl font-semibold text-gray-800 dark:text-neutral-200'>
+          {`${formatNumber(data.quantity)} `}
+
+          <span className='text-xl  dark:text-neutral-400'>{data.unit ? data.unit : ''}</span>
+        </h3>
         {variant === 'change' && (
           <div className='flex flex-col gap-2 mt-4'>
             <span className='block text-sm text-gray-500 dark:text-neutral-500'>Израсходовано</span>

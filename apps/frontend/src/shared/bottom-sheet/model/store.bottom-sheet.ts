@@ -9,6 +9,7 @@ type Store = {
   close: () => void
   onClose?: () => void
   variant?: IBottomSheetSuccessProps['variant']
+  buttonText?: string
 }
 
 const useBottomSheetStore = create<Store>()(set => ({
@@ -19,7 +20,8 @@ const useBottomSheetStore = create<Store>()(set => ({
       title: props.title,
       description: props.description,
       onClose: props.onClose,
-      variant: props.variant || 'success'
+      variant: props.variant || 'success',
+      buttonText: props.buttonText
     }),
   title: undefined,
   description: undefined,
@@ -30,7 +32,8 @@ const useBottomSheetStore = create<Store>()(set => ({
       title: undefined,
       description: undefined,
       onClose: () => {},
-      variant: undefined
+      variant: undefined,
+      buttonText: undefined
     }),
   onClose: () => {}
 }))

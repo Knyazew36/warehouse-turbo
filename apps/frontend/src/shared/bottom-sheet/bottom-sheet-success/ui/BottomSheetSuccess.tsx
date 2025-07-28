@@ -9,7 +9,8 @@ const BottomSheetSuccess = ({
   onClose,
   description,
   title = 'Успех!',
-  variant = 'success'
+  variant = 'success',
+  buttonText = 'Назад'
 }: IBottomSheetSuccessProps) => {
   useEffect(() => {
     if (isOpen) {
@@ -107,7 +108,7 @@ const BottomSheetSuccess = ({
                   variant === 'warning' && 'bg-yellow-600 hover:bg-yellow-600'
                 )}
               >
-                Назад
+                {buttonText}
               </button>
             </DrawerClose>
           )}

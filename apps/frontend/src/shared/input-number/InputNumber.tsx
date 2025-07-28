@@ -52,6 +52,17 @@ const InputNumber: React.FC<InputNumberProps> = ({
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     let inputValue = e.target.value
 
+    inputValue = inputValue.replace(/[^\d.,-]/g, '')
+
+    // Заменяем запятую на точку
+    inputValue = inputValue.replace(',', '.')
+
+    // Убираем лишние точки (оставляем только первую)
+    const parts = inputValue.split('.')
+    if (parts.length > 2) {
+      inputValue = parts[0] + '.' + parts.slice(1).join('')
+    }
+
     // Если поле пустое, устанавливаем undefined
     if (inputValue === '' || inputValue === '-') {
       onChange(undefined)
