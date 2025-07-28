@@ -41,7 +41,7 @@ export interface ICreateOrganization {
 }
 
 export interface IUpdateOrganization {
-  name?: string
+  name: string
   description?: string
 }
 

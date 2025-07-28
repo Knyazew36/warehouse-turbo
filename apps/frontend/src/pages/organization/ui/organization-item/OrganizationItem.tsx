@@ -28,9 +28,6 @@ const OrganizationItem: React.FC<OrganizationItemProps> = ({
   const [isLoading, setIsLoading] = useState(false)
   const { currentOrganization, organizationId } = useOrganizationStore()
 
-  console.info('currentOrganization', currentOrganization)
-  console.info('organizationId', organizationId)
-
   return (
     <button
       className='py-3 px-3  relative w-full inline-flex  items-center gap-x-1.5 sm:text-sm font-medium rounded-lg border border-gray-200 bg-white text-gray-800 shadow-2xs hover:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none focus:outline-hidden focus:bg-gray-50 dark:bg-neutral-900 dark:hover:bg-neutral-800 dark:focus:bg-neutral-800 dark:border-neutral-700 dark:text-neutral-300'
@@ -40,13 +37,13 @@ const OrganizationItem: React.FC<OrganizationItemProps> = ({
       }}
     >
       {organizationId && +organizationId === data.organizationId && (
-        <span className='inline-flex absolute bg-blue-600 text-white -top-3.5 right-3 items-center gap-x-1.5 py-0.5 px-2 rounded-full text-xs font-medium  '>
-          Текущая организация
+        <span className='inline-flex absolute bg-blue-600 text-white -top-3.5 right-2 items-center gap-x-1.5 py-0.5 px-2 rounded-full text-xs font-medium  '>
+          Текущий склад
         </span>
       )}
 
       {isLoading && <LoaderSection className='rounded-lg ' />}
-      <div className='flex gap-x-3'>
+      <div className='flex gap-x-3  flex-1 relative'>
         <span className='flex shrink-0 justify-center items-center size-9.5 bg-white border border-gray-200 rounded-lg dark:bg-neutral-800 dark:border-neutral-700 dark:text-neutral-300'>
           <Warehouse
             className='shrink-0 size-5'
@@ -54,14 +51,13 @@ const OrganizationItem: React.FC<OrganizationItemProps> = ({
           />
         </span>
 
-        <div className='grow'>
-          <div className='font-medium  text-gray-800 hover:text-blue-600 text-start focus:outline-hidden focus:text-blue-600 dark:text-neutral-200 dark:hover:text-blue-500 dark:focus:text-blue-500'>
+        <div className='grow flex-1'>
+          <div className='font-medium w-[36%] truncate text-gray-800 hover:text-blue-600 text-start focus:outline-hidden focus:text-blue-600 dark:text-neutral-200 dark:hover:text-blue-500 dark:focus:text-blue-500'>
             {data.organization.name}
           </div>
 
-          {/* <p className='text-neutral-200 font-medium'>{data.organization.name}</p> */}
           {data.organization.description && (
-            <p className='text-xs text-gray-500 text-start dark:text-neutral-500 text-wrap max-w-[180px]'>
+            <p className='text-xs text-gray-500 text-start dark:text-neutral-500 max-w-[180px] wrap-break-word  text-wrap '>
               {data.organization.description}
             </p>
           )}

@@ -50,8 +50,14 @@ const OrganizationChangePage: React.FC = () => {
   }
 
   const onSubmit = (data: IUpdateOrganization) => {
+    // Обрезаем пробелы в начале и конце названия
+    const trimmedData = {
+      ...data,
+      name: data.name.trim()
+    }
+
     updateOrganization(
-      { id: Number(id), data },
+      { id: Number(id), data: trimmedData },
       {
         onSuccess: () => {
           hapticFeedback.notificationOccurred('success')
@@ -103,7 +109,16 @@ const OrganizationChangePage: React.FC = () => {
                 type='text'
                 placeholder='Введите название склада'
                 {...register('name', {
-                  required: { message: 'Название склада обязательно', value: true }
+                  required: { message: 'Название склада обязательно', value: true },
+                  validate: value => {
+                    if (!value || value.trim().length === 0) {
+                      return 'Название склада обязательно'
+                    }
+                    if (value.trim().length < 2) {
+                      return 'Название склада должно содержать минимум 2 символа'
+                    }
+                    return true
+                  }
                 })}
                 className='w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-neutral-800 dark:border-neutral-600 dark:text-neutral-200 transition-colors'
               />
@@ -127,6 +142,7 @@ const OrganizationChangePage: React.FC = () => {
         </div>
       </form>
       <ButtonAction
+        cancelText='Вернуть'
         isLoading={isPending}
         onSuccessClick={handleSubmit(onSubmit)}
         onCancelClick={handleCancel}
