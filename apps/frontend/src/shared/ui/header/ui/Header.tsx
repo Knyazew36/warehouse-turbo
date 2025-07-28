@@ -11,7 +11,7 @@ const Header = () => {
         <span className='text-sm text-gray-500 dark:text-neutral-500 text-nowrap'>
           Текущий склад:
         </span>
-        <div className='relative  flex items-center justify-center'>
+        <div className='relative  flex items-center justify-center w-full'>
           {/* {currentOrganization?.role && (
             <span className='inline-flex absolute bg-blue-600 text-white  -top-3.5 right-0 items-center gap-x-1.5 py-0.5 px-2 rounded-full text-xs font-medium  '>
               {getRole(currentOrganization?.role)}
