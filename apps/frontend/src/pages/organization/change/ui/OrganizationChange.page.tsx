@@ -102,9 +102,12 @@ const OrganizationChangePage: React.FC = () => {
               <input
                 type='text'
                 placeholder='Введите название склада'
-                {...register('name')}
+                {...register('name', {
+                  required: { message: 'Название склада обязательно', value: true }
+                })}
                 className='w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-neutral-800 dark:border-neutral-600 dark:text-neutral-200 transition-colors'
               />
+              {errors.name && <p className='text-red-500 text-sm'>{errors.name.message}</p>}
             </div>
 
             {/* Описание */}

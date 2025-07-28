@@ -8,6 +8,7 @@ import OrganizationUserDeleteModal from '../organization-user-delete/Organizatio
 import { Link } from 'react-router-dom'
 import clsx from 'clsx'
 import { Role } from '@/entitites/user/model/user.type'
+import { useOrganizationStore } from '@/entitites/organization/model/organization.store'
 
 interface OrganizationItemProps {
   data: IUserOrganization
@@ -25,17 +26,26 @@ const OrganizationItem: React.FC<OrganizationItemProps> = ({
   role
 }) => {
   const [isLoading, setIsLoading] = useState(false)
-  console.info('role', role)
+  const { currentOrganization, organizationId } = useOrganizationStore()
+
+  console.info('currentOrganization', currentOrganization)
+  console.info('organizationId', organizationId)
 
   return (
     <button
-      className='py-3 px-3 overflow-hidden relative w-full inline-flex  items-center gap-x-1.5 sm:text-sm font-medium rounded-lg border border-gray-200 bg-white text-gray-800 shadow-2xs hover:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none focus:outline-hidden focus:bg-gray-50 dark:bg-neutral-900 dark:hover:bg-neutral-800 dark:focus:bg-neutral-800 dark:border-neutral-700 dark:text-neutral-300'
+      className='py-3 px-3  relative w-full inline-flex  items-center gap-x-1.5 sm:text-sm font-medium rounded-lg border border-gray-200 bg-white text-gray-800 shadow-2xs hover:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none focus:outline-hidden focus:bg-gray-50 dark:bg-neutral-900 dark:hover:bg-neutral-800 dark:focus:bg-neutral-800 dark:border-neutral-700 dark:text-neutral-300'
       onClick={() => {
         hapticFeedback.impactOccurred('light')
         handleSelectOrganization(data)
       }}
     >
-      {isLoading && <LoaderSection />}
+      {organizationId && +organizationId === data.organizationId && (
+        <span className='inline-flex absolute bg-blue-600 text-white -top-3.5 right-3 items-center gap-x-1.5 py-0.5 px-2 rounded-full text-xs font-medium  '>
+          Текущая организация
+        </span>
+      )}
+
+      {isLoading && <LoaderSection className='rounded-lg ' />}
       <div className='flex gap-x-3'>
         <span className='flex shrink-0 justify-center items-center size-9.5 bg-white border border-gray-200 rounded-lg dark:bg-neutral-800 dark:border-neutral-700 dark:text-neutral-300'>
           <Warehouse
@@ -91,11 +101,13 @@ const OrganizationItem: React.FC<OrganizationItemProps> = ({
                   </span>
                 </div>
 
-                <div className='w-px h-5 mx-1 bg-gray-200 dark:bg-neutral-700' />
+                {organizationId && +organizationId !== data.organizationId && (
+                  <div className='w-px h-5 mx-1 bg-gray-200 dark:bg-neutral-700' />
+                )}
               </>
             )}
 
-            {data.isOwner && (
+            {data.isOwner && organizationId && +organizationId !== data.organizationId && (
               <OrganizationDeleteModal
                 organizationId={data.organizationId}
                 onStartDelete={() => setIsLoading(true)}
@@ -107,7 +119,7 @@ const OrganizationItem: React.FC<OrganizationItemProps> = ({
                 }}
               />
             )}
-            {!data.isOwner && (
+            {!data.isOwner && organizationId && +organizationId !== data.organizationId && (
               <OrganizationUserDeleteModal
                 organizationId={data.organizationId}
                 userId={data.userId}
