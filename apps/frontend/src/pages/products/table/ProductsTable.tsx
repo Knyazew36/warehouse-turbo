@@ -7,7 +7,7 @@ interface IProps {
 const ProductsTable: FC<IProps> = ({ data }) => {
   return (
     data && (
-      <div className='p-5 flex flex-col bg-white border border-stone-200 shadow-2xs rounded-xl dark:bg-neutral-900 dark:border-neutral-700 mt-4'>
+      <div className=' flex flex-col bg-white border border-stone-200 shadow-2xs rounded-xl dark:bg-neutral-900 dark:border-neutral-700 mt-4'>
         <div className='overflow-x-auto [&::-webkit-scrollbar]:h-2 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-track]:bg-stone-100 [&::-webkit-scrollbar-thumb]:bg-stone-300 dark:[&::-webkit-scrollbar-track]:bg-neutral-700 dark:[&::-webkit-scrollbar-thumb]:bg-neutral-500'>
           <div className='min-w-full inline-block align-middle'>
             {/* Table */}
@@ -74,18 +74,26 @@ const ProductsTable: FC<IProps> = ({ data }) => {
                         <div className='before:z-9 before:absolute before:inset-0' />
                         <div className='w-full flex items-center gap-x-3'>
                           <div className='grow'>
-                            <span className='text-sm font-medium text-stone-800 dark:text-neutral-200'>{item.name}</span>
+                            <span className='text-sm font-medium text-stone-800 dark:text-neutral-200'>
+                              {item.name}
+                            </span>
                           </div>
                         </div>
                       </td>
                       <td className='size-px whitespace-nowrap py-3 px-5'>
-                        <span className='text-sm text-stone-600 dark:text-neutral-400'>{item.quantity}</span>
+                        <span className='text-sm text-stone-600 dark:text-neutral-400'>
+                          {item.quantity}
+                        </span>
                       </td>
                       <td className='size-px whitespace-nowrap py-3 px-5'>
-                        <span className='text-sm text-stone-600 dark:text-neutral-400'>{item.minThreshold}</span>
+                        <span className='text-sm text-stone-600 dark:text-neutral-400'>
+                          {item.minThreshold}
+                        </span>
                       </td>
                       <td className='size-px whitespace-nowrap py-3 px-5'>
-                        <span className='text-sm text-stone-600 dark:text-neutral-400'>{new Date(item.updatedAt).toLocaleString().split(',')[0]}</span>
+                        <span className='text-sm text-stone-600 dark:text-neutral-400'>
+                          {new Date(item.updatedAt).toLocaleString().split(',')[0]}
+                        </span>
                       </td>
                     </tr>
                   ))}
