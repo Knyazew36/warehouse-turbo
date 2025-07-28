@@ -17,6 +17,7 @@ import { hapticFeedback } from '@telegram-apps/sdk-react'
 import { useOrganizationStore } from '@/entitites/organization/model/organization.store'
 import { Link, useNavigate } from 'react-router-dom'
 import OrganizationItem from '../ui/organization-item/OrganizationItem'
+import OrganizationItemInvite from '../ui/organization-item/OrganizationItemInvite'
 
 const OrganizationManagementPage: React.FC = () => {
   const navigate = useNavigate()
@@ -128,33 +129,12 @@ const OrganizationManagementPage: React.FC = () => {
                         Приглашения
                       </p>
                       {invitedOrganizations.map(organization => (
-                        <button
-                          className='py-3 px-3 relative w-full inline-flex  items-center gap-x-1.5 sm:text-sm font-medium rounded-lg border border-gray-200 bg-white text-gray-800 shadow-2xs hover:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none focus:outline-hidden focus:bg-gray-50 dark:bg-neutral-900 dark:hover:bg-neutral-800 dark:focus:bg-neutral-800 dark:border-green-700 dark:text-neutral-300'
+                        <OrganizationItemInvite
+                          role={availableUser?.role as Role}
+                          key={organization.id}
                           onClick={() => handleJoinOrganization(organization)}
-                        >
-                          <span className='inline-flex absolute top-3 right-3 items-center gap-x-1.5 py-1 px-2 rounded-full text-xs font-medium bg-green-100 text-green-800 dark:bg-green-800/30 dark:text-green-500'>
-                            Приглашение
-                          </span>
-                          <div className='flex gap-x-3'>
-                            <span className='flex shrink-0 justify-center items-center size-9.5 bg-white border border-gray-200 rounded-lg dark:bg-neutral-800 dark:border-neutral-700 dark:text-neutral-300'>
-                              <Warehouse
-                                className='shrink-0 size-5'
-                                strokeWidth={1.5}
-                              />
-                            </span>
-
-                            <div className='grow'>
-                              <div className='font-medium text-start text-gray-800 hover:text-blue-600 focus:outline-hidden focus:text-blue-600 dark:text-neutral-200 dark:hover:text-blue-500 dark:focus:text-blue-500'>
-                                {organization.name}
-                              </div>
-                              {organization.description && (
-                                <p className='text-xs text-gray-500 text-start dark:text-neutral-500 '>
-                                  {organization.description}
-                                </p>
-                              )}
-                            </div>
-                          </div>
-                        </button>
+                          data={organization}
+                        />
                       ))}
                     </>
                   )}
