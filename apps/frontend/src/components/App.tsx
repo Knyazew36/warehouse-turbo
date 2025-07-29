@@ -18,12 +18,12 @@ export function App() {
       >
         <AppProvider>
           <Helmet>
-            {import.meta.env.DEV && (
-              <>
-                <script src='https://cdn.jsdelivr.net/npm/eruda'></script>
-                <script>eruda.init()</script>
-              </>
-            )}
+            {/* {import.meta.env.DEV && (
+              <> */}
+            <script src='https://cdn.jsdelivr.net/npm/eruda'></script>
+            <script>eruda.init()</script>
+            {/* </>
+            )} */}
           </Helmet>
           <Routes>
             {routes.map(route => (

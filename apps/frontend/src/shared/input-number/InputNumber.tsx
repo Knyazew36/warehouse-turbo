@@ -36,7 +36,7 @@ const InputNumber: React.FC<InputNumberProps> = ({
   const handleDecrement = () => {
     const currentValue = value ?? 0
     const next = currentValue - step
-    if (min !== undefined && next < min) return
+    if ((min !== undefined && next < min) || next < 0) return
     onChange(next)
     hapticFeedback.impactOccurred('light')
   }

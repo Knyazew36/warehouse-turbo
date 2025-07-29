@@ -128,7 +128,7 @@ const IncomingStatistics = () => {
                             <dt className='sm:py-1 mt-2 text-sm text-gray-500 dark:text-neutral-500'>
                               Комментарий:
                             </dt>
-                            <dd className='   text-sm text-gray-800 dark:text-neutral-200'>
+                            <dd className='text-sm text-gray-800 dark:text-neutral-200  break-words'>
                               {product.comment}
                             </dd>
                           </Fragment>

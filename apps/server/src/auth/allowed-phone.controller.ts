@@ -16,16 +16,24 @@ export class AllowedPhoneController {
   @Post('add')
   @UseGuards(TelegramAuthGuard, RolesGuard)
   @Roles('ADMIN', 'OWNER', 'IT')
-  async addPhoneToOrganization(@Body() dto: AddPhoneDto, @OrganizationId() organizationId?: number) {
+  async addPhoneToOrganization(
+    @Body() dto: AddPhoneDto,
+    @OrganizationId() organizationId?: number
+  ) {
     if (!organizationId) {
       throw new Error('Organization ID is required for adding phone')
     }
 
-    const result = await this.allowedPhoneService.addPhoneToOrganization(dto.phone, organizationId, dto.comment)
+    const result = await this.allowedPhoneService.addPhoneToOrganization(
+      dto.phone,
+      organizationId,
+      dto.comment
+    )
 
+    console.log('result', result)
     return {
       ...result,
-      message: 'Телефон успешно добавлен в список разрешенных для организации.'
+      message: result?.message || 'Телефон успешно добавлен'
     }
   }
 
@@ -48,7 +56,10 @@ export class AllowedPhoneController {
   @Delete(':phone')
   @UseGuards(TelegramAuthGuard, RolesGuard)
   @Roles('ADMIN', 'OWNER', 'IT')
-  async removePhoneFromOrganization(@Param('phone') phone: string, @OrganizationId() organizationId?: number) {
+  async removePhoneFromOrganization(
+    @Param('phone') phone: string,
+    @OrganizationId() organizationId?: number
+  ) {
     if (!organizationId) {
       throw new Error('Organization ID is required')
     }
@@ -66,12 +77,18 @@ export class AllowedPhoneController {
    */
   @Post('check')
   @UseGuards(TelegramAuthGuard)
-  async checkPhoneInOrganization(@Body() dto: { phone: string }, @OrganizationId() organizationId?: number) {
+  async checkPhoneInOrganization(
+    @Body() dto: { phone: string },
+    @OrganizationId() organizationId?: number
+  ) {
     if (!organizationId) {
       throw new Error('Organization ID is required')
     }
 
-    const isAllowed = await this.allowedPhoneService.isPhoneAllowedInOrganization(dto.phone, organizationId)
+    const isAllowed = await this.allowedPhoneService.isPhoneAllowedInOrganization(
+      dto.phone,
+      organizationId
+    )
 
     return {
       phone: dto.phone,
@@ -194,8 +211,14 @@ export class AllowedPhoneController {
       throw new Error('User allowed phone not found in request')
     }
 
-    const hasAccess = await this.allowedPhoneService.hasUserAccessToOrganization(userPhone, dto.organizationId)
-    const userRole = await this.allowedPhoneService.getUserRoleInOrganization(userPhone, dto.organizationId)
+    const hasAccess = await this.allowedPhoneService.hasUserAccessToOrganization(
+      userPhone,
+      dto.organizationId
+    )
+    const userRole = await this.allowedPhoneService.getUserRoleInOrganization(
+      userPhone,
+      dto.organizationId
+    )
 
     return {
       userPhone,
