@@ -37,7 +37,8 @@ export class ResponseInterceptor implements NestInterceptor {
             id: user.id,
             telegramId: user.telegramId,
             allowedPhone: !!user.allowedPhone,
-            role: user.role || null
+            role: user.role || null,
+            username: user.username
           }
         }
 

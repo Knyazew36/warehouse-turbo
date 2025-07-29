@@ -83,7 +83,9 @@ export class TelegramAuthGuard implements CanActivate {
         // Добавляем роль к объекту пользователя
         userWithRole = {
           ...user,
-          role: userOrganization.role
+          role: userOrganization.role,
+          //@ts-ignore
+          username: user.data.username
         } as any
       } else {
         throw new UnauthorizedException('User not found in organization')

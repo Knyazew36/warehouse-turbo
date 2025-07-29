@@ -109,7 +109,7 @@ model ShiftReport {
   consumptions Json // [ { productId: number, consumed: number }, … ]
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
-  User         User     @relation(fields: [userId], references: [id])
+  User         User     @relation(fields: [userId], references: [id], onDelete: Restrict)
 
   // Связь с организацией
   organizationId Int
