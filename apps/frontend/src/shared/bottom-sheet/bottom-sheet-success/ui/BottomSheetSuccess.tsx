@@ -38,17 +38,14 @@ const BottomSheetSuccess = ({
     hapticFeedback.impactOccurred('rigid')
     try {
       const contact = await requestContact()
-      console.log(contact)
+      onClose?.()
 
       // Перезапрашиваем организации после успешной отправки контакта
       await refetchOrganizations()
-
       // Инвалидируем кэш для доступных организаций
       queryClient.invalidateQueries({
         queryKey: ['organizations', 'my', 'available']
       })
-
-      onClose?.()
     } catch (error) {
       console.error('Error requesting contact:', error)
       hapticFeedback.notificationOccurred('error')
