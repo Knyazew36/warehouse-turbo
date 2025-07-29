@@ -48,7 +48,7 @@ const BottomSheetSuccess = ({
         queryClient.invalidateQueries({
           queryKey: ['organizations', 'my', 'available']
         })
-      }, 3000) // Задержка 3 секунды
+      }, 6000) // Задержка 3 секунды
     } catch (error) {
       console.error('Error requesting contact:', error)
       hapticFeedback.notificationOccurred('error')
