@@ -125,7 +125,7 @@ export class ReceiptsService {
       paginationDto,
       where: whereCondition,
       include: {
-        User: true
+        operator: true
       },
       orderBy: { createdAt: 'desc' }
     })
