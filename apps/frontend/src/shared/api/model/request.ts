@@ -95,6 +95,11 @@ $api.interceptors.response.use(
     return response
   },
   (error: AxiosError<ErrorResponse>) => {
+    if (error.response?.status === 401) {
+      const errorData: ErrorEventEmitter = { action: 'navigation', href: '/' }
+      eventEmitter.emit('request-error', errorData)
+    }
+
     handleResponseError(error)
     logErrorDetails(error)
     toast(error?.response?.data?.message || error?.message, {
