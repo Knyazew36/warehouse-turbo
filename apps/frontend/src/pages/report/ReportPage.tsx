@@ -32,7 +32,7 @@ const ReportPage = () => {
   const handleConsumptionChange = (productId: number, value: number) => {
     const product = data.find(p => p.id === productId)
     if (!product) return
-    const validatedValue = Math.max(0, Math.min(value, product.quantity))
+    const validatedValue = Math.max(0, Math.min(value, +product.quantity))
     setConsumptions(prev => ({ ...prev, [productId]: validatedValue }))
   }
 
@@ -106,7 +106,7 @@ const ReportPage = () => {
                 key={card.id}
                 data={card}
                 min={0}
-                max={card.quantity}
+                max={+card.quantity}
                 comment={{
                   text: comments[card.id] || '',
                   onChange: (text: string) => handleCommentChange(card.id, text)

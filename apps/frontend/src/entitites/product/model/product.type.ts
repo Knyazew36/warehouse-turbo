@@ -1,8 +1,8 @@
 export interface Product {
   id: number
   name: string
-  quantity: number
-  minThreshold: number
+  quantity: string
+  minThreshold: string
   unit: string | null
   category: string | null
   createdAt: Date

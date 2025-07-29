@@ -5,12 +5,6 @@ import clsx from 'clsx'
 import { FC } from 'react'
 
 export interface IProductsCard {
-  // title: string
-  // updatedAt: string
-  // min: number
-  // count: number
-  // ed: string
-
   data: Product
   variant?: 'default' | 'change'
 }
@@ -39,7 +33,7 @@ const ProductsCard: FC<IProductsCard> = ({ data, variant = 'default' }) => {
         <span className='block text-sm text-gray-500 dark:text-neutral-500'>остаток на складе</span>
 
         <h3 className='text-3xl sm:text-4xl lg:text-5xl font-semibold text-gray-800 dark:text-neutral-200'>
-          {`${formatNumber(data.quantity)} `}
+          {`${formatNumber(+data.quantity)} `}
 
           <span className='text-xl  dark:text-neutral-400'>{data.unit ? data.unit : ''}</span>
         </h3>
@@ -71,7 +65,7 @@ const ProductsCard: FC<IProductsCard> = ({ data, variant = 'default' }) => {
                   d='m7.247 4.86-4.796 5.481c-.566.647-.106 1.659.753 1.659h9.592a1 1 0 0 0 .753-1.659l-4.796-5.48a1 1 0 0 0-1.506 0z'
                 />
               </svg> */}
-              <span className='inline-block  text-sm'>{formatNumber(data.minThreshold)}</span>
+              <span className='inline-block  text-sm'>{formatNumber(+data.minThreshold)}</span>
             </span>
             <span className='block text-sm text-gray-500 dark:text-neutral-500'>мин. остаток</span>
           </dt>

@@ -91,7 +91,7 @@ const ProductsCardChange: FC<IProductsCard> = ({
     <div
       className={clsx(
         'flex flex-col gap-y-3 relative overflow-hidden lg:gap-y-5 p-4 md:p-5 bg-white border border-gray-200 shadow-2xs rounded-xl dark:bg-neutral-900 dark:border-neutral-800',
-        data.quantity < data.minThreshold && isActive && '!border-red-500',
+        +data.quantity < +data.minThreshold && isActive && '!border-red-500',
         !isActive && 'opacity-50 '
       )}
     >
@@ -119,7 +119,7 @@ const ProductsCardChange: FC<IProductsCard> = ({
         <span
           className={clsx(
             'size-2 inline-block  rounded-full me-2',
-            data.quantity < data.minThreshold ? 'bg-red-500' : 'bg-gray-500'
+            +data.quantity < +data.minThreshold ? 'bg-red-500' : 'bg-gray-500'
           )}
         />
         <span className='text-xs font-semibold uppercase text-gray-600 dark:text-white'>
@@ -131,7 +131,7 @@ const ProductsCardChange: FC<IProductsCard> = ({
         <span className='block text-sm text-gray-500 dark:text-neutral-500'>остаток на складе</span>
 
         <h3 className='text-3xl sm:text-4xl lg:text-5xl font-semibold text-gray-800 dark:text-neutral-200'>{`${formatNumber(
-          data.quantity
+          +data.quantity
         )} ${data.unit ? data.unit : ''}`}</h3>
 
         {withInputNumber && (

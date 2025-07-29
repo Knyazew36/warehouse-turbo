@@ -35,7 +35,7 @@ const ProductCardChangeForm: FC<IProductsCard> = ({ data }) => {
     defaultValues: {
       name: data.name,
       unit: data.unit ?? '',
-      minThreshold: data.minThreshold ?? 0,
+      minThreshold: +data.minThreshold || 0,
       active: data.active
     },
     mode: 'onChange'

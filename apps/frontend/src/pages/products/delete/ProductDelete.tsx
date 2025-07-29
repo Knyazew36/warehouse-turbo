@@ -3,6 +3,7 @@ import { Dialog, DialogTrigger, DialogContent, DialogFooter } from '@/components
 import { DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog'
 import { DialogClose } from '@/components/ui/dialog'
 import { useDeleteProduct } from '@/entitites/product/api/product.api'
+import { hapticFeedback } from '@telegram-apps/sdk-react'
 
 interface ProductDeleteProps {
   /** ID удаляемого товара */
@@ -29,9 +30,13 @@ const ProductDelete: React.FC<ProductDeleteProps> = ({
   }, [isPending, onLoadingChange])
 
   const handleDelete = async () => {
+    hapticFeedback.impactOccurred('light')
+
     onStartDelete?.()
     deleteProduct(productId, {
       onSuccess: () => {
+        hapticFeedback.notificationOccurred('success')
+
         onSuccess?.()
         setOpen(false)
       }
@@ -49,6 +54,9 @@ const ProductDelete: React.FC<ProductDeleteProps> = ({
           disabled={isPending}
           className='hs-tooltip-toggle size-7.5 inline-flex justify-center items-center gap-x-2 rounded-lg border border-transparent text-red-600 hover:bg-red-100  disabled:opacity-50 disabled:pointer-events-none focus:outline-hidden focus:bg-red-100 dark:text-red-500 dark:hover:bg-red-500/20 dark:focus:bg-red-500/20'
           data-hs-overlay='#hs-pro-chhdl'
+          onClick={() => {
+            hapticFeedback.impactOccurred('light')
+          }}
         >
           <svg
             className='shrink-0 size-4'
@@ -116,6 +124,9 @@ const ProductDelete: React.FC<ProductDeleteProps> = ({
               <button
                 type='button'
                 disabled={isPending}
+                onClick={() => {
+                  hapticFeedback.impactOccurred('light')
+                }}
                 className='py-2 px-3 inline-flex items-center gap-x-2 text-sm font-medium rounded-lg border border-gray-200 bg-white text-gray-800 shadow-2xs hover:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none focus:outline-hidden focus:bg-gray-50 dark:bg-transparent dark:border-neutral-700 dark:text-neutral-300 dark:hover:bg-neutral-800 dark:focus:bg-neutral-800'
               >
                 Отмена

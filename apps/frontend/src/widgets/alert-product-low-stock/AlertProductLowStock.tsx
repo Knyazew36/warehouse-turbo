@@ -7,7 +7,9 @@ import { Link } from 'react-router-dom'
 const AlertProductLowStock = () => {
   const { data = [], isLoading } = useProducts(true)
 
-  const lowStockProducts = data.filter(p => p.quantity < p.minThreshold)
+  const lowStockProducts = data.filter(p => +p.quantity < +p.minThreshold)
+
+  console.info(lowStockProducts)
   if (lowStockProducts.length === 0 || isLoading) return null
 
   return (
@@ -20,8 +22,9 @@ const AlertProductLowStock = () => {
       <AlertDescription>
         {lowStockProducts.map(p => (
           <div key={p.id}>
-            <span className='font-medium'>{p.name}</span> остаток: {formatNumber(p.quantity)}{' '}
-            {p.unit === 'ед' ? '' : p.unit} (минимум: {formatNumber(p.minThreshold)} {p.unit === 'ед' ? '' : p.unit})
+            <span className='font-medium'>{p.name}</span> остаток: {formatNumber(+p.quantity)}{' '}
+            {p.unit === 'ед' ? '' : p.unit} (минимум: {formatNumber(+p.minThreshold)}{' '}
+            {p.unit === 'ед' ? '' : p.unit})
           </div>
         ))}
       </AlertDescription>
