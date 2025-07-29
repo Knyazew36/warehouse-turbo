@@ -7,19 +7,35 @@ import { useDeleteProduct } from '@/entitites/product/api/product.api'
 interface ProductDeleteProps {
   /** ID удаляемого товара */
   productId: number
+  onStartDelete?: () => void
   /** колбэк после успешного удаления */
   onSuccess?: () => void
+  /** колбэк для передачи состояния загрузки */
+  onLoadingChange?: (isLoading: boolean) => void
 }
 
-const ProductDelete: React.FC<ProductDeleteProps> = ({ productId, onSuccess }) => {
+const ProductDelete: React.FC<ProductDeleteProps> = ({
+  productId,
+  onSuccess,
+  onStartDelete,
+  onLoadingChange
+}) => {
   const [open, setOpen] = useState(false)
-  const [isDeleting, setIsDeleting] = useState(false)
-  const { mutate: deleteProduct } = useDeleteProduct()
+  const { mutate: deleteProduct, isPending } = useDeleteProduct()
+
+  // Передаем состояние загрузки в родительский компонент
+  React.useEffect(() => {
+    onLoadingChange?.(isPending)
+  }, [isPending, onLoadingChange])
 
   const handleDelete = async () => {
-    deleteProduct(productId)
-    onSuccess?.()
-    setOpen(false)
+    onStartDelete?.()
+    deleteProduct(productId, {
+      onSuccess: () => {
+        onSuccess?.()
+        setOpen(false)
+      }
+    })
   }
 
   return (
@@ -30,6 +46,7 @@ const ProductDelete: React.FC<ProductDeleteProps> = ({ productId, onSuccess }) =
       <DialogTrigger asChild>
         <button
           type='button'
+          disabled={isPending}
           className='hs-tooltip-toggle size-7.5 inline-flex justify-center items-center gap-x-2 rounded-lg border border-transparent text-red-600 hover:bg-red-100  disabled:opacity-50 disabled:pointer-events-none focus:outline-hidden focus:bg-red-100 dark:text-red-500 dark:hover:bg-red-500/20 dark:focus:bg-red-500/20'
           data-hs-overlay='#hs-pro-chhdl'
         >
@@ -86,7 +103,9 @@ const ProductDelete: React.FC<ProductDeleteProps> = ({ productId, onSuccess }) =
               <div className='grow'>
                 <DialogHeader>
                   <DialogTitle>Удалить товар?</DialogTitle>
-                  <DialogDescription>Вы действительно хотите удалить этот товар? Действие нельзя будет отменить.</DialogDescription>
+                  <DialogDescription>
+                    Вы действительно хотите удалить этот товар? Действие нельзя будет отменить.
+                  </DialogDescription>
                 </DialogHeader>
               </div>
             </div>
@@ -96,6 +115,7 @@ const ProductDelete: React.FC<ProductDeleteProps> = ({ productId, onSuccess }) =
             <DialogClose asChild>
               <button
                 type='button'
+                disabled={isPending}
                 className='py-2 px-3 inline-flex items-center gap-x-2 text-sm font-medium rounded-lg border border-gray-200 bg-white text-gray-800 shadow-2xs hover:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none focus:outline-hidden focus:bg-gray-50 dark:bg-transparent dark:border-neutral-700 dark:text-neutral-300 dark:hover:bg-neutral-800 dark:focus:bg-neutral-800'
               >
                 Отмена
@@ -105,12 +125,12 @@ const ProductDelete: React.FC<ProductDeleteProps> = ({ productId, onSuccess }) =
             <button
               type='button'
               onClick={handleDelete}
-              disabled={isDeleting}
+              disabled={isPending}
               className={`py-2 px-3 inline-flex items-center gap-x-2 text-sm font-medium rounded-lg border border-transparent text-white shadow-2xs ${
-                isDeleting ? 'bg-red-400 cursor-not-allowed' : 'bg-red-500 hover:bg-red-600'
+                isPending ? 'bg-red-400 cursor-not-allowed' : 'bg-red-500 hover:bg-red-600'
               }`}
             >
-              {isDeleting ? 'Удаление…' : 'Удалить товар'}
+              {isPending ? 'Удаление…' : 'Удалить товар'}
             </button>
           </DialogFooter>
         </div>

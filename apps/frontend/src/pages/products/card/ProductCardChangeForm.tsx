@@ -1,7 +1,7 @@
 import { Product } from '@/entitites/product/model/product.type'
 import InputNumber from '@/shared/input-number/InputNumber'
 import clsx from 'clsx'
-import { FC } from 'react'
+import { FC, useState } from 'react'
 import ProductDelete from '../delete/ProductDelete'
 import { useUpdateProduct } from '@/entitites/product/api/product.api'
 import Switch from '@/shared/ui/switch/ui/Switch'
@@ -23,6 +23,7 @@ type FormValues = {
 
 const ProductCardChangeForm: FC<IProductsCard> = ({ data }) => {
   const { mutate: updateProduct, isPending } = useUpdateProduct()
+  const [isDeleting, setIsDeleting] = useState(false)
 
   const {
     control,
@@ -39,8 +40,6 @@ const ProductCardChangeForm: FC<IProductsCard> = ({ data }) => {
     },
     mode: 'onChange'
   })
-
-  const watched = watch()
 
   const onSubmit = (formData: FormValues) => {
     updateProduct(
@@ -69,10 +68,13 @@ const ProductCardChangeForm: FC<IProductsCard> = ({ data }) => {
         !data.active && 'dark:bg-neutral-900/30'
       )}
     >
-      {isPending && <LoaderSection />}
+      {(isDeleting || isPending) && <LoaderSection />}
       <div className='flex justify-between items-center'>
         <div>
-          <ProductDelete productId={data.id} />
+          <ProductDelete
+            productId={data.id}
+            onLoadingChange={setIsDeleting}
+          />
         </div>
 
         <div className='flex gap-x-2'>
@@ -84,7 +86,7 @@ const ProductCardChangeForm: FC<IProductsCard> = ({ data }) => {
             name='active'
             render={({ field }) => (
               <Switch
-                disabled={isPending}
+                disabled={isPending || isDeleting}
                 defaultChecked={field.value}
                 onChange={(e: ChangeEvent<HTMLInputElement>) => field.onChange(e.target.checked)}
               />
@@ -162,7 +164,7 @@ const ProductCardChangeForm: FC<IProductsCard> = ({ data }) => {
                 <InputNumber
                   {...field}
                   min={0}
-                  disabled={isPending}
+                  disabled={isPending || isDeleting}
                 />
               )}
             />
@@ -177,7 +179,7 @@ const ProductCardChangeForm: FC<IProductsCard> = ({ data }) => {
         <button
           type='submit'
           onClick={handleSubmit(onSubmit)}
-          disabled={isPending || !isDirty || !isValid}
+          disabled={isPending || isDeleting || !isDirty || !isValid}
           className='py-2 h-10 w-30  justify-center  px-3 inline-flex items-center gap-x-2 text-sm font-medium rounded-lg border border-transparent bg-green-600 text-white hover:bg-green-700 focus:outline-hidden focus:bg-green-700 disabled:opacity-50 disabled:pointer-events-none'
         >
           Сохранить

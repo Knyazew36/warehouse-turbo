@@ -55,6 +55,7 @@ const ProductsCardChange: FC<IProductsCard> = ({
   inputNumberLabel
 }) => {
   const { mutate: updateProduct, isPending } = useUpdateProduct()
+  const [isDeleting, setIsDeleting] = useState(false)
 
   // Локальное состояние для minThreshold
   const [localMinThreshold, setLocalMinThreshold] = useState<number | undefined>(value)
@@ -84,7 +85,7 @@ const ProductsCardChange: FC<IProductsCard> = ({
   }
 
   // Определяем состояние загрузки
-  const isLoading = withSaveButton?.isLoading || isPending
+  const isLoading = withSaveButton?.isLoading || isPending || isDeleting
 
   return (
     <div
@@ -98,7 +99,10 @@ const ProductsCardChange: FC<IProductsCard> = ({
       <div className='flex justify-between items-center'>
         {withDelete && (
           <div>
-            <ProductDelete productId={data.id} />
+            <ProductDelete
+              productId={data.id}
+              onLoadingChange={setIsDeleting}
+            />
           </div>
         )}
 
@@ -118,7 +122,9 @@ const ProductsCardChange: FC<IProductsCard> = ({
             data.quantity < data.minThreshold ? 'bg-red-500' : 'bg-gray-500'
           )}
         />
-        <span className='text-xs font-semibold uppercase text-gray-600 dark:text-white'>{data.name}</span>
+        <span className='text-xs font-semibold uppercase text-gray-600 dark:text-white'>
+          {data.name}
+        </span>
       </div>
 
       <div className='text-center'>
@@ -130,7 +136,9 @@ const ProductsCardChange: FC<IProductsCard> = ({
 
         {withInputNumber && (
           <div className='flex flex-col gap-2 mt-4'>
-            <span className='block text-sm text-gray-500 dark:text-neutral-500'>{inputNumberLabel}</span>
+            <span className='block text-sm text-gray-500 dark:text-neutral-500'>
+              {inputNumberLabel}
+            </span>
             <div className='flex items-center gap-x-2 w-full'>
               {withInputNumber && (
                 <InputNumber
