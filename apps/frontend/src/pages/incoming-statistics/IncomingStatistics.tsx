@@ -70,26 +70,20 @@ const IncomingStatistics = () => {
 
                       <div className='flex gap-2 mt-1'>
                         <div className='shrink-0 relative  md:w-15.5 md:h-15.5 '>
-                          {Boolean(item.user) && Boolean(item.user?.data?.photo_url) ? (
+                          {Boolean(item.user) && Boolean(item.user?.photo_url) ? (
                             <img
                               className='shrink-0 size-8 md:w-15.5 md:h-15.5 rounded-full'
-                              src={item.user?.data?.photo_url}
+                              src={item.user?.photo_url}
                               alt='Avatar'
                             />
                           ) : (
                             <span className='flex shrink-0 justify-center items-center size-9.5 bg-white border border-gray-200 text-gray-700 text-xs font-medium uppercase rounded-full dark:bg-neutral-800 dark:border-neutral-700 dark:text-neutral-300'>
                               {
                                 getFullName({
-                                  firstName: item.user?.data?.first_name,
-                                  lastName: item.user?.data?.last_name
+                                  firstName: item.user?.first_name,
+                                  lastName: item.user?.last_name
                                 }).initials
                               }
-                            </span>
-                          )}
-
-                          {item?.user === null && (
-                            <span className='flex shrink-0 justify-center items-center size-9.5 bg-white border border-gray-200 text-gray-700 text-xs font-medium uppercase rounded-full dark:bg-neutral-800 dark:border-neutral-700 dark:text-neutral-300'>
-                              {item.deleteUser?.userName}
                             </span>
                           )}
                         </div>
@@ -97,12 +91,12 @@ const IncomingStatistics = () => {
                         <div className='grow flex flex-col'>
                           <div className='inline-flex items-center gap-x-2'>
                             <h3 className='font-medium text-gray-800 dark:text-neutral-200 truncate max-w-40 '>
-                              {item.user
-                                ? getFullName({
-                                    firstName: item.user?.data?.first_name,
-                                    lastName: item.user?.data?.last_name
-                                  }).fullName
-                                : item.deleteUser?.userName}
+                              {
+                                getFullName({
+                                  firstName: item.user?.first_name,
+                                  lastName: item.user?.last_name
+                                }).fullName
+                              }
                             </h3>
                             {/* <span className='hidden md:inline-flex items-center gap-x-1.5 py-1 px-2.5 text-xs font-medium bg-gray-100 text-gray-800 rounded-full dark:bg-neutral-700 dark:text-neutral-200'>
                             <span className='size-1.5 inline-block bg-gray-800 rounded-full dark:bg-neutral-200' />
@@ -112,7 +106,7 @@ const IncomingStatistics = () => {
                           <div className='inline-flex items-center gap-x-2 '>
                             <p className='text-xs sm:text-sm text-gray-500 dark:text-neutral-500 wrap-anywhere'>
                               {' '}
-                              {item.user?.data?.username}
+                              {item.user?.username}
                             </p>
                           </div>
                         </div>

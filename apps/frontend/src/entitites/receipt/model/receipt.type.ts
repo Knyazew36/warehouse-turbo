@@ -26,8 +26,8 @@ export interface StatisticsProduct {
 export interface StatisticsOperation {
   type: 'income' | 'outcome'
   date: string // ISO string
-  user: IUser | null
-  deleteUser?: { userName: string; userTelegramId: string } | null
+  user: User
+  // deleteUser?: { userName: string; userTelegramId: string } | null
   products: StatisticsProduct[]
 }
 
