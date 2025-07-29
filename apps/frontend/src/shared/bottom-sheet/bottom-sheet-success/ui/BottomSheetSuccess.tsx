@@ -40,12 +40,15 @@ const BottomSheetSuccess = ({
       const contact = await requestContact()
       onClose?.()
 
-      // Перезапрашиваем организации после успешной отправки контакта
-      await refetchOrganizations()
-      // Инвалидируем кэш для доступных организаций
-      queryClient.invalidateQueries({
-        queryKey: ['organizations', 'my', 'available']
-      })
+      // Добавляем задержку, чтобы телефон успел обновиться на сервере
+      setTimeout(async () => {
+        // Перезапрашиваем организации после успешной отправки контакта
+        await refetchOrganizations()
+        // Инвалидируем кэш для доступных организаций
+        queryClient.invalidateQueries({
+          queryKey: ['organizations', 'my', 'available']
+        })
+      }, 3000) // Задержка 3 секунды
     } catch (error) {
       console.error('Error requesting contact:', error)
       hapticFeedback.notificationOccurred('error')

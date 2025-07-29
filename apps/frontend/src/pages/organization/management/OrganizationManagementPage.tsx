@@ -121,7 +121,7 @@ const OrganizationManagementPage: React.FC = () => {
                         У вас нет складов
                       </h2>
                       <p className='mt-1 text-sm text-gray-500 dark:text-neutral-500'>
-                        Создайте свой первый склад для управления
+                        Создайте свой первый склад для управления.
                       </p>
                     </div>
                   )}
