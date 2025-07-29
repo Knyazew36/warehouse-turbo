@@ -8,16 +8,25 @@ type Store = {
   isOwner: boolean
   isOperator: boolean
   isIT: boolean
+  clearAuth: () => void
 }
 
 const useAuthStore = create<Store>()(set => ({
   role: Role.GUEST,
   setRole: (role: Role) =>
-    set({ role, isAdmin: role === Role.ADMIN, isOwner: role === Role.OWNER, isOperator: role === Role.OPERATOR, isIT: role === Role.IT }),
+    set({
+      role,
+      isAdmin: role === Role.ADMIN,
+      isOwner: role === Role.OWNER,
+      isOperator: role === Role.OPERATOR,
+      isIT: role === Role.IT
+    }),
   isAdmin: false,
   isOwner: false,
   isOperator: false,
-  isIT: false
+  isIT: false,
+  clearAuth: () =>
+    set({ role: Role.GUEST, isAdmin: false, isOwner: false, isOperator: false, isIT: false })
 }))
 
 export { useAuthStore }

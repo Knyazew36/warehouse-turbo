@@ -96,7 +96,7 @@ $api.interceptors.response.use(
   },
   (error: AxiosError<ErrorResponse>) => {
     if (error.response?.status === 401) {
-      const errorData: ErrorEventEmitter = { action: 'navigation', href: '/' }
+      const errorData: ErrorEventEmitter = { action: 'logout' }
       eventEmitter.emit('request-error', errorData)
     }
 
