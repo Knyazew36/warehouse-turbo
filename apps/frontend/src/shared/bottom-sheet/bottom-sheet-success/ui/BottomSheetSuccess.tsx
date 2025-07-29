@@ -3,6 +3,8 @@ import { Drawer, DrawerClose, DrawerContent } from '@/components/ui/drawer'
 import { IBottomSheetSuccessProps } from '../model/bottomSheetSuccess.type'
 import { hapticFeedback, requestContact } from '@telegram-apps/sdk-react'
 import clsx from 'clsx'
+import { useQueryClient } from '@tanstack/react-query'
+import { useAvailableOrganizations } from '@/entitites/organization/api/organization.api'
 
 const BottomSheetSuccess = ({
   isOpen,
@@ -12,6 +14,9 @@ const BottomSheetSuccess = ({
   variant = 'success',
   buttonText = 'Назад'
 }: IBottomSheetSuccessProps) => {
+  const queryClient = useQueryClient()
+  const { refetch: refetchOrganizations } = useAvailableOrganizations()
+
   useEffect(() => {
     if (isOpen) {
       if (variant === 'success') {
@@ -28,6 +33,27 @@ const BottomSheetSuccess = ({
       }
     }
   }, [isOpen])
+
+  const handleAuthButtonClick = async () => {
+    hapticFeedback.impactOccurred('rigid')
+    try {
+      const contact = await requestContact()
+      console.log(contact)
+
+      // Перезапрашиваем организации после успешной отправки контакта
+      await refetchOrganizations()
+
+      // Инвалидируем кэш для доступных организаций
+      queryClient.invalidateQueries({
+        queryKey: ['organizations', 'my', 'available']
+      })
+
+      onClose?.()
+    } catch (error) {
+      console.error('Error requesting contact:', error)
+      hapticFeedback.notificationOccurred('error')
+    }
+  }
   return (
     <Drawer
       open={isOpen}
@@ -114,13 +140,7 @@ const BottomSheetSuccess = ({
           )}
           {variant === 'auth' && (
             <button
-              onClick={() => {
-                hapticFeedback.impactOccurred('rigid')
-                requestContact().then(contact => {
-                  onClose?.()
-                  console.log(contact)
-                })
-              }}
+              onClick={handleAuthButtonClick}
               className={clsx(
                 'py-2.5  w-full sm:py-3 px-4  inline-flex justify-center items-center gap-x-2 font-medium sm:text-sm rounded-xl border border-transparent text-white hover:bg-green-600 disabled:opacity-50 disabled:pointer-events-none focus:outline-hidden focus:bg-green-600',
                 'bg-yellow-600 hover:bg-yellow-600'
