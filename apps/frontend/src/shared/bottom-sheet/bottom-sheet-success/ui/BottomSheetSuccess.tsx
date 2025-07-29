@@ -46,7 +46,7 @@ const BottomSheetSuccess = ({
         await refetchOrganizations()
         // Инвалидируем кэш для доступных организаций
         queryClient.invalidateQueries({
-          queryKey: ['organizations', 'my', 'available']
+          queryKey: ['available']
         })
       }, 6000) // Задержка 3 секунды
     } catch (error) {
