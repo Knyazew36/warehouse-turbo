@@ -172,100 +172,31 @@ const OrganizationManagementPage: React.FC = () => {
                     Создать новый склад
                   </Link>
                 </div>
+
+                {allOrganizations.length === 0 && (
+                  <>
+                    <div className='w-28 h-px mx-auto bg-gray-300 dark:bg-neutral-700 mt-8' />
+                    <p className='mt-1 text-sm text-gray-500 dark:text-neutral-500 text-center'>
+                      Если вы только что авторизовались, и вы ожидаете приглашения в склад, то
+                      необходимо дождаться уведомления в боте об успешной авторизации и обновить
+                      страницу.
+                    </p>
+
+                    <button
+                      onClick={() => {
+                        hapticFeedback.impactOccurred('light')
+                        window.location.reload()
+                      }}
+                      className='py-3 px-4 w-full inline-flex justify-center items-center gap-x-2 sm:text-sm font-medium rounded-lg border border-transparent bg-yellow-600 text-white hover:bg-yellow-700 disabled:opacity-50 disabled:pointer-events-none focus:outline-hidden focus:bg-yellow-700'
+                    >
+                      Обновить
+                    </button>
+                  </>
+                )}
               </div>
             </div>
           </div>
         </main>
-        {/* ========== END MAIN CONTENT ========== */}
-        {/* <footer className='mt-auto h-23 sm:h-16 absolute bottom-0 inset-x-0 bg-white border-t border-gray-200 dark:bg-neutral-900 dark:border-neutral-700'>
-          <div className='w-full max-w-5xl py-6 mx-auto px-4 sm:px-6 lg:px-8'>
-            <ul className='flex flex-wrap justify-center items-center whitespace-nowrap gap-3'>
-              <li className='inline-flex items-center relative text-xs text-gray-500 pe-3.5 last:pe-0 last:after:hidden after:absolute after:top-1/2 after:end-0 after:inline-block after:size-[3px] after:bg-gray-400 after:rounded-full after:-translate-y-1/2 dark:text-neutral-500 dark:after:bg-neutral-600'>
-                © 2025 Preline Labs.
-              </li>
-              <li className='inline-flex items-center relative text-xs text-gray-500 pe-3.5 last:pe-0 last:after:hidden after:absolute after:top-1/2 after:end-0 after:inline-block after:size-[3px] after:bg-gray-400 after:rounded-full after:-translate-y-1/2 dark:text-neutral-500 dark:after:bg-neutral-600'>
-                <a
-                  className='text-xs text-gray-500 underline-offset-4 hover:underline hover:text-gray-800 focus:outline-hidden focus:underline focus:text-gray-800 dark:text-neutral-500 dark:hover:text-neutral-200 dark:focus:text-neutral-200'
-                  href='#'
-                >
-                  Terms
-                </a>
-              </li>
-              <li className='inline-flex items-center relative text-xs text-gray-500 pe-3.5 last:pe-0 last:after:hidden after:absolute after:top-1/2 after:end-0 after:inline-block after:size-[3px] after:bg-gray-400 after:rounded-full after:-translate-y-1/2 dark:text-neutral-500 dark:after:bg-neutral-600'>
-                <a
-                  className='text-xs text-gray-500 underline-offset-4 hover:underline hover:text-gray-800 focus:outline-hidden focus:underline focus:text-gray-800 dark:text-neutral-500 dark:hover:text-neutral-200 dark:focus:text-neutral-200'
-                  href='#'
-                >
-                  Privacy
-                </a>
-              </li>
-              <li className='inline-flex items-center relative text-xs text-gray-500 pe-3.5 last:pe-0 last:after:hidden after:absolute after:top-1/2 after:end-0 after:inline-block after:size-[3px] after:bg-gray-400 after:rounded-full after:-translate-y-1/2 dark:text-neutral-500 dark:after:bg-neutral-600'>
-                <a
-                  className='text-xs text-gray-500 underline-offset-4 hover:underline hover:text-gray-800 focus:outline-hidden focus:underline focus:text-gray-800 dark:text-neutral-500 dark:hover:text-neutral-200 dark:focus:text-neutral-200'
-                  href='#'
-                >
-                  Your Privacy Choices
-                </a>
-              </li>
-              <li className='inline-flex items-center relative text-xs text-gray-500 pe-3.5 last:pe-0 last:after:hidden after:absolute after:top-1/2 after:end-0 after:inline-block after:size-[3px] after:bg-gray-400 after:rounded-full after:-translate-y-1/2 dark:text-neutral-500 dark:after:bg-neutral-600'>
-                <button
-                  type='button'
-                  className='hs-dark-mode-active:hidden flex hs-dark-mode items-center gap-x-1.5 text-sm text-gray-500 hover:text-gray-800 focus:outline-hidden focus:text-gray-800 dark:text-neutral-500 dark:hover:text-neutral-200 dark:focus:text-neutral-200'
-                  data-hs-theme-click-value='dark'
-                >
-                  <svg
-                    className='shrink-0 size-4'
-                    xmlns='http://www.w3.org/2000/svg'
-                    width={24}
-                    height={24}
-                    viewBox='0 0 24 24'
-                    fill='none'
-                    stroke='currentColor'
-                    strokeWidth={2}
-                    strokeLinecap='round'
-                    strokeLinejoin='round'
-                  >
-                    <path d='M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z' />
-                  </svg>
-                  <span className='sr-only'>Dark mode</span>
-                </button>
-                <button
-                  type='button'
-                  className='hs-dark-mode-active:flex hidden hs-dark-mode items-center gap-x-1.5 text-sm text-gray-500 hover:text-gray-800 focus:outline-hidden focus:text-gray-800 dark:text-neutral-500 dark:hover:text-neutral-200 dark:focus:text-neutral-200'
-                  data-hs-theme-click-value='light'
-                >
-                  <svg
-                    className='shrink-0 size-4'
-                    xmlns='http://www.w3.org/2000/svg'
-                    width={24}
-                    height={24}
-                    viewBox='0 0 24 24'
-                    fill='none'
-                    stroke='currentColor'
-                    strokeWidth={2}
-                    strokeLinecap='round'
-                    strokeLinejoin='round'
-                  >
-                    <circle
-                      cx={12}
-                      cy={12}
-                      r={4}
-                    />
-                    <path d='M12 2v2' />
-                    <path d='M12 20v2' />
-                    <path d='m4.93 4.93 1.41 1.41' />
-                    <path d='m17.66 17.66 1.41 1.41' />
-                    <path d='M2 12h2' />
-                    <path d='M20 12h2' />
-                    <path d='m6.34 17.66-1.41 1.41' />
-                    <path d='m19.07 4.93-1.41 1.41' />
-                  </svg>
-                  <span className='sr-only'>Light mode</span>
-                </button>
-              </li>
-            </ul>
-          </div>
-        </footer> */}
       </>
     </Page>
   )

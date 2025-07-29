@@ -3,8 +3,6 @@ import { Drawer, DrawerClose, DrawerContent } from '@/components/ui/drawer'
 import { IBottomSheetSuccessProps } from '../model/bottomSheetSuccess.type'
 import { hapticFeedback, requestContact } from '@telegram-apps/sdk-react'
 import clsx from 'clsx'
-import { useQueryClient } from '@tanstack/react-query'
-import { useAvailableOrganizations } from '@/entitites/organization/api/organization.api'
 
 const BottomSheetSuccess = ({
   isOpen,
@@ -14,9 +12,6 @@ const BottomSheetSuccess = ({
   variant = 'success',
   buttonText = 'Назад'
 }: IBottomSheetSuccessProps) => {
-  const queryClient = useQueryClient()
-  const { refetch: refetchOrganizations } = useAvailableOrganizations()
-
   useEffect(() => {
     if (isOpen) {
       if (variant === 'success') {
@@ -33,27 +28,6 @@ const BottomSheetSuccess = ({
       }
     }
   }, [isOpen])
-
-  const handleAuthButtonClick = async () => {
-    hapticFeedback.impactOccurred('rigid')
-    try {
-      const contact = await requestContact()
-      onClose?.()
-
-      // Добавляем задержку, чтобы телефон успел обновиться на сервере
-      setTimeout(async () => {
-        // Перезапрашиваем организации после успешной отправки контакта
-        await refetchOrganizations()
-        // Инвалидируем кэш для доступных организаций
-        queryClient.invalidateQueries({
-          queryKey: ['available']
-        })
-      }, 6000) // Задержка 3 секунды
-    } catch (error) {
-      console.error('Error requesting contact:', error)
-      hapticFeedback.notificationOccurred('error')
-    }
-  }
   return (
     <Drawer
       open={isOpen}
@@ -69,7 +43,7 @@ const BottomSheetSuccess = ({
                 'shrink-0 size-14 md:size-16 mx-auto flex justify-center items-center border-2 rounded-full',
                 variant === 'success' && 'border-green-500 text-green-500',
                 variant === 'error' && 'border-red-500 text-red-500',
-                (variant === 'warning' || variant === 'auth') && 'border-yellow-500 text-yellow-500'
+                variant === 'warning' || (variant === 'auth' && 'border-yellow-500 text-yellow-500')
               )}
             >
               {variant === 'success' && (
@@ -140,7 +114,13 @@ const BottomSheetSuccess = ({
           )}
           {variant === 'auth' && (
             <button
-              onClick={handleAuthButtonClick}
+              onClick={() => {
+                hapticFeedback.impactOccurred('rigid')
+                requestContact().then(contact => {
+                  onClose?.()
+                  console.log(contact)
+                })
+              }}
               className={clsx(
                 'py-2.5  w-full sm:py-3 px-4  inline-flex justify-center items-center gap-x-2 font-medium sm:text-sm rounded-xl border border-transparent text-white hover:bg-green-600 disabled:opacity-50 disabled:pointer-events-none focus:outline-hidden focus:bg-green-600',
                 'bg-yellow-600 hover:bg-yellow-600'
