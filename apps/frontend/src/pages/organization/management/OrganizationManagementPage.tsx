@@ -156,36 +156,6 @@ const OrganizationManagementPage: React.FC = () => {
                             variant='default'
                             handleSelectOrganization={handleSelectOrganization}
                           />
-
-                          // <button
-                          //   className='py-3 px-3 relative w-full inline-flex  items-center gap-x-1.5 sm:text-sm font-medium rounded-lg border border-gray-200 bg-white text-gray-800 shadow-2xs hover:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none focus:outline-hidden focus:bg-gray-50 dark:bg-neutral-900 dark:hover:bg-neutral-800 dark:focus:bg-neutral-800 dark:border-neutral-700 dark:text-neutral-300'
-                          //   onClick={() => handleSelectOrganization(userOrg)}
-                          // >
-                          //   <div className='flex gap-x-3'>
-                          //     <span className='flex shrink-0 justify-center items-center size-9.5 bg-white border border-gray-200 rounded-lg dark:bg-neutral-800 dark:border-neutral-700 dark:text-neutral-300'>
-                          //       <Warehouse
-                          //         className='shrink-0 size-5'
-                          //         strokeWidth={1.5}
-                          //       />
-                          //     </span>
-
-                          //     <div className='grow'>
-                          //       <div className='font-medium text-gray-800 hover:text-blue-600 focus:outline-hidden focus:text-blue-600 dark:text-neutral-200 dark:hover:text-blue-500 dark:focus:text-blue-500'>
-                          //         {userOrg.organization.name}
-                          //       </div>
-                          //       {userOrg.organization.description && (
-                          //         <p className='text-xs text-gray-500 dark:text-neutral-500 text-a'>
-                          //           {userOrg.organization.description}
-                          //         </p>
-                          //       )}
-                          //     </div>
-                          //   </div>
-                          //   {userOrg.isOwner && (
-                          //     <span className='inline-flex absolute top-3 right-3 items-center gap-x-1.5 py-1 px-2 rounded-full text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-800/30 dark:text-blue-500'>
-                          //       Владелец
-                          //     </span>
-                          //   )}
-                          // </button>
                         ))}
                       </div>
                       <div className='w-28 h-px mx-auto bg-gray-300 dark:bg-neutral-700' />
@@ -193,13 +163,15 @@ const OrganizationManagementPage: React.FC = () => {
                   )}
                 </div>
 
-                <Link
-                  onClick={() => hapticFeedback.impactOccurred('light')}
-                  to='/organization-create'
-                  className='py-3 px-4 w-full inline-flex justify-center items-center gap-x-2 sm:text-sm font-medium rounded-lg border border-transparent bg-indigo-600 text-white hover:bg-indigo-700 disabled:opacity-50 disabled:pointer-events-none focus:outline-hidden focus:bg-indigo-700'
-                >
-                  Создать новый склад
-                </Link>
+                <div className='sticky bottom-4'>
+                  <Link
+                    onClick={() => hapticFeedback.impactOccurred('light')}
+                    to='/organization-create'
+                    className='py-3 px-4 w-full inline-flex justify-center items-center gap-x-2 sm:text-sm font-medium rounded-lg border border-transparent bg-indigo-600 text-white hover:bg-indigo-700 disabled:opacity-50 disabled:pointer-events-none focus:outline-hidden focus:bg-indigo-700'
+                  >
+                    Создать новый склад
+                  </Link>
+                </div>
               </div>
             </div>
           </div>

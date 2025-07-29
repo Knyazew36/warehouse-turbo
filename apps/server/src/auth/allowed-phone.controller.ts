@@ -33,7 +33,7 @@ export class AllowedPhoneController {
     console.log('result', result)
     return {
       ...result,
-      message: result?.message || 'Телефон успешно добавлен'
+      message: 'message' in result ? result.message : 'Телефон успешно добавлен'
     }
   }
 
