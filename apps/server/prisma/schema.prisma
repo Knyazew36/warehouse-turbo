@@ -91,7 +91,7 @@ model Product {
 
 model Receipt {
   id         Int      @id @default(autoincrement())
-  operator   User?    @relation(fields: [operatorId], references: [id])
+  operator   User?    @relation(fields: [operatorId], references: [id], onDelete: SetNull)
   operatorId Int?
   receipts   Json // [{ productId: number, quantity: number }]
   createdAt  DateTime @default(now())
@@ -101,19 +101,29 @@ model Receipt {
   // Связь с организацией
   organizationId Int
   organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  // Данные оператора для сохранения информации после удаления пользователя
+  operatorName       String? // Имя оператора
+  operatorTelegramId String? // Telegram ID оператора
 }
 
 model ShiftReport {
-  id           Int      @id @default(autoincrement())
-  userId       Int
-  consumptions Json // [ { productId: number, consumed: number }, … ]
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
-  User         User     @relation(fields: [userId], references: [id], onDelete: Restrict)
-
+  id             Int          @id @default(autoincrement())
+  userId         Int
+  consumptions   Json // [ { productId: number, consumed: number }, … ]
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+  // operator       User         @relation(fields: [operatorId], references: [id], onDelete: SetNull)
+  // operatorId     Int?
+  operator       User?        @relation(fields: [operatorId], references: [id], onDelete: SetNull)
+  operatorId     Int?
   // Связь с организацией
   organizationId Int
   organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  // Данные пользователя для сохранения информации после удаления пользователя
+  userName       String? // Имя пользователя
+  userTelegramId String? // Telegram ID пользователя
 }
 
 enum AccessRequestStatus {

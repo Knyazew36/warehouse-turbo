@@ -4,8 +4,6 @@ import { apiDomain } from '@/shared/api/model/constants' // ваш базовы�
 import { BaseResponse } from '@/shared/api'
 import { Receipt, StatisticsResponse } from '../model/receipt.type'
 import { useQuery } from '@tanstack/react-query'
-import { useState } from 'react'
-import { Product } from '@/entitites/product/model/product.type'
 
 export interface CreateReceiptDto {
   receipts: {
@@ -16,7 +14,10 @@ export interface CreateReceiptDto {
 
 export const receiptCreate = async (dto: CreateReceiptDto): Promise<Receipt> => {
   try {
-    const response: AxiosResponse<BaseResponse<Receipt>> = await $api.post(`${apiDomain}/receipts`, dto)
+    const response: AxiosResponse<BaseResponse<Receipt>> = await $api.post(
+      `${apiDomain}/receipts`,
+      dto
+    )
     return response.data.data
   } catch (error: any) {
     const message = error?.response?.data?.message || 'Ошибка создания поступления'
@@ -33,7 +34,9 @@ export const useStatistics = (start?: string, end?: string) => {
       if (end) params.append('end', end)
 
       const queryString = params.toString() ? `?${params.toString()}` : ''
-      const response: AxiosResponse<BaseResponse<StatisticsResponse>> = await $api.get(`${apiDomain}/receipts/statistics${queryString}`)
+      const response: AxiosResponse<BaseResponse<StatisticsResponse>> = await $api.get(
+        `${apiDomain}/receipts/statistics${queryString}`
+      )
 
       return response.data.data
     }

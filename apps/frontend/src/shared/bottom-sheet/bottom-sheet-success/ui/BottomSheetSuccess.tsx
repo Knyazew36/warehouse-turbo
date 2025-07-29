@@ -43,7 +43,7 @@ const BottomSheetSuccess = ({
                 'shrink-0 size-14 md:size-16 mx-auto flex justify-center items-center border-2 rounded-full',
                 variant === 'success' && 'border-green-500 text-green-500',
                 variant === 'error' && 'border-red-500 text-red-500',
-                variant === 'warning' && 'border-yellow-500 text-yellow-500'
+                (variant === 'warning' || variant === 'auth') && 'border-yellow-500 text-yellow-500'
               )}
             >
               {variant === 'success' && (

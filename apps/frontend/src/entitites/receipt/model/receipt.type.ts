@@ -11,7 +11,10 @@ export interface Receipt {
   createdAt: Date
   productId: number
   quantity: number
+  operator: IUser | null
   operatorId: number | null
+  operatorName?: string
+  operatorTelegramId?: string
 }
 
 export interface StatisticsProduct {

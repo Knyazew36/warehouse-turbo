@@ -11,6 +11,20 @@ export class ShiftsService {
    */
   async createShiftReport(userId: number, consumptions: ConsumptionDto[], organizationId: number) {
     return this.prisma.$transaction(async tx => {
+      // Получаем данные пользователя для сохранения
+      const user = await tx.user.findUnique({
+        where: { id: userId },
+        select: { telegramId: true, data: true }
+      })
+
+      if (!user) {
+        throw new BadRequestException('Пользователь не найден')
+      }
+
+      // Извлекаем имя из данных пользователя
+      const userData = user.data as any
+      const userName = userData?.first_name || userData?.username || user.telegramId
+
       // 1) Проверяем, что не было отчёта с точно таким же userId+createdAt (при необходимости)
       //    (для MVP пропустим дубли)
 
@@ -23,7 +37,9 @@ export class ShiftsService {
             productId: c.productId,
             consumed: c.consumed,
             comment: c.comment || null
-          }))
+          })),
+          userName,
+          userTelegramId: user.telegramId
         }
       })
 
@@ -34,7 +50,9 @@ export class ShiftsService {
           throw new BadRequestException(`Продукт ${productId} не найден`)
         }
         if (consumed > Number(prod.quantity)) {
-          throw new BadRequestException(`Нельзя израсходовать ${consumed}, на складе только ${prod.quantity}`)
+          throw new BadRequestException(
+            `Нельзя израсходовать ${consumed}, на складе только ${prod.quantity}`
+          )
         }
         await tx.product.update({
           where: { id: productId },
@@ -47,11 +65,29 @@ export class ShiftsService {
   }
 
   async findAll() {
-    return this.prisma.shiftReport.findMany({
+    const shiftReports = await this.prisma.shiftReport.findMany({
       include: {
-        User: true
+        operator: true
       },
       orderBy: { createdAt: 'desc' }
+    })
+
+    // Обрабатываем каждый отчет, создавая объект пользователя из сохраненных данных, если связь потеряна
+    return shiftReports.map(report => {
+      if (!report.operator && report.userName && report.userTelegramId) {
+        return {
+          ...report,
+          operator: {
+            id: report.userId,
+            telegramId: report.userTelegramId,
+            data: { first_name: report.userName },
+            createdAt: report.createdAt,
+            updatedAt: report.updatedAt,
+            active: true
+          } as any
+        }
+      }
+      return report
     })
   }
 }

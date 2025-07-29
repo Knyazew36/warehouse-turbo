@@ -6,7 +6,10 @@ export interface ShiftReport {
   consumptions: Consumption[]
   createdAt: string
   updatedAt: string
-  User: IUser
+  operator: IUser | null
+  operatorId: number | null
+  userName?: string
+  userTelegramId?: string
 }
 
 export interface Consumption {

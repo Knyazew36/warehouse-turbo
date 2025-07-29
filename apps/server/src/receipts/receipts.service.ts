@@ -33,6 +33,20 @@ export class ReceiptsService {
 
   async createReceipt(userId: number, dto: CreateReceiptDto, organizationId: number) {
     return this.prisma.$transaction(async tx => {
+      // Получаем данные пользователя для сохранения
+      const user = await tx.user.findUnique({
+        where: { id: userId },
+        select: { telegramId: true, data: true }
+      })
+
+      if (!user) {
+        throw new BadRequestException('Пользователь не найден')
+      }
+
+      // Извлекаем имя из данных пользователя
+      const userData = user.data as any
+      const operatorName = userData?.first_name || userData?.username || user.telegramId
+
       // Проверяем, что все товары существуют
       for (const receiptItem of dto.receipts) {
         const product = await tx.product.findUnique({ where: { id: receiptItem.productId } })
@@ -46,7 +60,9 @@ export class ReceiptsService {
         data: {
           operatorId: userId,
           organizationId,
-          receipts: JSON.stringify(dto.receipts)
+          receipts: JSON.stringify(dto.receipts),
+          operatorName,
+          operatorTelegramId: user.telegramId
         }
       })
 
@@ -139,10 +155,24 @@ export class ReceiptsService {
           } catch {
             items = []
           }
+
+          // Создаем объект пользователя из сохраненных данных или из связи
+          let user = userMap.get(item.operatorId) || null
+          if (!user && item.operatorName && item.operatorTelegramId) {
+            user = {
+              id: item.operatorId,
+              telegramId: item.operatorTelegramId,
+              data: { first_name: item.operatorName },
+              createdAt: item.createdAt,
+              updatedAt: item.createdAt,
+              active: true
+            } as any
+          }
+
           return {
             type: 'income' as const,
             date: item.createdAt,
-            user: userMap.get(item.operatorId) || null,
+            user,
             products: items
           }
         } else {
@@ -161,10 +191,24 @@ export class ReceiptsService {
           } catch {
             consumptions = []
           }
+
+          // Создаем объект пользователя из сохраненных данных или из связи
+          let user = userMap.get(item.userId) || null
+          if (!user && item.userName && item.userTelegramId) {
+            user = {
+              id: item.userId,
+              telegramId: item.userTelegramId,
+              data: { first_name: item.userName },
+              createdAt: item.createdAt,
+              updatedAt: item.updatedAt,
+              active: true
+            } as any
+          }
+
           return {
             type: 'outcome' as const,
             date: item.createdAt,
-            user: userMap.get(item.userId) || null,
+            user,
             products: consumptions
           }
         }
