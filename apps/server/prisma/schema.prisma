@@ -26,9 +26,7 @@ model User {
   createdAt    DateTime      @default(now())
   updatedAt    DateTime      @updatedAt
 
-  active            Boolean         @default(true)
-  accessRequests    AccessRequest[]
-  processedRequests AccessRequest[] @relation("ProcessedBy") // Заявки, обработанные этим пользователем
+  active Boolean @default(true)
 
   // Связи с организациями
   userOrganizations UserOrganization[]
@@ -107,13 +105,12 @@ model Receipt {
 }
 
 model ShiftReport {
-  id             Int          @id @default(autoincrement())
-  userId         Int
-  consumptions   Json // [ { productId: number, consumed: number }, … ]
-  createdAt      DateTime     @default(now())
-  updatedAt      DateTime     @updatedAt
-  // operator       User         @relation(fields: [operatorId], references: [id], onDelete: SetNull)
-  // operatorId     Int?
+  id           Int      @id @default(autoincrement())
+  userId       Int
+  consumptions Json // [ { productId: number, consumed: number }, … ]
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
   operator       User?        @relation(fields: [operatorId], references: [id], onDelete: SetNull)
   operatorId     Int?
   // Связь с организацией
@@ -122,26 +119,6 @@ model ShiftReport {
 
   // Данные пользователя для сохранения информации после удаления пользователя
   operatorData Json?
-}
-
-enum AccessRequestStatus {
-  PENDING
-  APPROVED
-  DECLINED
-}
-
-model AccessRequest {
-  id            Int                 @id @default(autoincrement())
-  user          User                @relation(fields: [userId], references: [id])
-  userId        Int
-  status        AccessRequestStatus @default(PENDING)
-  message       String? // Дополнительное сообщение от пользователя
-  adminNote     String? // Заметка администратора
-  createdAt     DateTime            @default(now())
-  updatedAt     DateTime            @updatedAt
-  processedAt   DateTime? // Когда заявка была обработана
-  processedBy   User?               @relation("ProcessedBy", fields: [processedById], references: [id])
-  processedById Int?
 }
 
 model AllowedPhone {
