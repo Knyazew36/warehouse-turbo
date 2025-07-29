@@ -103,8 +103,7 @@ model Receipt {
   organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
 
   // Данные оператора для сохранения информации после удаления пользователя
-  operatorName       String? // Имя оператора
-  operatorTelegramId String? // Telegram ID оператора
+  operatorData Json?
 }
 
 model ShiftReport {
@@ -122,8 +121,7 @@ model ShiftReport {
   organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
 
   // Данные пользователя для сохранения информации после удаления пользователя
-  userName       String? // Имя пользователя
-  userTelegramId String? // Telegram ID пользователя
+  operatorData Json?
 }
 
 enum AccessRequestStatus {

@@ -1,6 +1,8 @@
 import { Injectable, BadRequestException } from '@nestjs/common'
 import { PrismaService } from 'nestjs-prisma'
 import { ConsumptionDto } from './dto/create-shift-report.dto'
+import { User } from '@telegram-apps/init-data-node'
+import { JsonValue } from '@prisma/client/runtime/library'
 
 @Injectable()
 export class ShiftsService {
@@ -22,8 +24,7 @@ export class ShiftsService {
       }
 
       // Извлекаем имя из данных пользователя
-      const userData = user.data as any
-      const userName = userData?.first_name || userData?.username || user.telegramId
+      const userData = user.data as unknown as User
 
       // 1) Проверяем, что не было отчёта с точно таким же userId+createdAt (при необходимости)
       //    (для MVP пропустим дубли)
@@ -38,8 +39,7 @@ export class ShiftsService {
             consumed: c.consumed,
             comment: c.comment || null
           })),
-          userName,
-          userTelegramId: user.telegramId
+          operatorData: userData as unknown as JsonValue
         }
       })
 
@@ -74,17 +74,10 @@ export class ShiftsService {
 
     // Обрабатываем каждый отчет, создавая объект пользователя из сохраненных данных, если связь потеряна
     return shiftReports.map(report => {
-      if (!report.operator && report.userName && report.userTelegramId) {
+      if (!report.operator && report.operatorData) {
         return {
           ...report,
-          operator: {
-            id: report.userId,
-            telegramId: report.userTelegramId,
-            data: { first_name: report.userName },
-            createdAt: report.createdAt,
-            updatedAt: report.updatedAt,
-            active: true
-          } as any
+          operator: report.operatorData as unknown as User
         }
       }
       return report

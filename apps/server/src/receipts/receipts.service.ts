@@ -4,6 +4,8 @@ import { CreateReceiptDto } from './dto/create-receipt.dto'
 import { PaginationService } from '../common/services/pagination.service'
 import { GetStatisticsDto } from './dto/get-statistics.dto'
 import { PaginationResult, PaginationDto } from '../common/dto/pagination.dto'
+import { JsonValue } from '@prisma/client/runtime/library'
+import { User } from '@telegram-apps/init-data-node'
 
 export interface StatisticsProduct {
   product: any // Можно заменить на Product из @prisma/client
@@ -44,8 +46,7 @@ export class ReceiptsService {
       }
 
       // Извлекаем имя из данных пользователя
-      const userData = user.data as any
-      const operatorName = userData?.first_name || userData?.username || user.telegramId
+      const userData = user.data as unknown as User
 
       // Проверяем, что все товары существуют
       for (const receiptItem of dto.receipts) {
@@ -61,8 +62,7 @@ export class ReceiptsService {
           operatorId: userId,
           organizationId,
           receipts: JSON.stringify(dto.receipts),
-          operatorName,
-          operatorTelegramId: user.telegramId
+          operatorData: userData as unknown as JsonValue
         }
       })
 
@@ -130,14 +130,11 @@ export class ReceiptsService {
       orderBy: { createdAt: 'desc' }
     })
 
-    // Получаем продукты и пользователей для маппинга
-    const [products, users] = await Promise.all([
-      this.prisma.product.findMany({ where: { active: true, organizationId } }),
-      this.prisma.user.findMany({ where: { userOrganizations: { some: { organizationId } } } })
-    ])
-
+    // Получаем продукты для маппинга (все продукты организации, включая неактивные)
+    const products = await this.prisma.product.findMany({
+      where: { organizationId }
+    })
     const productMap = new Map(products.map(p => [p.id, p]))
-    const userMap = new Map(users.map(u => [u.id, u]))
 
     // Преобразуем данные в нужный формат
     const transformData = (data: any[], type: 'income' | 'outcome') => {
@@ -156,17 +153,13 @@ export class ReceiptsService {
             items = []
           }
 
-          // Создаем объект пользователя из сохраненных данных или из связи
-          let user = userMap.get(item.operatorId) || null
-          if (!user && item.operatorName && item.operatorTelegramId) {
-            user = {
-              id: item.operatorId,
-              telegramId: item.operatorTelegramId,
-              data: { first_name: item.operatorName },
-              createdAt: item.createdAt,
-              updatedAt: item.createdAt,
-              active: true
-            } as any
+          // Создаем объект пользователя из сохраненных данных
+          let user = null
+          if (item.operatorData) {
+            // Создаем данные пользователя на основе сохраненной информации
+            const userData = item.operatorData as unknown as User
+
+            user = userData
           }
 
           return {
@@ -192,17 +185,10 @@ export class ReceiptsService {
             consumptions = []
           }
 
-          // Создаем объект пользователя из сохраненных данных или из связи
-          let user = userMap.get(item.userId) || null
-          if (!user && item.userName && item.userTelegramId) {
-            user = {
-              id: item.userId,
-              telegramId: item.userTelegramId,
-              data: { first_name: item.userName },
-              createdAt: item.createdAt,
-              updatedAt: item.updatedAt,
-              active: true
-            } as any
+          // Создаем объект пользователя из сохраненных данных
+          let user = null
+          if (item.operatorData) {
+            user = item.operatorData as unknown as User
           }
 
           return {

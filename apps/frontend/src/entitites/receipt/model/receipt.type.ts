@@ -1,5 +1,6 @@
 import { Product } from '@/entitites/product/model/product.type'
 import { IUser } from '@/entitites/user/model/user.type'
+import { User } from '@telegram-apps/sdk-react'
 
 export interface CreateReceiptDto {
   productId: number
@@ -13,8 +14,7 @@ export interface Receipt {
   quantity: number
   operator: IUser | null
   operatorId: number | null
-  operatorName?: string
-  operatorTelegramId?: string
+  operatorData: User | null
 }
 
 export interface StatisticsProduct {
@@ -27,6 +27,7 @@ export interface StatisticsOperation {
   type: 'income' | 'outcome'
   date: string // ISO string
   user: IUser | null
+  deleteUser?: { userName: string; userTelegramId: string } | null
   products: StatisticsProduct[]
 }
 

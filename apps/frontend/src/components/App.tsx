@@ -20,8 +20,8 @@ export function App() {
           <Helmet>
             {/* {import.meta.env.DEV && (
               <> */}
-            <script src='https://cdn.jsdelivr.net/npm/eruda'></script>
-            <script>eruda.init()</script>
+            {/* <script src='https://cdn.jsdelivr.net/npm/eruda'></script>
+            <script>eruda.init()</script> */}
             {/* </>
             )} */}
           </Helmet>

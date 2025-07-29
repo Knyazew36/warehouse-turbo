@@ -10,6 +10,7 @@ export interface ShiftReport {
   operatorId: number | null
   userName?: string
   userTelegramId?: string
+  deleteUser?: { userName: string; userTelegramId: string } | null
 }
 
 export interface Consumption {
