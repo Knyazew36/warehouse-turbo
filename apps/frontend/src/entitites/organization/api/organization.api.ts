@@ -90,7 +90,7 @@ export const useDeleteOrganization = () => {
     onSuccess: (_, id) => {
       queryClient.invalidateQueries({ queryKey: ORGANIZATION_KEYS.detail(id) })
       queryClient.invalidateQueries({ queryKey: ORGANIZATION_KEYS.lists() })
-      queryClient.invalidateQueries({ queryKey: ORGANIZATION_KEYS.my() })
+      // queryClient.invalidateQueries({ queryKey: ORGANIZATION_KEYS.my() })
       // Инвалидируем кэш для доступных организаций
       queryClient.invalidateQueries({ queryKey: [...ORGANIZATION_KEYS.my(), 'available'] })
     }
