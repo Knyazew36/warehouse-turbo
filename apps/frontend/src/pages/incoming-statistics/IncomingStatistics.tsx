@@ -42,7 +42,7 @@ const IncomingStatistics = () => {
               <div className='p-4'>
                 {/* List */}
                 <dl className='grid grid-cols-1 sm:grid-cols-2 sm:gap-y-2 gap-x-4'>
-                  <div className='flex justify-between'>
+                  <div className='flex justify-between gap-2'>
                     <div>
                       <dt className='sm:py-1 text-sm text-gray-500 dark:text-neutral-500'>Тип:</dt>
                       <dd className='pb-3 sm:py-1 min-h-8 text-sm text-gray-800 dark:text-neutral-200 mt-1'>
@@ -90,7 +90,7 @@ const IncomingStatistics = () => {
 
                         <div className='grow flex flex-col'>
                           <div className='inline-flex items-center gap-x-2'>
-                            <h3 className='font-medium text-gray-800 dark:text-neutral-200 truncate max-w-40'>
+                            <h3 className='font-medium text-gray-800 dark:text-neutral-200 truncate max-w-40 '>
                               {
                                 getFullName({
                                   firstName: item.user?.data?.first_name,
@@ -103,8 +103,8 @@ const IncomingStatistics = () => {
                             {item.user?.data?.is_online ? 'Online' : 'Offline'}
                           </span> */}
                           </div>
-                          <div className='inline-flex items-center gap-x-2'>
-                            <p className='text-xs sm:text-sm text-gray-500 dark:text-neutral-500'>
+                          <div className='inline-flex items-center gap-x-2 '>
+                            <p className='text-xs sm:text-sm text-gray-500 dark:text-neutral-500 wrap-anywhere'>
                               {' '}
                               {item.user?.data?.username}
                             </p>
