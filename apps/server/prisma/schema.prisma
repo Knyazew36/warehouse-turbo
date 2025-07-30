@@ -25,8 +25,8 @@ model User {
   shiftReports ShiftReport[] // факт подтверждения смены
   createdAt    DateTime      @default(now())
   updatedAt    DateTime      @updatedAt
-
-  active Boolean @default(true)
+  test         String?
+  active       Boolean       @default(true)
 
   // Связи с организациями
   userOrganizations UserOrganization[]
