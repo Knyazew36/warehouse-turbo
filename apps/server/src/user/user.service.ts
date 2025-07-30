@@ -109,19 +109,6 @@ export class UserService {
 
     // Начинаем транзакцию для атомарного удаления
     return await this.prisma.$transaction(async prisma => {
-      // 2. Отменяем все активные заявки на доступ пользователя
-      await prisma.accessRequest.updateMany({
-        where: {
-          userId: id,
-          status: 'PENDING'
-        },
-        data: {
-          status: 'DECLINED',
-          adminNote: 'Отменено при удалении пользователя',
-          processedAt: new Date()
-        }
-      })
-
       // 5. Мягкое удаление пользователя - помечаем как неактивного
       const deletedUser = await prisma.user.update({
         where: { id },
@@ -157,8 +144,6 @@ export class UserService {
     await this.prisma.$transaction(async prisma => {
       // 1. Удаляем все связанные данные пользователя
 
-      await prisma.accessRequest.deleteMany({ where: { userId: id } })
-      await prisma.accessRequest.deleteMany({ where: { processedById: id } })
       await prisma.shiftReport.deleteMany({ where: { userId: id } })
       await prisma.receipt.deleteMany({ where: { operatorId: id } })
 
