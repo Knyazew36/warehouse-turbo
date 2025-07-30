@@ -41,12 +41,20 @@ const MenuButton = ({
       className={clsx(
         className,
         'p-4 group relative overflow-hidden flex flex-col bg-white border border-gray-200 rounded-xl focus:outline-hidden dark:bg-neutral-900 dark:border-neutral-700',
+        'transition-transform duration-150 ease-in-out active:scale-95',
+        'select-none',
         (isBlocked || isDevelop || isLoading) &&
           'opacity-70 !pointer-events-none cursor-not-allowed'
       )}
       onClick={() => {
         hapticFeedback.impactOccurred('rigid')
         onClick?.()
+      }}
+      style={{
+        userSelect: 'none',
+        WebkitUserSelect: 'none',
+        MozUserSelect: 'none',
+        msUserSelect: 'none'
       }}
     >
       {isLoading && <LoaderSection />}
@@ -75,8 +83,8 @@ const MenuButton = ({
         )}
       </span>
 
-      <div className='text-center  mt-2'>
-        <p className='truncate text-xs xl:text-sm font-medium text-gray-800 group-hover:text-pink-600 group-focus:text-pink-600 dark:text-neutral-200 dark:group-hover:text-neutral-400 dark:group-focus:text-neutral-400'>
+      <div className='text-center mt-2 select-none'>
+        <p className='truncate text-xs xl:text-sm font-medium text-gray-800 group-hover:text-pink-600 group-focus:text-pink-600 dark:text-neutral-200 dark:group-hover:text-neutral-400 dark:group-focus:text-neutral-400 select-none'>
           {title}
         </p>
       </div>

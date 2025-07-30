@@ -70,7 +70,7 @@ const ProductsTable: FC<IProps> = ({ data }) => {
                     <tr
                       className={clsx(
                         'hover:bg-stone-100 cursor-pointer dark:hover:bg-neutral-700/50',
-                        item.quantity < item.minThreshold && ' bg-red-900'
+                        +item.quantity < +item.minThreshold && ' bg-red-900'
                       )}
                       key={item.id}
                     >
