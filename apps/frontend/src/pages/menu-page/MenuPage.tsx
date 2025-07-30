@@ -174,7 +174,11 @@ const MenuPage: FC = () => {
       <AlertProductLowStock />
 
       <Link
-        className='p-4 group mt-4 flex flex-col bg-pink-50 rounded-xl focus:outline-hidden dark:bg-pink-800/40'
+        className={clsx(
+          'p-4 group mt-4 flex flex-col bg-pink-50 rounded-xl focus:outline-hidden dark:bg-pink-800/40',
+          'transition-transform duration-150 ease-in-out active:scale-95',
+          'select-none'
+        )}
         onClick={() => hapticFeedback.impactOccurred('rigid')}
         to={'/report'}
       >
@@ -207,32 +211,15 @@ const MenuPage: FC = () => {
         <div className='text-center mt-auto'>
           <p className='truncate flex justify-center items-center gap-x-1 text-xs xl:text-sm font-medium text-gray-800 group-hover:text-pink-600 group-focus:text-pink-600 dark:text-neutral-200 dark:group-hover:text-neutral-400 dark:group-focus:text-neutral-400'>
             Расход
-            <svg
-              className='shrink-0 size-3.5'
-              xmlns='http://www.w3.org/2000/svg'
-              width='24'
-              height='24'
-              viewBox='0 0 24 24'
-              fill='none'
-              stroke='currentColor'
-              strokeWidth='2'
-              strokeLinecap='round'
-              strokeLinejoin='round'
-            >
-              <path
-                className='lg:opacity-0 lg:-translate-x-1 lg:group-hover:opacity-100 lg:group-hover:translate-x-0 lg:group-focus:opacity-100 lg:group-focus:translate-x-0 lg:transition'
-                d='M5 12h14'
-              />
-              <path
-                className='lg:-translate-x-1.5 lg:group-hover:translate-x-0 lg:group-focus:translate-x-0 lg:transition'
-                d='m12 5 7 7-7 7'
-              />
-            </svg>
           </p>
         </div>
       </Link>
       <Link
-        className='p-4 group mt-4 flex flex-col bg-pink-50 rounded-xl focus:outline-hidden dark:bg-green-800/40'
+        className={clsx(
+          'p-4 group mt-4 flex flex-col bg-pink-50 rounded-xl focus:outline-hidden dark:bg-green-800/40',
+          'transition-transform duration-150 ease-in-out active:scale-95',
+          'select-none'
+        )}
         onClick={() => hapticFeedback.impactOccurred('rigid')}
         to={'/incoming-to-warehouse'}
       >
@@ -265,27 +252,6 @@ const MenuPage: FC = () => {
         <div className='text-center mt-auto'>
           <p className='truncate flex justify-center items-center gap-x-1 text-xs xl:text-sm font-medium text-gray-800 group-hover:text-green-600 group-focus:text-green-600 dark:text-neutral-200 dark:group-hover:text-neutral-400 dark:group-focus:text-neutral-400'>
             Поступление
-            <svg
-              className='shrink-0 size-3.5'
-              xmlns='http://www.w3.org/2000/svg'
-              width='24'
-              height='24'
-              viewBox='0 0 24 24'
-              fill='none'
-              stroke='currentColor'
-              strokeWidth='2'
-              strokeLinecap='round'
-              strokeLinejoin='round'
-            >
-              <path
-                className='lg:opacity-0 lg:-translate-x-1 lg:group-hover:opacity-100 lg:group-hover:translate-x-0 lg:group-focus:opacity-100 lg:group-focus:translate-x-0 lg:transition'
-                d='M5 12h14'
-              />
-              <path
-                className='lg:-translate-x-1.5 lg:group-hover:translate-x-0 lg:group-focus:translate-x-0 lg:transition'
-                d='m12 5 7 7-7 7'
-              />
-            </svg>
           </p>
         </div>
       </Link>
@@ -351,7 +317,11 @@ const MenuPage: FC = () => {
             openTelegramLink('https://t.me/Knyaz_sv')
             hapticFeedback.impactOccurred('rigid')
           }}
-          className='p-4 group relative overflow-hidden flex flex-col bg-white border border-gray-200 rounded-xl focus:outline-hidden dark:bg-neutral-900 dark:border-neutral-700'
+          className={clsx(
+            'p-4 group relative overflow-hidden flex flex-col bg-white border border-gray-200 rounded-xl focus:outline-hidden dark:bg-neutral-900 dark:border-neutral-700',
+            'transition-transform duration-150 ease-in-out active:scale-95',
+            'select-none'
+          )}
         >
           <span
             className={clsx(

@@ -41,8 +41,7 @@ const MenuButton = ({
       className={clsx(
         className,
         'p-4 group relative overflow-hidden flex flex-col bg-white border border-gray-200 rounded-xl focus:outline-hidden dark:bg-neutral-900 dark:border-neutral-700',
-        'transition-transform duration-150 ease-in-out active:scale-95',
-        'select-none',
+        'transition-transform duration-150 ease-in-out active:scale-95 select-none',
         (isBlocked || isDevelop || isLoading) &&
           'opacity-70 !pointer-events-none cursor-not-allowed'
       )}

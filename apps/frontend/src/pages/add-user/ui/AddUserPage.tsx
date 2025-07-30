@@ -259,7 +259,7 @@ const AddUserPage = () => {
                 onClick={handleSubmit}
                 disabled={!hasValidPhones || hasInvalidPhones}
                 type='button'
-                className='py-3 px-4 w-full inline-flex justify-center items-center gap-x-2 sm:text-sm font-medium rounded-lg border border-transparent bg-indigo-600 text-white hover:bg-indigo-700 disabled:opacity-50 disabled:pointer-events-none focus:outline-hidden focus:bg-indigo-700'
+                className='py-3 transition-transform duration-150 ease-in-out active:scale-95 select-none px-4 w-full inline-flex justify-center items-center gap-x-2 sm:text-sm font-medium rounded-lg border border-transparent bg-indigo-600 text-white hover:bg-indigo-700 disabled:opacity-50 disabled:pointer-events-none focus:outline-hidden focus:bg-indigo-700'
               >
                 {isLoading ? (
                   <Spinner />
