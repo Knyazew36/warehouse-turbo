@@ -21,7 +21,7 @@ const initDataRaw = import.meta.env.DEV
   : isTMA()
     ? retrieveRawInitData()
     : ''
-const isProduction = false
+const isProduction = import.meta.env.PROD
 
 // Создаем экземпляр Axios
 const $api = axios.create({
