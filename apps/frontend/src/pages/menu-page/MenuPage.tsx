@@ -10,7 +10,7 @@ import { Role } from '@/entitites/user/model/user.type'
 
 import MenuButton, { IMenuButton } from './menu-button/MenuButton'
 import { useNavigate } from 'react-router-dom'
-import { Info, MessageCircle, Settings, UserPlus } from 'lucide-react'
+import { Info, MessageCircle, Package, Settings, UserPlus, WarehouseIcon } from 'lucide-react'
 import { useUserRole } from '@/entitites/user/api/user.api'
 
 import { useOrganizationStore } from '@/entitites/organization/model/organization.store'
@@ -89,23 +89,7 @@ const MenuPage: FC = () => {
       title: 'Остаток',
       color: 'indigo',
       icon: (
-        <svg
-          xmlns='http://www.w3.org/2000/svg'
-          width='24'
-          height='24'
-          viewBox='0 0 24 24'
-          fill='none'
-          stroke='currentColor'
-          strokeWidth='2'
-          strokeLinecap='round'
-          strokeLinejoin='round'
-          className='shrink-0 size-5 xl:w-6 xl:h-6 text-indigo-600 dark:text-indigo-500'
-        >
-          <path d='M18 21V10a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1v11' />
-          <path d='M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V8a2 2 0 0 1 1.132-1.803l7.95-3.974a2 2 0 0 1 1.837 0l7.948 3.974A2 2 0 0 1 22 8z' />
-          <path d='M6 13h12' />
-          <path d='M6 17h12' />
-        </svg>
+        <Package className='shrink-0 size-6 xl:w-6 xl:h-6 text-indigo-600 dark:text-indigo-500' />
       )
     },
     {
@@ -168,56 +152,14 @@ const MenuPage: FC = () => {
       title: 'Добавить',
       color: 'lime',
       isBlocked: isOperator,
-      icon: (
-        <UserPlus className='shrink-0 size-5 xl:w-6 xl:h-6 text-lime-600 dark:text-lime-500' />
-        // <svg
-        //   xmlns='http://www.w3.org/2000/svg'
-        //   width='24'
-        //   height='24'
-        //   viewBox='0 0 24 24'
-        //   fill='none'
-        //   stroke='currentColor'
-        //   strokeWidth='2'
-        //   strokeLinecap='round'
-        //   strokeLinejoin='round'
-        //   className='shrink-0 size-5 xl:w-6 xl:h-6 text-lime-600 dark:text-lime-500'
-        // >
-        //   <path d='M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2' />
-        //   <path d='M16 3.128a4 4 0 0 1 0 7.744' />
-        //   <path d='M22 21v-2a4 4 0 0 0-3-3.87' />
-        //   <circle
-        //     cx='9'
-        //     cy='7'
-        //     r='4'
-        //   />
-        // </svg>
-      )
+      icon: <UserPlus className='shrink-0 size-5 xl:w-6 xl:h-6 text-lime-600 dark:text-lime-500' />
     },
     {
       to: '/organization-selector',
       title: 'Мои склады',
       color: 'purple',
       icon: (
-        <svg
-          xmlns='http://www.w3.org/2000/svg'
-          width='24'
-          height='24'
-          viewBox='0 0 24 24'
-          fill='none'
-          stroke='currentColor'
-          strokeWidth='2'
-          strokeLinecap='round'
-          strokeLinejoin='round'
-          className='shrink-0 size-5 xl:w-6 xl:h-6 text-purple-600 dark:text-purple-500'
-        >
-          <path d='M3 21h18' />
-          <path d='M5 21V7l8-4v18' />
-          <path d='M19 21V11l-6-4' />
-          <path d='M9 9h.01' />
-          <path d='M9 12h.01' />
-          <path d='M9 15h.01' />
-          <path d='M9 18h.01' />
-        </svg>
+        <WarehouseIcon className='shrink-0 size-5 xl:w-6 xl:h-6 text-purple-600 dark:text-purple-500' />
       )
     }
   ]
