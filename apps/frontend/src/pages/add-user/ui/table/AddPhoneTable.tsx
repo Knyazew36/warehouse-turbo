@@ -26,7 +26,7 @@ const AddPhoneTable = () => {
         <div className='divide-y divide-dashed divide-gray-200 dark:divide-neutral-700 '>
           {data.map(item => (
             <div
-              className='py-3 grid grid-cols-2 gap-x-3 '
+              className='py-3 flex justify-between items-center gap-x-3 '
               key={item.id}
             >
               <span className='block text-sm text-gray-500 dark:text-neutral-500'>

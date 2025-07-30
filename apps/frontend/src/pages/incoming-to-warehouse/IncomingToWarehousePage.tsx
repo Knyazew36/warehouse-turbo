@@ -11,11 +11,15 @@ import { useBottomSheetStore } from '@/shared/bottom-sheet/model/store.bottom-sh
 import PageHeader from '@/shared/ui/page-header/ui/PageHeader'
 import Loader from '@/shared/loader/ui/Loader'
 import Empty from '@/shared/empty/ui/Empty'
+import { useAuthStore } from '@/entitites/auth/model/auth.store'
+import MenuButton from '../menu-page/menu-button/MenuButton'
+import { Plus } from 'lucide-react'
 
 const IncomingToWarehousePage = () => {
   const navigate = useNavigate()
   const { data = [], isLoading, refetch } = useProducts(true)
   const { open } = useBottomSheetStore()
+  const { isIT, isOwner, isAdmin, isOperator } = useAuthStore()
 
   const [isButtonLoading, setIsButtonLoading] = useState(false)
 
@@ -103,6 +107,16 @@ const IncomingToWarehousePage = () => {
             <Empty title='Товары не найдены' />
           )}
         </div>
+
+        <MenuButton
+          to={'/create-product'}
+          title='Создать товар'
+          color='neutral'
+          className='mt-8'
+          isBlocked={!isIT && !isOwner && !isAdmin}
+          iconClassName='border-2 border-dotted border-neutral-700'
+          icon={<Plus className='shrink-0 size-5' />}
+        />
 
         {filteredData.length > 0 && (
           <ButtonAction

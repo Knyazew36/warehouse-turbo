@@ -6,6 +6,8 @@ import { hapticFeedback } from '@telegram-apps/sdk-react'
 import PageHeader from '@/shared/ui/page-header/ui/PageHeader'
 import MenuButton from '../menu-page/menu-button/MenuButton'
 import { useAuthStore } from '@/entitites/auth/model/auth.store'
+import { Package } from 'lucide-react'
+import Divide from '@/shared/ui/divide/ui/Divide'
 
 const SettingsWarehousePage = () => {
   const { isIT, isOwner, isAdmin } = useAuthStore()
@@ -50,6 +52,16 @@ const SettingsWarehousePage = () => {
           }
         />
       </div>
+      <Divide />
+
+      <MenuButton
+        to='/products'
+        title='Остаток'
+        color='indigo'
+        icon={
+          <Package className='shrink-0 size-5 xl:w-6 xl:h-6 text-indigo-600 dark:text-indigo-500' />
+        }
+      />
     </Page>
   )
 }

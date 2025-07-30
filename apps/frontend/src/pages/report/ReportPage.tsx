@@ -12,12 +12,16 @@ import PageHeader from '@/shared/ui/page-header/ui/PageHeader'
 import Loader from '@/shared/loader/ui/Loader'
 import InfoMessage from '@/shared/ui/info/ui/Info'
 import Empty from '@/shared/empty/ui/Empty'
+import MenuButton from '../menu-page/menu-button/MenuButton'
+import { Plus } from 'lucide-react'
+import { useAuthStore } from '@/entitites/auth/model/auth.store'
 
 const ReportPage = () => {
   const navigate = useNavigate()
   const { data = [], isLoading, refetch } = useProducts(true)
   const { open } = useBottomSheetStore()
   const [buttonLoading, setButtonLoading] = useState(false)
+  const { isIT, isOwner, isAdmin, isOperator } = useAuthStore()
 
   const [searchTerm, setSearchTerm] = useState('')
   const [consumptions, setConsumptions] = useState<{ [productId: number]: number }>({})
@@ -94,7 +98,13 @@ const ReportPage = () => {
             placeholder='Поиск товара...'
           />
         </div>
-
+        <InfoMessage
+          className='mt-4'
+          items={[
+            'Вы можете добавить несколько товаров в расход.',
+            'К товару можно добавить комментарий.'
+          ]}
+        />
         <div className='grid sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 mt-8'>
           {filteredData.length > 0 ? (
             filteredData.map(card => (
@@ -118,6 +128,16 @@ const ReportPage = () => {
           )}
         </div>
 
+        <MenuButton
+          to={'/create-product'}
+          title='Создать товар'
+          color='neutral'
+          className='mt-8'
+          isBlocked={!isIT && !isOwner && !isAdmin}
+          iconClassName='border-2 border-dotted border-neutral-700'
+          icon={<Plus className='shrink-0 size-5' />}
+        />
+
         {filteredData.length > 0 && (
           <ButtonAction
             isLoading={buttonLoading}
@@ -127,14 +147,6 @@ const ReportPage = () => {
             disabledCancel={Object.values(consumptions).every(value => value === 0)}
           />
         )}
-        {
-          <InfoMessage
-            items={[
-              'Вы можете добавить несколько товаров в расход.',
-              'К товару можно добавить комментарий.'
-            ]}
-          />
-        }
       </div>
     </Page>
   )

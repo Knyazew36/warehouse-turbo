@@ -167,7 +167,7 @@ const ProductsCardChange: FC<IProductsCard> = ({
             <Textarea
               value={comment.text}
               onChange={e => comment.onChange(e.target.value)}
-              placeholder='Комментарий...'
+              placeholder='Комментарий. (необязательно)'
             />
           </div>
         )}

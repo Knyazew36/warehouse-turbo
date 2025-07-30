@@ -17,6 +17,7 @@ import { useOrganizationStore } from '@/entitites/organization/model/organizatio
 import Loader from '@/shared/loader/ui/Loader'
 import Header from '@/shared/ui/header/ui/Header'
 import clsx from 'clsx'
+import Divide from '@/shared/ui/divide/ui/Divide'
 
 const MenuPage: FC = () => {
   const { isAdmin, isOwner, isIT, isOperator, role } = useAuthStore()
@@ -52,7 +53,7 @@ const MenuPage: FC = () => {
   const menuButtons: IMenuButton[] = [
     {
       to: '/settings-warehouse',
-      title: 'Настройки',
+      title: 'Товары',
       color: 'teal',
       isBlocked: isOperator,
 
@@ -335,7 +336,7 @@ const MenuPage: FC = () => {
 
         {/* End Card */}
       </div>
-      <div className='w-28 h-px mx-auto bg-gray-300 dark:bg-neutral-700 mt-8' />
+      <Divide />
 
       <div className='grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 xl:grid-cols-6 gap-2 lg:gap-4 mt-8'>
         <MenuButton

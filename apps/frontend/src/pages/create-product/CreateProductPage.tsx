@@ -164,17 +164,17 @@ const CreateProductPage = () => {
         </div>
         {/* End Body */}
       </form>
-      <ButtonAction
-        onSuccessClick={handleSubmit(onSubmit)}
-        onCancelClick={handleReset}
-        isLoading={buttonLoading}
-      />
 
       <InfoMessage
         className='mt-4'
         items={[
           'Минимальный остаток - это количество товара, при котором будут отправляться уведомления о том, что товар заканчивается.'
         ]}
+      />
+      <ButtonAction
+        onSuccessClick={handleSubmit(onSubmit)}
+        onCancelClick={handleReset}
+        isLoading={buttonLoading}
       />
     </Page>
   )
