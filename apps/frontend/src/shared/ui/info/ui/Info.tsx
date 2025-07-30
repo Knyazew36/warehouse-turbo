@@ -4,7 +4,7 @@ import React from 'react'
 
 interface InfoProps {
   title?: string
-  items: string[]
+  items?: string[]
   text?: string
   className?: string
 }
@@ -21,7 +21,7 @@ const InfoMessage: React.FC<InfoProps> = ({ title, items, text, className }) => 
             <h3 className='text-sm font-medium text-blue-900 dark:text-blue-100 mb-1'>{title}</h3>
           )}
           {text && <p className='text-sm text-blue-800 dark:text-blue-200 mb-1'>{text}</p>}
-          {items.length > 0 && (
+          {items && items.length > 0 && (
             <ul className='text-sm text-blue-800 dark:text-blue-200 space-y-1'>
               {items.map((item, index) => (
                 <li key={index}>• {item}</li>

@@ -1,6 +1,6 @@
 import { Controller, Post, Body, UseGuards, Delete, Param, Get, Req } from '@nestjs/common'
 import { AllowedPhoneService } from './allowed-phone.service'
-import { AddPhoneDto, BindPhoneToUserDto, UnbindPhoneFromUserDto } from './dto/add-phone.dto'
+import { AddPhoneDto } from './dto/add-phone.dto'
 import { Roles } from './decorators/roles.decorator'
 import { RolesGuard } from './guards/roles.guard'
 import { TelegramAuthGuard } from './guards/telegram-auth.guard'
@@ -9,7 +9,6 @@ import { OrganizationId } from '../organization/decorators/organization-id.decor
 @Controller('allowed-phones')
 export class AllowedPhoneController {
   constructor(private readonly allowedPhoneService: AllowedPhoneService) {}
-
   /**
    * Добавить телефон в список разрешенных для организации
    */
@@ -30,7 +29,6 @@ export class AllowedPhoneController {
       dto.comment
     )
 
-    console.log('result', result)
     return {
       ...result,
       message: 'message' in result ? result.message : 'Телефон успешно добавлен'
@@ -53,18 +51,18 @@ export class AllowedPhoneController {
   /**
    * Удалить телефон из списка разрешенных организации
    */
-  @Delete(':phone')
+  @Post('delete/:id')
   @UseGuards(TelegramAuthGuard, RolesGuard)
   @Roles('ADMIN', 'OWNER', 'IT')
   async removePhoneFromOrganization(
-    @Param('phone') phone: string,
+    @Param('id') id: number,
     @OrganizationId() organizationId?: number
   ) {
     if (!organizationId) {
       throw new Error('Organization ID is required')
     }
 
-    const result = await this.allowedPhoneService.removePhoneFromOrganization(phone, organizationId)
+    const result = await this.allowedPhoneService.removePhoneFromOrganization(id, organizationId)
 
     return {
       ...result,
@@ -122,36 +120,6 @@ export class AllowedPhoneController {
   }
 
   /**
-   * Привязать разрешенный телефон к пользователю
-   */
-  @Post('bind-to-user')
-  @UseGuards(TelegramAuthGuard, RolesGuard)
-  @Roles('ADMIN', 'OWNER', 'IT')
-  async bindPhoneToUser(@Body() dto: BindPhoneToUserDto) {
-    const result = await this.allowedPhoneService.bindPhoneToUser(dto.phone, dto.userId)
-
-    return {
-      ...result,
-      message: 'Телефон успешно привязан к пользователю.'
-    }
-  }
-
-  /**
-   * Отвязать телефон от пользователя
-   */
-  @Post('unbind-from-user')
-  @UseGuards(TelegramAuthGuard, RolesGuard)
-  @Roles('ADMIN', 'OWNER', 'IT')
-  async unbindPhoneFromUser(@Body() dto: UnbindPhoneFromUserDto) {
-    const result = await this.allowedPhoneService.unbindPhoneFromUser(dto.phone)
-
-    return {
-      ...result,
-      message: 'Телефон успешно отвязан от пользователя.'
-    }
-  }
-
-  /**
    * Получить пользователя по разрешенному телефону
    */
   @Get('user/:phone')
@@ -178,53 +146,6 @@ export class AllowedPhoneController {
     return {
       userId: parseInt(userId),
       allowedPhone
-    }
-  }
-
-  /**
-   * Получить все организации, к которым у пользователя есть доступ
-   */
-  @Get('user-accessible-organizations')
-  @UseGuards(TelegramAuthGuard)
-  async getUserAccessibleOrganizations(@Req() req: any) {
-    const userPhone = req.user?.allowedPhone?.phone
-    if (!userPhone) {
-      throw new Error('User allowed phone not found in request')
-    }
-
-    const organizations = await this.allowedPhoneService.getUserAccessibleOrganizations(userPhone)
-
-    return {
-      userPhone,
-      organizations
-    }
-  }
-
-  /**
-   * Проверить доступ пользователя к конкретной организации
-   */
-  @Post('check-user-access')
-  @UseGuards(TelegramAuthGuard)
-  async checkUserAccessToOrganization(@Body() dto: { organizationId: number }, @Req() req: any) {
-    const userPhone = req.user?.allowedPhone?.phone
-    if (!userPhone) {
-      throw new Error('User allowed phone not found in request')
-    }
-
-    const hasAccess = await this.allowedPhoneService.hasUserAccessToOrganization(
-      userPhone,
-      dto.organizationId
-    )
-    const userRole = await this.allowedPhoneService.getUserRoleInOrganization(
-      userPhone,
-      dto.organizationId
-    )
-
-    return {
-      userPhone,
-      organizationId: dto.organizationId,
-      hasAccess,
-      userRole
     }
   }
 }

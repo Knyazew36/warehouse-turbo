@@ -89,7 +89,7 @@ const MenuPage: FC = () => {
       title: 'Остаток',
       color: 'indigo',
       icon: (
-        <Package className='shrink-0 size-6 xl:w-6 xl:h-6 text-indigo-600 dark:text-indigo-500' />
+        <Package className='shrink-0 size-5 xl:w-6 xl:h-6 text-indigo-600 dark:text-indigo-500' />
       )
     },
     {

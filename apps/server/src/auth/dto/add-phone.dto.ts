@@ -20,8 +20,8 @@ export class BindPhoneToUserDto {
   userId: number
 }
 
-export class UnbindPhoneFromUserDto {
-  @IsString()
-  @Matches(/^\+7\d{10}$/, { message: 'Phone number must be in format +7XXXXXXXXXX' })
-  phone: string
-}
+// export class UnbindPhoneFromUserDto {
+//   @IsString()
+//   @Matches(/^\+7\d{10}$/, { message: 'Phone number must be in format +7XXXXXXXXXX' })
+//   phone: string
+// }

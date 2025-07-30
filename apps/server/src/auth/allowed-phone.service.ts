@@ -85,7 +85,7 @@ export class AllowedPhoneService {
   /**
    * Удалить телефон из списка разрешенных организации
    */
-  async removePhoneFromOrganization(phone: string, organizationId: number) {
+  async removePhoneFromOrganization(id: number, organizationId: number) {
     const organization = await this.prisma.organization.findUnique({
       where: { id: organizationId }
     })
@@ -95,7 +95,7 @@ export class AllowedPhoneService {
     }
 
     const allowedPhone = await this.prisma.allowedPhone.findUnique({
-      where: { phone }
+      where: { id }
     })
 
     if (!allowedPhone) {
@@ -326,30 +326,30 @@ export class AllowedPhoneService {
     return updatedPhone
   }
 
-  /**
-   * Отвязать телефон от пользователя
-   */
-  async unbindPhoneFromUser(phone: string) {
-    const allowedPhone = await this.prisma.allowedPhone.findUnique({
-      where: { phone }
-    })
+  // /**
+  //  * Отвязать телефон от пользователя
+  //  */
+  // async unbindPhoneFromUser(phone: string) {
+  //   const allowedPhone = await this.prisma.allowedPhone.findUnique({
+  //     where: { phone }
+  //   })
 
-    if (!allowedPhone) {
-      throw new NotFoundException('Разрешенный телефон не найден')
-    }
+  //   if (!allowedPhone) {
+  //     throw new NotFoundException('Разрешенный телефон не найден')
+  //   }
 
-    if (!allowedPhone.userId) {
-      throw new Error('Телефон не привязан к пользователю')
-    }
+  //   if (!allowedPhone.userId) {
+  //     throw new Error('Телефон не привязан к пользователю')
+  //   }
 
-    // Отвязываем телефон от пользователя
-    const updatedPhone = await this.prisma.allowedPhone.update({
-      where: { phone },
-      data: { userId: null }
-    })
+  //   // Отвязываем телефон от пользователя
+  //   const updatedPhone = await this.prisma.allowedPhone.update({
+  //     where: { phone },
+  //     data: { userId: null }
+  //   })
 
-    return updatedPhone
-  }
+  //   return updatedPhone
+  // }
 
   /**
    * Получить пользователя по разрешенному телефону

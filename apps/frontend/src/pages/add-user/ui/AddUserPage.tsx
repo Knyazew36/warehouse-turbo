@@ -7,11 +7,14 @@ import { useNavigate } from 'react-router-dom'
 import React, { useState, useMemo } from 'react'
 import { toast } from 'sonner'
 import { useBottomSheetStore } from '@/shared/bottom-sheet/model/store.bottom-sheet'
-import { allowedPhoneService } from '@/entitites/auth/auth.api'
 import Spinner from '@/shared/spinner/Spinner'
 import clsx from 'clsx'
 import AddPhoneTable from './table/AddPhoneTable'
 import InfoMessage from '@/shared/ui/info/ui/Info'
+import {
+  addPhoneToOrganization,
+  useAllowedPhonesForOrganization
+} from '@/entitites/allowed-phone/model/allowed-phone.api'
 
 const AddUserPage = () => {
   const navigate = useNavigate()
@@ -19,6 +22,8 @@ const AddUserPage = () => {
   const [isLoading, setIsLoading] = useState(false)
   const { open } = useBottomSheetStore()
   const [view, setView] = useState<'add' | 'added'>('add')
+  const { isFetching, refetch } = useAllowedPhonesForOrganization()
+
   // Валидация телефонов
   const phoneValidation = useMemo(() => {
     const phoneRegex = /^\+7 \(\d{3}\) \d{3}-\d{2}-\d{2}$/
@@ -70,7 +75,7 @@ const AddUserPage = () => {
       const createPromises = validPhones.map(phone => {
         const digits = phone.replace(/\D/g, '')
         const formattedPhone = '+7' + digits.slice(-10)
-        return allowedPhoneService({ phone: formattedPhone })
+        return addPhoneToOrganization({ phone: formattedPhone })
       })
 
       await Promise.all(createPromises)
@@ -82,7 +87,9 @@ const AddUserPage = () => {
           'Сотрудникам необходимо будет пройти авторизацию в боте, после чего они будут доступны в списке сотрудников. Вы можете добавить сотрудников еще или продолжить работу.',
         title: 'Сотрудники успешно добавлены'
       })
+
       setPhones([''])
+      refetch()
       // navigate(-1)
     } catch (error) {
       toast.error('Ошибка при добавлении сотрудников')
@@ -97,7 +104,10 @@ const AddUserPage = () => {
   }
 
   return (
-    <Page back>
+    <Page
+      back
+      isLoading={isFetching}
+    >
       <PageHeader title={view === 'add' ? 'Добавить сотрудников' : 'Добавленные телефоны'} />
       <div className='flex bg-gray-100 rounded-lg p-0.5 dark:bg-neutral-800 w-max mt-8 ml-auto mb-4'>
         <div className='flex gap-x-0.5 md:gap-x-1'>
