@@ -49,7 +49,7 @@ export class CronService {
       )
 
       // Проверяем, нужно ли отправлять уведомление сейчас
-      if (!this.shouldSendNotificationNow(notificationSettings?.notificationTime)) {
+      if (!this.shouldSendNotificationNow(notificationSettings?.notificationTime || '09:00')) {
         return
       }
 
@@ -75,7 +75,9 @@ export class CronService {
       // Формируем и отправляем уведомления
       await this.sendNotifications(organization, lowStockProducts, usersToNotify)
 
-      this.logger.log(`Организация ${organization.name}: отправлено ${usersToNotify.length} уведомлений`)
+      this.logger.log(
+        `Организация ${organization.name}: отправлено ${usersToNotify.length} уведомлений`
+      )
     } catch (error) {
       this.logger.error(`Ошибка обработки уведомлений для организации ${organization.name}:`, error)
     }
@@ -84,7 +86,9 @@ export class CronService {
   /**
    * Получает настройки уведомлений из JSON настроек организации
    */
-  private getNotificationSettings(settings: OrganizationSettings): OrganizationSettings['notifications'] {
+  private getNotificationSettings(
+    settings: OrganizationSettings
+  ): OrganizationSettings['notifications'] {
     const defaultSettings: OrganizationSettings['notifications'] = {
       notificationTime: '09:00',
       notificationRoles: [Role.OWNER, Role.ADMIN]
@@ -96,7 +100,8 @@ export class CronService {
 
     return {
       notificationTime: settings.notifications.notificationTime || defaultSettings.notificationTime,
-      notificationRoles: settings.notifications.notificationRoles || defaultSettings.notificationRoles
+      notificationRoles:
+        settings.notifications.notificationRoles || defaultSettings.notificationRoles
     }
   }
 
@@ -169,7 +174,8 @@ export class CronService {
     const message = `⚠️ **${organization.name}**\n\nНа складе заканчиваются следующие товары:\n\n${productList}`
 
     // Получаем URL веб-приложения
-    const webappUrl = this.notificationService.config.get<string>('WEBAPP_URL') || 'https://big-grain-tg.vercel.app'
+    const webappUrl =
+      this.notificationService.config.get<string>('WEBAPP_URL') || 'https://big-grain-tg.vercel.app'
 
     // Отправляем уведомления каждому пользователю
     for (const user of users) {
@@ -185,28 +191,6 @@ export class CronService {
       } catch (error) {
         this.logger.error(`Ошибка отправки уведомления пользователю ${user.telegramId}:`, error)
       }
-    }
-  }
-
-  /**
-   * Ручной запуск проверки остатков (для тестирования)
-   */
-  async manualCheckLowStock(organizationId?: number) {
-    try {
-      if (!organizationId) {
-        throw new Error('Organization ID is required')
-      }
-
-      const organization = await this.prisma.organization.findUnique({
-        where: { id: organizationId }
-      })
-
-      if (organization) {
-        await this.processOrganizationNotifications(organization)
-      }
-    } catch (error) {
-      this.logger.error('Ошибка при ручной проверке остатков:', error)
-      throw error
     }
   }
 }

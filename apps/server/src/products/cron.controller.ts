@@ -16,13 +16,4 @@ export class CronController {
     private readonly cronService: CronService,
     private readonly organizationService: OrganizationService
   ) {}
-
-  /**
-   * Ручной запуск проверки остатков на складе для текущей организации
-   */
-  @Post('check-low-stock')
-  @Roles(Role.OWNER, Role.ADMIN)
-  async manualCheckLowStock(@CurrentOrganization() organization: any) {
-    return this.cronService.manualCheckLowStock(organization.id)
-  }
 }

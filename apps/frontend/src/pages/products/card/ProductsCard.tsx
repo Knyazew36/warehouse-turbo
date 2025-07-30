@@ -14,14 +14,14 @@ const ProductsCard: FC<IProductsCard> = ({ data, variant = 'default' }) => {
     <div
       className={clsx(
         'flex flex-col gap-y-3 lg:gap-y-5 p-4 md:p-5 bg-white border border-gray-200 shadow-2xs rounded-xl dark:bg-neutral-900 dark:border-neutral-800',
-        data.quantity < data.minThreshold && '!border-red-500'
+        +data.quantity < +data.minThreshold && '!border-red-500'
       )}
     >
       <div className='inline-flex justify-center items-center'>
         <span
           className={clsx(
             'size-2 inline-block  rounded-full me-2',
-            data.quantity < data.minThreshold ? 'bg-red-500' : 'bg-gray-500'
+            +data.quantity < +data.minThreshold ? 'bg-red-500' : 'bg-gray-500'
           )}
         />
         <span className='text-xs font-semibold uppercase text-gray-600 dark:text-white'>

@@ -6,10 +6,10 @@ import { Link } from 'react-router-dom'
 
 const AlertProductLowStock = () => {
   const { data = [], isLoading } = useProducts(true)
-
+  console.info('AlertProductLowStock', data)
   const lowStockProducts = data.filter(p => +p.quantity < +p.minThreshold)
 
-  console.info(lowStockProducts)
+  console.info('lowStockProducts', lowStockProducts)
   if (lowStockProducts.length === 0 || isLoading) return null
 
   return (
