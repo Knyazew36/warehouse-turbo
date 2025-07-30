@@ -39,10 +39,6 @@ export class ProductsService {
   async findAll(onlyActive = true, organizationId?: number): Promise<Product[]> {
     const whereClause: any = {}
 
-    // console.info('onlyActive', onlyActive)
-    console.info('organizationId', organizationId)
-    console.info(typeof organizationId)
-
     if (onlyActive) {
       whereClause.active = true
     }
@@ -53,7 +49,7 @@ export class ProductsService {
 
     return this.prisma.product.findMany({
       where: whereClause,
-      orderBy: { name: 'asc' }
+      orderBy: { name: 'desc' }
     })
   }
 
