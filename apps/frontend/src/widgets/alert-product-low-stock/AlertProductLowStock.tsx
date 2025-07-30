@@ -2,14 +2,11 @@ import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert'
 import { useProducts } from '@/entitites/product/api/product.api'
 import { formatNumber } from '@/shared/utils/formatNumber'
 import { LucideMailWarning } from 'lucide-react'
-import { Link } from 'react-router-dom'
 
 const AlertProductLowStock = () => {
   const { data = [], isLoading } = useProducts(true)
-  console.info('AlertProductLowStock', data)
   const lowStockProducts = data.filter(p => +p.quantity < +p.minThreshold)
 
-  console.info('lowStockProducts', lowStockProducts)
   if (lowStockProducts.length === 0 || isLoading) return null
 
   return (
@@ -23,35 +20,11 @@ const AlertProductLowStock = () => {
         {lowStockProducts.map(p => (
           <div key={p.id}>
             <span className='font-medium'>{p.name}</span> остаток: {formatNumber(+p.quantity)}{' '}
-            {p.unit === 'ед' ? '' : p.unit} (минимум: {formatNumber(+p.minThreshold)}{' '}
-            {p.unit === 'ед' ? '' : p.unit})
+            {p.unit} (минимум: {formatNumber(+p.minThreshold)} {p.unit})
           </div>
         ))}
       </AlertDescription>
     </Alert>
-
-    // <Link
-    //   to='/products'
-    //   className='mt-4 p-1 w-full space-y-1'
-    // >
-    //   <div
-    //     className='py-0.5 px-1 relative size-full flex text-start border-s-4 border-red-600 bg-red-100 text-red-800 text-xs rounded-sm focus:bg-red-200 focus:shadow-2xs dark:bg-neutral-800 dark:before:absolute dark:before:inset-0 dark:before:bg-red-800/10 dark:before:rounded-e dark:focus:before:bg-red-800/30 dark:text-red-500'
-    //     data-hs-overlay='#hs-pro-clee'
-    //   >
-    //     <span className='block truncate'>
-    //       <span className='block font-semibold truncate'>Внимание! На складе заканчивается:</span>
-    //       {lowStockProducts.map(p => (
-    //         <div
-    //           key={p.id}
-    //           className='flex '
-    //         >
-    //           <span className='block truncate'>{p.name}</span>: {p.quantity} (минимум: {p.minThreshold})
-    //         </div>
-    //       ))}
-    //       {/* <span className='block truncate'>9AM - 10PM</span> */}
-    //     </span>
-    //   </div>
-    // </Link>
   )
 }
 
