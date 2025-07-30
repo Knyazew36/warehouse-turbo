@@ -45,6 +45,10 @@ const OrganizationCreatePage: React.FC = () => {
     })
   }
 
+  const clearForm = () => {
+    setFormData({ name: '', description: '' })
+  }
+
   const handleBack = () => {
     setOrganizationLoading(false)
     navigate('/organization-management')
@@ -136,8 +140,9 @@ const OrganizationCreatePage: React.FC = () => {
 
       <ButtonAction
         successText='Создать склад'
+        disabledSuccess={isPending || !formData.name.trim()}
         onSuccessClick={handleCreateOrganization}
-        onCancelClick={handleBack}
+        onCancelClick={clearForm}
         isLoading={isPending}
       />
     </Page>
