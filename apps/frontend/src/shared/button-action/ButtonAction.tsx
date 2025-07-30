@@ -9,6 +9,7 @@ import { ChevronLeft, Undo2Icon } from 'lucide-react'
 interface IProps {
   onSuccessClick?: () => void
   disabledSuccess?: boolean
+  successText?: string
 
   cancelText?: string
   onCancelClick?: () => void
@@ -22,7 +23,8 @@ const ButtonAction: FC<IProps> = ({
   disabledSuccess,
   disabledCancel,
   isLoading,
-  cancelText = 'Очистить'
+  cancelText = 'Очистить',
+  successText = 'Сохранить'
 }) => {
   const navigate = useNavigate()
 
@@ -78,7 +80,7 @@ const ButtonAction: FC<IProps> = ({
                   onClick={handleSuccessClick}
                   className='text-green-400 disabled:opacity-50 disabled:pointer-events-none decoration-2 font-medium text-sm hover:underline focus:outline-hidden focus:underline dark:text-green-500'
                 >
-                  Сохранить
+                  {successText}
                 </button>
 
                 {/* Close Button */}

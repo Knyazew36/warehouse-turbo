@@ -8,6 +8,7 @@ import { useNavigate } from 'react-router-dom'
 import { hapticFeedback } from '@telegram-apps/sdk-react'
 import InfoMessage from '@/shared/ui/info/ui/Info'
 import { useOrganizationStore } from '@/entitites/organization/model/organization.store'
+import ButtonAction from '@/shared/button-action/ButtonAction'
 
 const OrganizationCreatePage: React.FC = () => {
   const navigate = useNavigate()
@@ -132,6 +133,13 @@ const OrganizationCreatePage: React.FC = () => {
           {isPending ? 'Создание...' : 'Создать склад'}
         </button>
       </div>
+
+      <ButtonAction
+        successText='Создать склад'
+        onSuccessClick={handleCreateOrganization}
+        onCancelClick={handleBack}
+        isLoading={isPending}
+      />
     </Page>
   )
 }
