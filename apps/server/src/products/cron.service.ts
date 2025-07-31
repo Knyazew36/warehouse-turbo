@@ -175,7 +175,8 @@ export class CronService {
 
     // Получаем URL веб-приложения
     const webappUrl =
-      this.notificationService.config.get<string>('WEBAPP_URL') || 'https://big-grain-tg.vercel.app'
+      this.notificationService.config.get<string>('WEBAPP_URL') ||
+      'https://5278831-ad07030.twc1.net'
 
     // Отправляем уведомления каждому пользователю
     for (const user of users) {
