@@ -82,7 +82,7 @@ export class ReceiptsService {
     dto: GetStatisticsDto & PaginationDto,
     organizationId?: number
   ): Promise<PaginationResult<StatisticsOperation>> {
-    const { start, end, ...paginationDto } = dto
+    const { start, end, page, limit } = dto
 
     // Определяем период по умолчанию (последний месяц)
     let periodStart: Date, periodEnd: Date
@@ -100,30 +100,32 @@ export class ReceiptsService {
       periodEnd = new Date(now.getFullYear(), now.getMonth() + 1, 0, 23, 59, 59, 999)
     }
 
-    // Строим where условие для фильтрации
-    const whereCondition = {
-      organizationId,
-      createdAt: {
-        gte: periodStart,
-        lte: periodEnd
-      }
-    }
+    // Создаем условие для фильтрации по организации
+    const whereCondition = organizationId ? { organizationId } : {}
 
-    // Получаем данные с пагинацией
-    const receiptsResult = await this.paginationService.paginate({
-      model: this.prisma.receipt,
-      paginationDto,
-      where: whereCondition,
+    // Получаем все данные без пагинации для объединения
+    const receipts = await this.prisma.receipt.findMany({
+      where: {
+        ...whereCondition,
+        createdAt: {
+          gte: periodStart,
+          lte: periodEnd
+        }
+      },
       include: {
         operator: true
       },
       orderBy: { createdAt: 'desc' }
     })
 
-    const shiftReportsResult = await this.paginationService.paginate({
-      model: this.prisma.shiftReport,
-      paginationDto,
-      where: whereCondition,
+    const shiftReports = await this.prisma.shiftReport.findMany({
+      where: {
+        ...whereCondition,
+        createdAt: {
+          gte: periodStart,
+          lte: periodEnd
+        }
+      },
       include: {
         operator: true
       },
@@ -202,15 +204,14 @@ export class ReceiptsService {
     }
 
     // Объединяем данные
-    const incomeData = transformData(receiptsResult.data, 'income')
-    const outcomeData = transformData(shiftReportsResult.data, 'outcome')
+    const incomeData = transformData(receipts, 'income')
+    const outcomeData = transformData(shiftReports, 'outcome')
     const combinedData = [...incomeData, ...outcomeData]
 
     // Сортируем по дате (новые сверху)
     combinedData.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
 
     // Применяем пагинацию к объединенным данным
-    const { page = 1, limit = 30 } = paginationDto
     const skip = (page - 1) * limit
     const paginatedData = combinedData.slice(skip, skip + limit)
 

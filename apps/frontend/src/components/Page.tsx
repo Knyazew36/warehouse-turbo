@@ -1,5 +1,10 @@
 import { useNavigate } from 'react-router-dom'
-import { hapticFeedback, hideBackButton, onBackButtonClick, showBackButton } from '@telegram-apps/sdk-react'
+import {
+  hapticFeedback,
+  hideBackButton,
+  onBackButtonClick,
+  showBackButton
+} from '@telegram-apps/sdk-react'
 import { type PropsWithChildren, useEffect } from 'react'
 import clsx from 'clsx'
 import Spinner from '@/shared/spinner/Spinner'
@@ -9,7 +14,8 @@ export function Page({
   children,
   back = true,
   className,
-  isLoading
+  isLoading,
+  onBackClick
 }: PropsWithChildren<{
   /**
    * True if it is allowed to go back from this page.
@@ -17,6 +23,10 @@ export function Page({
   back?: boolean
   className?: string
   isLoading?: boolean
+  /**
+   * Custom back navigation function. If not provided, uses navigate(-1)
+   */
+  onBackClick?: () => void
 }>) {
   const navigate = useNavigate()
   useEffect(() => {
@@ -24,11 +34,15 @@ export function Page({
       showBackButton()
       return onBackButtonClick(() => {
         hapticFeedback.impactOccurred('rigid')
-        navigate(-1)
+        if (onBackClick) {
+          onBackClick()
+        } else {
+          navigate(-1)
+        }
       })
     }
     hideBackButton()
-  }, [back])
+  }, [back, onBackClick])
 
   return (
     <div className={clsx('relative h-full p-2 pb-8', className)}>

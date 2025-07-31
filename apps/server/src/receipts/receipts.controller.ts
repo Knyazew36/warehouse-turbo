@@ -33,6 +33,7 @@ export class ReceiptsController {
     @Pagination() pagination: PaginationDto,
     @OrganizationId() organizationId?: number
   ) {
+    console.log('pagination', pagination)
     const result = await this.receiptsService.getStatistics(
       { ...dto, ...pagination },
       organizationId
