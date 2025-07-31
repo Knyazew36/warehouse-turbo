@@ -1,9 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { Page } from '@/components/Page'
-import {
-  getOrganizationById,
-  useUpdateOrganization
-} from '@/entitites/organization/api/organization.api'
+import { getOrganizationById, useUpdateOrganization } from '@/entitites/organization/api/organization.api'
 import {
   ICreateOrganization,
   IOrganization,
@@ -127,9 +124,7 @@ const OrganizationChangePage: React.FC = () => {
 
             {/* Описание */}
             <div>
-              <label className='block text-sm font-medium text-gray-700 dark:text-neutral-300 mb-2'>
-                Описание
-              </label>
+              <label className='block text-sm font-medium text-gray-700 dark:text-neutral-300 mb-2'>Описание</label>
               <textarea
                 placeholder='Краткое описание склада (необязательно)'
                 {...register('description')}

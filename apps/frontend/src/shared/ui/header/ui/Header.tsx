@@ -20,9 +20,7 @@ const Header: FC<IProps> = ({ role }) => {
             </span>
           )} */}
           <span className='text-sm truncate max-w-[90%]  font-medium text-gray-800 dark:text-neutral-200  relative '>
-            <span className='text-sm text-gray-500 dark:text-neutral-500 text-nowrap'>
-              Текущий склад:
-            </span>{' '}
+            <span className='text-sm text-gray-500 dark:text-neutral-500 text-nowrap'>Текущий склад:</span>{' '}
             {currentOrganization?.organization?.name}
           </span>
         </div>

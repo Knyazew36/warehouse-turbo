@@ -29,9 +29,7 @@ const AddPhoneTable = () => {
               className='py-3 flex justify-between items-center gap-x-3 '
               key={item.id}
             >
-              <span className='block text-sm text-gray-500 dark:text-neutral-500'>
-                {item.phone}
-              </span>
+              <span className='block text-sm text-gray-500 dark:text-neutral-500'>{item.phone}</span>
               <button
                 type='button'
                 className='size-7.5 inline-flex justify-center items-center gap-x-2 rounded-lg border border-transparent text-red-600 hover:bg-red-100  disabled:opacity-50 disabled:pointer-events-none focus:outline-hidden focus:bg-red-100 dark:text-red-500 dark:hover:bg-red-500/20 dark:focus:bg-red-500/20'

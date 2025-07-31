@@ -89,8 +89,7 @@ const UserDelete: React.FC<UserDeleteProps> = ({ userId, organizationId, onSucce
                 <DialogHeader>
                   <DialogTitle>Удалить пользователя?</DialogTitle>
                   <DialogDescription>
-                    Вы действительно хотите удалить этого пользователя? Действие нельзя будет
-                    отменить.
+                    Вы действительно хотите удалить этого пользователя? Действие нельзя будет отменить.
                   </DialogDescription>
                 </DialogHeader>
               </div>

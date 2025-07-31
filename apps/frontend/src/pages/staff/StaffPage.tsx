@@ -104,18 +104,14 @@ const StaffPage = () => {
           />
         ))}
 
-      {filteredData && view === 'table' && filteredData.length > 0 && (
-        <UserTable data={filteredData} />
-      )}
+      {filteredData && view === 'table' && filteredData.length > 0 && <UserTable data={filteredData} />}
 
       {filteredData && filteredData.length === 0 && <Empty title='Сотрудники не найдены' />}
       <MenuButton
         to='/add-user'
         title='Добавить'
         color='lime'
-        icon={
-          <UserPlus className='shrink-0 size-5 xl:w-6 xl:h-6 text-lime-600 dark:text-lime-500' />
-        }
+        icon={<UserPlus className='shrink-0 size-5 xl:w-6 xl:h-6 text-lime-600 dark:text-lime-500' />}
       />
     </Page>
   )

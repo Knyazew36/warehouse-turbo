@@ -25,8 +25,7 @@ const useAuthStore = create<Store>()(set => ({
   isOwner: false,
   isOperator: false,
   isIT: false,
-  clearAuth: () =>
-    set({ role: Role.GUEST, isAdmin: false, isOwner: false, isOperator: false, isIT: false })
+  clearAuth: () => set({ role: Role.GUEST, isAdmin: false, isOwner: false, isOperator: false, isIT: false })
 }))
 
 export { useAuthStore }

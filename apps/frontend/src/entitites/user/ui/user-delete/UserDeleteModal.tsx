@@ -85,7 +85,9 @@ const UserDeleteModal: React.FC<UserDeleteModalProps> = ({ userId, onSuccess }) 
               <div className='grow'>
                 <DialogHeader>
                   <DialogTitle>Удалить товар?</DialogTitle>
-                  <DialogDescription>Вы действительно хотите удалить этот товар? Действие нельзя будет отменить.</DialogDescription>
+                  <DialogDescription>
+                    Вы действительно хотите удалить этот товар? Действие нельзя будет отменить.
+                  </DialogDescription>
                 </DialogHeader>
               </div>
             </div>

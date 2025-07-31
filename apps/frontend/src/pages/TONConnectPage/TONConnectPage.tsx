@@ -1,58 +1,40 @@
-import { openLink } from '@telegram-apps/sdk-react';
-import { TonConnectButton, useTonWallet } from '@tonconnect/ui-react';
-import {
-  Avatar,
-  Cell,
-  List,
-  Navigation,
-  Placeholder,
-  Section,
-  Text,
-  Title,
-} from '@telegram-apps/telegram-ui';
-import type { FC } from 'react';
+import { openLink } from '@telegram-apps/sdk-react'
+import { TonConnectButton, useTonWallet } from '@tonconnect/ui-react'
+import { Avatar, Cell, List, Navigation, Placeholder, Section, Text, Title } from '@telegram-apps/telegram-ui'
+import type { FC } from 'react'
 
-import { DisplayData } from '@/components/DisplayData/DisplayData.tsx';
-import { Page } from '@/components/Page.tsx';
-import { bem } from '@/css/bem.ts';
+import { DisplayData } from '@/components/DisplayData/DisplayData.tsx'
+import { Page } from '@/components/Page.tsx'
+import { bem } from '@/css/bem.ts'
 
-import './TONConnectPage.css';
+import './TONConnectPage.css'
 
-const [, e] = bem('ton-connect-page');
+const [, e] = bem('ton-connect-page')
 
 export const TONConnectPage: FC = () => {
-  const wallet = useTonWallet();
+  const wallet = useTonWallet()
 
   if (!wallet) {
     return (
       <Page>
         <Placeholder
           className={e('placeholder')}
-          header="TON Connect"
+          header='TON Connect'
           description={
             <>
-              <Text>
-                To display the data related to the TON Connect, it is required to connect your
-                wallet
-              </Text>
-              <TonConnectButton className={e('button')}/>
+              <Text>To display the data related to the TON Connect, it is required to connect your wallet</Text>
+              <TonConnectButton className={e('button')} />
             </>
           }
         />
       </Page>
-    );
+    )
   }
 
   const {
     account: { chain, publicKey, address },
-    device: {
-      appName,
-      appVersion,
-      maxProtocolVersion,
-      platform,
-      features,
-    },
-  } = wallet;
+    device: { appName, appVersion, maxProtocolVersion, platform, features }
+  } = wallet
 
   return (
     <Page>
@@ -62,31 +44,36 @@ export const TONConnectPage: FC = () => {
             <Section>
               <Cell
                 before={
-                  <Avatar src={wallet.imageUrl} alt="Provider logo" width={60} height={60}/>
+                  <Avatar
+                    src={wallet.imageUrl}
+                    alt='Provider logo'
+                    width={60}
+                    height={60}
+                  />
                 }
                 after={<Navigation>About wallet</Navigation>}
                 subtitle={wallet.appName}
-                onClick={(e) => {
-                  e.preventDefault();
-                  openLink(wallet.aboutUrl);
+                onClick={e => {
+                  e.preventDefault()
+                  openLink(wallet.aboutUrl)
                 }}
               >
-                <Title level="3">{wallet.name}</Title>
+                <Title level='3'>{wallet.name}</Title>
               </Cell>
             </Section>
-            <TonConnectButton className={e('button-connected')}/>
+            <TonConnectButton className={e('button-connected')} />
           </>
         )}
         <DisplayData
-          header="Account"
+          header='Account'
           rows={[
             { title: 'Address', value: address },
             { title: 'Chain', value: chain },
-            { title: 'Public Key', value: publicKey },
+            { title: 'Public Key', value: publicKey }
           ]}
         />
         <DisplayData
-          header="Device"
+          header='Device'
           rows={[
             { title: 'App Name', value: appName },
             { title: 'App Version', value: appVersion },
@@ -95,13 +82,13 @@ export const TONConnectPage: FC = () => {
             {
               title: 'Features',
               value: features
-                .map(f => typeof f === 'object' ? f.name : undefined)
+                .map(f => (typeof f === 'object' ? f.name : undefined))
                 .filter(v => v)
-                .join(', '),
-            },
+                .join(', ')
+            }
           ]}
         />
       </List>
     </Page>
-  );
-};
+  )
+}

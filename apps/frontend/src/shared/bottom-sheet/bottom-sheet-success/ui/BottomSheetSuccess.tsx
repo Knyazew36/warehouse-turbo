@@ -93,9 +93,7 @@ const BottomSheetSuccess = ({
             <h1 className='mb-1 md:mb-3 font-semibold text-xl md:text-2xl text-gray-800 dark:text-neutral-200'>
               {title}
             </h1>
-            {description && (
-              <p className='text-sm text-gray-500 dark:text-neutral-500'>{description}</p>
-            )}
+            {description && <p className='text-sm text-gray-500 dark:text-neutral-500'>{description}</p>}
           </div>
           {/* End Heading */}
           {variant !== 'auth' && (

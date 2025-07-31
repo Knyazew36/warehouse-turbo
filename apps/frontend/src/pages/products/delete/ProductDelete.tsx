@@ -15,12 +15,7 @@ interface ProductDeleteProps {
   onLoadingChange?: (isLoading: boolean) => void
 }
 
-const ProductDelete: React.FC<ProductDeleteProps> = ({
-  productId,
-  onSuccess,
-  onStartDelete,
-  onLoadingChange
-}) => {
+const ProductDelete: React.FC<ProductDeleteProps> = ({ productId, onSuccess, onStartDelete, onLoadingChange }) => {
   const [open, setOpen] = useState(false)
   const { mutate: deleteProduct, isPending } = useDeleteProduct()
 

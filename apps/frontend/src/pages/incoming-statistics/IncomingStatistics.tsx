@@ -64,9 +64,7 @@ const IncomingStatistics = () => {
                       </dd>
                     </div>
                     <div>
-                      <dt className='sm:py-1 text-sm text-gray-500 dark:text-neutral-500'>
-                        Выполнил:
-                      </dt>
+                      <dt className='sm:py-1 text-sm text-gray-500 dark:text-neutral-500'>Выполнил:</dt>
 
                       <div className='flex gap-2 mt-1'>
                         <div className='shrink-0 relative  md:w-15.5 md:h-15.5 '>
@@ -117,17 +115,13 @@ const IncomingStatistics = () => {
                   {item.products.map(product => (
                     <Fragment key={product.product?.id}>
                       <div className='flex flex-col odd:bg-gray-50 dark:odd:bg-neutral-800 p-2 rounded-md'>
-                        <dt className='sm:py-1 text-sm text-gray-500 dark:text-neutral-500'>
-                          {product.product?.name}
-                        </dt>
+                        <dt className='sm:py-1 text-sm text-gray-500 dark:text-neutral-500'>{product.product?.name}</dt>
                         <dd className='  text-sm text-gray-800 dark:text-neutral-200'>
                           {formatNumber(product.quantity)} {product.product?.unit}
                         </dd>
                         {product.comment && (
                           <Fragment>
-                            <dt className='sm:py-1 mt-2 text-sm text-gray-500 dark:text-neutral-500'>
-                              Комментарий:
-                            </dt>
+                            <dt className='sm:py-1 mt-2 text-sm text-gray-500 dark:text-neutral-500'>Комментарий:</dt>
                             <dd className='text-sm text-gray-800 dark:text-neutral-200  break-words'>
                               {product.comment}
                             </dd>

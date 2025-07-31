@@ -1,11 +1,6 @@
 import { Page } from '@/components/Page'
 import PageHeader from '@/shared/ui/page-header/ui/PageHeader'
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger
-} from '@/components/ui/accordion'
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion'
 
 const InfoPage = () => {
   return (
@@ -60,12 +55,11 @@ const InfoPage = () => {
           >
             <div className='pb-4 px-5'>
               <p className='text-gray-800 dark:text-neutral-200'>
-                <em>Владелец</em> - может управлять всеми складами и пользователями. Может удалить
-                или изменить склад.
+                <em>Владелец</em> - может управлять всеми складами и пользователями. Может удалить или изменить склад.
               </p>
               <p className='text-gray-800 dark:text-neutral-200'>
-                <em>Администратор</em> - может управлять всеми складами и пользователями. Но не
-                может удалить или изменить склад. Может создавать и редактировать товары
+                <em>Администратор</em> - может управлять всеми складами и пользователями. Но не может удалить или
+                изменить склад. Может создавать и редактировать товары
               </p>
 
               <p className='text-gray-800 dark:text-neutral-200'>
@@ -175,8 +169,8 @@ const InfoPage = () => {
           >
             <div className='pb-4 px-5'>
               <p className='text-gray-800 dark:text-neutral-200'>
-                Уведомления приходят в бот, когда на складе товар пересек порог минимального
-                значения. Уведомление по умолчанию будет приходить в 9:00.
+                Уведомления приходят в бот, когда на складе товар пересек порог минимального значения. Уведомление по
+                умолчанию будет приходить в 9:00.
               </p>
             </div>
           </div>

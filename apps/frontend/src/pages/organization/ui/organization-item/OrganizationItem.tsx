@@ -20,19 +20,14 @@ interface OrganizationItemProps {
   role: Role
 }
 
-const OrganizationItem: React.FC<OrganizationItemProps> = ({
-  data,
-  handleSelectOrganization,
-  variant,
-  role
-}) => {
+const OrganizationItem: React.FC<OrganizationItemProps> = ({ data, handleSelectOrganization, variant, role }) => {
   const [isLoading, setIsLoading] = useState(false)
   const { currentOrganization, organizationId } = useOrganizationStore()
   const queryClient = useQueryClient()
 
   return (
     <button
-      className='py-3 px-3 transition-transform duration-150 ease-in-out active:scale-95 select-none  relative w-full inline-flex  items-center gap-x-1.5 sm:text-sm font-medium rounded-lg border border-gray-200 bg-white text-gray-800 shadow-2xs hover:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none focus:outline-hidden focus:bg-gray-50 dark:bg-neutral-900 dark:hover:bg-neutral-800 dark:focus:bg-neutral-800 dark:border-neutral-700 dark:text-neutral-300'
+      className='relative inline-flex w-full items-center gap-x-1.5 rounded-lg border border-gray-200 bg-white px-3 py-3 font-medium text-gray-800 shadow-2xs transition-transform duration-150 ease-in-out select-none hover:bg-gray-50 focus:bg-gray-50 focus:outline-hidden active:scale-95 disabled:pointer-events-none disabled:opacity-50 sm:text-sm dark:border-neutral-700 dark:bg-neutral-900 dark:text-neutral-300 dark:hover:bg-neutral-800 dark:focus:bg-neutral-800'
       onClick={() => {
         hapticFeedback.impactOccurred('light')
         handleSelectOrganization(data)
@@ -40,32 +35,32 @@ const OrganizationItem: React.FC<OrganizationItemProps> = ({
     >
       <div className='absolute -top-3 right-0 flex gap-x-1'>
         {organizationId && +organizationId === data.organizationId && (
-          <span className='inline-flex  bg-blue-600 text-white  items-center gap-x-1.5 py-0.5 px-2 rounded-full text-xs font-medium  '>
+          <span className='inline-flex items-center gap-x-1.5 rounded-full bg-blue-600 px-2 py-0.5 text-xs font-medium text-white'>
             Текущий склад
           </span>
         )}
         {data.isOwner && (
-          <span className='inline-flex  bg-blue-600 text-white items-center gap-x-1.5 py-0.5 px-2 rounded-full text-xs font-medium  '>
+          <span className='inline-flex items-center gap-x-1.5 rounded-full bg-blue-600 px-2 py-0.5 text-xs font-medium text-white'>
             Владелец
           </span>
         )}
       </div>
 
-      {isLoading && <LoaderSection className='rounded-lg ' />}
-      <div className='flex gap-x-3 w-full min-w-0 relative'>
-        <span className='flex shrink-0 justify-center items-center size-9.5 bg-white border border-gray-200 rounded-lg dark:bg-neutral-800 dark:border-neutral-700 dark:text-neutral-300'>
+      {isLoading && <LoaderSection className='rounded-lg' />}
+      <div className='relative flex w-full min-w-0 gap-x-3'>
+        <span className='flex size-9.5 shrink-0 items-center justify-center rounded-lg border border-gray-200 bg-white dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-300'>
           <Warehouse
-            className='shrink-0 size-5'
+            className='size-5 shrink-0'
             strokeWidth={1.5}
           />
         </span>
-        <div className='flex flex-col gap-1 min-w-0 flex-1'>
-          <div className='font-medium text-gray-800 hover:text-blue-600 text-start focus:outline-hidden focus:text-blue-600 dark:text-neutral-200 dark:hover:text-blue-500 dark:focus:text-blue-500 break-words text-ellipsis-2'>
+        <div className='flex min-w-0 flex-1 flex-col gap-1'>
+          <div className='text-ellipsis-2 text-start font-medium break-words text-gray-800 hover:text-blue-600 focus:text-blue-600 focus:outline-hidden dark:text-neutral-200 dark:hover:text-blue-500 dark:focus:text-blue-500'>
             {data.organization.name}
           </div>
 
           {data.organization.description && (
-            <p className='text-xs text-gray-500 text-start dark:text-neutral-500 break-words text-ellipsis-2'>
+            <p className='text-ellipsis-2 text-start text-xs break-words text-gray-500 dark:text-neutral-500'>
               {data.organization.description}
             </p>
           )}
@@ -73,25 +68,25 @@ const OrganizationItem: React.FC<OrganizationItemProps> = ({
 
         {variant === 'change' && (
           <div
-            className='group-hover:opacity-100 lg:opacity-0 shrink-0 ml-auto'
+            className='ml-auto shrink-0 group-hover:opacity-100 lg:opacity-0'
             onClick={e => {
               e.stopPropagation()
             }}
           >
-            <div className='p-0.5 sm:p-1 inline-flex items-center bg-white border border-gray-200 lg:shadow-xs rounded-lg dark:bg-neutral-800 dark:border-neutral-700'>
+            <div className='inline-flex items-center rounded-lg border border-gray-200 bg-white p-0.5 sm:p-1 lg:shadow-xs dark:border-neutral-700 dark:bg-neutral-800'>
               {data.isOwner && (
                 <>
                   <div className='hs-tooltip inline-block'>
                     <Link
                       className={clsx(
-                        'hs-tooltip-toggle size-7.5 inline-flex justify-center items-center gap-x-2 rounded-lg border border-transparent text-gray-500 hover:bg-gray-100 disabled:opacity-50 disabled:pointer-events-none dark:text-neutral-400 focus:outline-hidden focus:bg-gray-100 dark:hover:bg-neutral-700 dark:focus:bg-neutral-700'
+                        'hs-tooltip-toggle inline-flex size-7.5 items-center justify-center gap-x-2 rounded-lg border border-transparent text-gray-500 hover:bg-gray-100 focus:bg-gray-100 focus:outline-hidden disabled:pointer-events-none disabled:opacity-50 dark:text-neutral-400 dark:hover:bg-neutral-700 dark:focus:bg-neutral-700'
                       )}
                       to={`/organization/${data.organizationId}/edit`}
                     >
-                      <SquarePen className='shrink-0 size-4' />
+                      <SquarePen className='size-4 shrink-0' />
                     </Link>
                     <span
-                      className='hs-tooltip-content hs-tooltip-shown:opacity-100 hs-tooltip-shown:visible opacity-0 inline-block absolute invisible z-20 py-1.5 px-2.5 bg-gray-900 text-xs text-white rounded-lg dark:bg-neutral-700 hidden'
+                      className='hs-tooltip-content hs-tooltip-shown:opacity-100 hs-tooltip-shown:visible invisible absolute z-20 hidden inline-block rounded-lg bg-gray-900 px-2.5 py-1.5 text-xs text-white opacity-0 dark:bg-neutral-700'
                       role='tooltip'
                       style={{ position: 'fixed', left: 160, top: 51 }}
                       data-placement='bottom'
@@ -101,7 +96,7 @@ const OrganizationItem: React.FC<OrganizationItemProps> = ({
                   </div>
 
                   {organizationId && +organizationId !== data.organizationId && (
-                    <div className='w-px h-5 mx-1 bg-gray-200 dark:bg-neutral-700' />
+                    <div className='mx-1 h-5 w-px bg-gray-200 dark:bg-neutral-700' />
                   )}
                 </>
               )}
@@ -112,21 +107,18 @@ const OrganizationItem: React.FC<OrganizationItemProps> = ({
                   onStartDelete={() => setIsLoading(true)}
                   onSuccess={() => {
                     // Оптимистично обновляем кэш
-                    queryClient.setQueryData(
-                      [...['organizations'], 'my', 'available'],
-                      (oldData: any) => {
-                        if (!oldData) return oldData
-                        return {
-                          ...oldData,
-                          data: {
-                            ...oldData.data,
-                            myOrganizations: oldData.data.myOrganizations.filter(
-                              (org: any) => org.organizationId !== data.organizationId
-                            )
-                          }
+                    queryClient.setQueryData([...['organizations'], 'my', 'available'], (oldData: any) => {
+                      if (!oldData) return oldData
+                      return {
+                        ...oldData,
+                        data: {
+                          ...oldData.data,
+                          myOrganizations: oldData.data.myOrganizations.filter(
+                            (org: any) => org.organizationId !== data.organizationId
+                          )
                         }
                       }
-                    )
+                    })
                     setTimeout(() => {
                       setIsLoading(false)
                     }, 600)
@@ -141,21 +133,18 @@ const OrganizationItem: React.FC<OrganizationItemProps> = ({
                   onStartDelete={() => setIsLoading(true)}
                   onSuccess={() => {
                     // Оптимистично обновляем кэш
-                    queryClient.setQueryData(
-                      [...['organizations'], 'my', 'available'],
-                      (oldData: any) => {
-                        if (!oldData) return oldData
-                        return {
-                          ...oldData,
-                          data: {
-                            ...oldData.data,
-                            myOrganizations: oldData.data.myOrganizations.filter(
-                              (org: any) => org.organizationId !== data.organizationId
-                            )
-                          }
+                    queryClient.setQueryData([...['organizations'], 'my', 'available'], (oldData: any) => {
+                      if (!oldData) return oldData
+                      return {
+                        ...oldData,
+                        data: {
+                          ...oldData.data,
+                          myOrganizations: oldData.data.myOrganizations.filter(
+                            (org: any) => org.organizationId !== data.organizationId
+                          )
                         }
                       }
-                    )
+                    })
                     setTimeout(() => {
                       setIsLoading(false)
                     }, 600)

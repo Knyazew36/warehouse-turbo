@@ -1,10 +1,10 @@
-import { Controller, Post, Body, UseGuards, Delete, Param, Get, Req } from '@nestjs/common'
-import { AllowedPhoneService } from './allowed-phone.service'
-import { AddPhoneDto } from './dto/add-phone.dto'
-import { Roles } from './decorators/roles.decorator'
-import { RolesGuard } from './guards/roles.guard'
-import { TelegramAuthGuard } from './guards/telegram-auth.guard'
-import { OrganizationId } from '../organization/decorators/organization-id.decorator'
+import { Controller, Post, Body, UseGuards, Delete, Param, Get, Req } from '@nestjs/common';
+import { AllowedPhoneService } from './allowed-phone.service';
+import { AddPhoneDto } from './dto/add-phone.dto';
+import { Roles } from './decorators/roles.decorator';
+import { RolesGuard } from './guards/roles.guard';
+import { TelegramAuthGuard } from './guards/telegram-auth.guard';
+import { OrganizationId } from '../organization/decorators/organization-id.decorator';
 
 @Controller('allowed-phones')
 export class AllowedPhoneController {
@@ -17,22 +17,22 @@ export class AllowedPhoneController {
   @Roles('ADMIN', 'OWNER', 'IT')
   async addPhoneToOrganization(
     @Body() dto: AddPhoneDto,
-    @OrganizationId() organizationId?: number
+    @OrganizationId() organizationId?: number,
   ) {
     if (!organizationId) {
-      throw new Error('Organization ID is required for adding phone')
+      throw new Error('Organization ID is required for adding phone');
     }
 
     const result = await this.allowedPhoneService.addPhoneToOrganization(
       dto.phone,
       organizationId,
-      dto.comment
-    )
+      dto.comment,
+    );
 
     return {
       ...result,
-      message: 'message' in result ? result.message : 'Телефон успешно добавлен'
-    }
+      message: 'message' in result ? result.message : 'Телефон успешно добавлен',
+    };
   }
 
   /**
@@ -43,9 +43,9 @@ export class AllowedPhoneController {
   @Roles('ADMIN', 'OWNER', 'IT')
   async getAllPhonesForOrganization(@OrganizationId() organizationId?: number) {
     if (!organizationId) {
-      throw new Error('Organization ID is required')
+      throw new Error('Organization ID is required');
     }
-    return this.allowedPhoneService.getAllPhonesForOrganization(organizationId)
+    return this.allowedPhoneService.getAllPhonesForOrganization(organizationId);
   }
 
   /**
@@ -56,18 +56,18 @@ export class AllowedPhoneController {
   @Roles('ADMIN', 'OWNER', 'IT')
   async removePhoneFromOrganization(
     @Param('id') id: number,
-    @OrganizationId() organizationId?: number
+    @OrganizationId() organizationId?: number,
   ) {
     if (!organizationId) {
-      throw new Error('Organization ID is required')
+      throw new Error('Organization ID is required');
     }
 
-    const result = await this.allowedPhoneService.removePhoneFromOrganization(id, organizationId)
+    const result = await this.allowedPhoneService.removePhoneFromOrganization(id, organizationId);
 
     return {
       ...result,
-      message: 'Телефон успешно удален из списка разрешенных организации.'
-    }
+      message: 'Телефон успешно удален из списка разрешенных организации.',
+    };
   }
 
   /**
@@ -77,22 +77,22 @@ export class AllowedPhoneController {
   @UseGuards(TelegramAuthGuard)
   async checkPhoneInOrganization(
     @Body() dto: { phone: string },
-    @OrganizationId() organizationId?: number
+    @OrganizationId() organizationId?: number,
   ) {
     if (!organizationId) {
-      throw new Error('Organization ID is required')
+      throw new Error('Organization ID is required');
     }
 
     const isAllowed = await this.allowedPhoneService.isPhoneAllowedInOrganization(
       dto.phone,
-      organizationId
-    )
+      organizationId,
+    );
 
     return {
       phone: dto.phone,
       isAllowed,
-      organizationId
-    }
+      organizationId,
+    };
   }
 
   /**
@@ -101,12 +101,12 @@ export class AllowedPhoneController {
   @Get('organizations/:phone')
   @UseGuards(TelegramAuthGuard)
   async getOrganizationsForPhone(@Param('phone') phone: string) {
-    const organizations = await this.allowedPhoneService.getOrganizationsForPhone(phone)
+    const organizations = await this.allowedPhoneService.getOrganizationsForPhone(phone);
 
     return {
       phone,
-      organizations
-    }
+      organizations,
+    };
   }
 
   /**
@@ -116,7 +116,7 @@ export class AllowedPhoneController {
   @UseGuards(TelegramAuthGuard, RolesGuard)
   @Roles('ADMIN', 'OWNER', 'IT')
   async getAllAllowedPhones() {
-    return this.allowedPhoneService.getAllAllowedPhones()
+    return this.allowedPhoneService.getAllAllowedPhones();
   }
 
   /**
@@ -126,12 +126,12 @@ export class AllowedPhoneController {
   @UseGuards(TelegramAuthGuard)
   @Roles('ADMIN', 'OWNER', 'IT')
   async getUserByAllowedPhone(@Param('phone') phone: string) {
-    const user = await this.allowedPhoneService.getUserByAllowedPhone(phone)
+    const user = await this.allowedPhoneService.getUserByAllowedPhone(phone);
 
     return {
       phone,
-      user
-    }
+      user,
+    };
   }
 
   /**
@@ -141,11 +141,11 @@ export class AllowedPhoneController {
   @UseGuards(TelegramAuthGuard)
   @Roles('ADMIN', 'OWNER', 'IT')
   async getAllowedPhoneByUser(@Param('userId') userId: string) {
-    const allowedPhone = await this.allowedPhoneService.getAllowedPhoneByUser(parseInt(userId))
+    const allowedPhone = await this.allowedPhoneService.getAllowedPhoneByUser(parseInt(userId));
 
     return {
       userId: parseInt(userId),
-      allowedPhone
-    }
+      allowedPhone,
+    };
   }
 }

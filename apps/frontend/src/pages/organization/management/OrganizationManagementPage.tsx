@@ -109,17 +109,13 @@ const OrganizationManagementPage: React.FC = () => {
                 <div className='space-y-6'>
                   {allOrganizations.length > 0 && (
                     <div className='text-center'>
-                      <h2 className='font-medium text-xl text-gray-800 dark:text-neutral-200'>
-                        Мои склады
-                      </h2>
+                      <h2 className='font-medium text-xl text-gray-800 dark:text-neutral-200'>Мои склады</h2>
                     </div>
                   )}
 
                   {allOrganizations.length === 0 && (
                     <div className='text-center'>
-                      <h2 className='font-medium text-xl text-gray-800 dark:text-neutral-200'>
-                        У вас нет складов
-                      </h2>
+                      <h2 className='font-medium text-xl text-gray-800 dark:text-neutral-200'>У вас нет складов</h2>
                       <p className='mt-1 text-sm text-gray-500 dark:text-neutral-500'>
                         Создайте свой первый склад для управления.
                       </p>
@@ -128,9 +124,7 @@ const OrganizationManagementPage: React.FC = () => {
 
                   {invitedOrganizations?.length > 0 && (
                     <>
-                      <p className='mt-1 text-sm text-gray-500 dark:text-neutral-500 text-center'>
-                        Приглашения
-                      </p>
+                      <p className='mt-1 text-sm text-gray-500 dark:text-neutral-500 text-center'>Приглашения</p>
                       {invitedOrganizations.map(organization => (
                         <OrganizationItemInvite
                           role={availableUser?.role as Role}
@@ -177,9 +171,8 @@ const OrganizationManagementPage: React.FC = () => {
                   <>
                     <div className='w-28 h-px mx-auto bg-gray-300 dark:bg-neutral-700 mt-8' />
                     <p className='mt-1 text-sm text-gray-500 dark:text-neutral-500 text-center'>
-                      Если вы только что авторизовались, и вы ожидаете приглашения в склад, то
-                      необходимо дождаться уведомления в боте об успешной авторизации и обновить
-                      страницу.
+                      Если вы только что авторизовались, и вы ожидаете приглашения в склад, то необходимо дождаться
+                      уведомления в боте об успешной авторизации и обновить страницу.
                     </p>
 
                     <button

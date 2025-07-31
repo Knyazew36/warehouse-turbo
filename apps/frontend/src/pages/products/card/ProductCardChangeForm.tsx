@@ -78,9 +78,7 @@ const ProductCardChangeForm: FC<IProductsCard> = ({ data }) => {
         </div>
 
         <div className='flex gap-x-2'>
-          <label className='sm:mt-2.5 inline-block text-sm text-gray-500 dark:text-neutral-500'>
-            Активен?
-          </label>
+          <label className='sm:mt-2.5 inline-block text-sm text-gray-500 dark:text-neutral-500'>Активен?</label>
           <Controller
             control={control}
             name='active'
@@ -95,14 +93,10 @@ const ProductCardChangeForm: FC<IProductsCard> = ({ data }) => {
         </div>
       </div>
 
-      <div
-        className={clsx('flex flex-col gap-y-3', !data.active && 'opacity-30 pointer-events-none')}
-      >
+      <div className={clsx('flex flex-col gap-y-3', !data.active && 'opacity-30 pointer-events-none')}>
         <div className='grid sm:grid-cols-12 gap-y-1.5 sm:gap-y-0 sm:gap-x-5'>
           <div className='sm:col-span-3'>
-            <label className='sm:mt-2.5 inline-block text-sm text-gray-500 dark:text-neutral-500'>
-              Название
-            </label>
+            <label className='sm:mt-2.5 inline-block text-sm text-gray-500 dark:text-neutral-500'>Название</label>
           </div>
           {/* End Col */}
           <div className='sm:col-span-9'>
@@ -168,9 +162,7 @@ const ProductCardChangeForm: FC<IProductsCard> = ({ data }) => {
                 />
               )}
             />
-            {errors.minThreshold && (
-              <p className='mt-1 text-xs text-red-500'>{errors.minThreshold.message}</p>
-            )}
+            {errors.minThreshold && <p className='mt-1 text-xs text-red-500'>{errors.minThreshold.message}</p>}
           </div>
           {/* End Col */}
         </div>

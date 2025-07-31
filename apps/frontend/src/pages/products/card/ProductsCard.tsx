@@ -24,9 +24,7 @@ const ProductsCard: FC<IProductsCard> = ({ data, variant = 'default' }) => {
             +data.quantity < +data.minThreshold ? 'bg-red-500' : 'bg-gray-500'
           )}
         />
-        <span className='text-xs font-semibold uppercase text-gray-600 dark:text-white'>
-          {data.name}
-        </span>
+        <span className='text-xs font-semibold uppercase text-gray-600 dark:text-white'>{data.name}</span>
       </div>
 
       <div className='text-center'>

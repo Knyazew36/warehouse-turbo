@@ -15,13 +15,10 @@ export const addPhoneToOrganization = async ({
   comment?: string
 }): Promise<AllowedPhone> => {
   try {
-    const response: AxiosResponse<BaseResponse<AllowedPhone>> = await $api.post(
-      `${apiDomain}/allowed-phones/add`,
-      {
-        phone,
-        comment
-      }
-    )
+    const response: AxiosResponse<BaseResponse<AllowedPhone>> = await $api.post(`${apiDomain}/allowed-phones/add`, {
+      phone,
+      comment
+    })
     return response.data.data
   } catch (error: any) {
     const message = error?.response?.data?.message || 'Ошибка добавления телефона'
@@ -33,9 +30,7 @@ export const useAllowedPhonesForOrganization = () => {
   return useQuery({
     queryKey: ['allowed-phones'],
     queryFn: async () => {
-      const res: AxiosResponse<BaseResponse<AllowedPhone[]>> = await $api.post(
-        `${apiDomain}/allowed-phones/list`
-      )
+      const res: AxiosResponse<BaseResponse<AllowedPhone[]>> = await $api.post(`${apiDomain}/allowed-phones/list`)
       return res.data.data
     }
   })

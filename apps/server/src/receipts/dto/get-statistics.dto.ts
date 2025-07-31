@@ -1,11 +1,11 @@
-import { IsOptional, IsString } from 'class-validator'
+import { IsOptional, IsString } from 'class-validator';
 
 export class GetStatisticsDto {
   @IsOptional()
   @IsString()
-  start?: string
+  start?: string;
 
   @IsOptional()
   @IsString()
-  end?: string
+  end?: string;
 }

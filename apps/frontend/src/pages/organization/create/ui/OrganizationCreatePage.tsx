@@ -66,9 +66,7 @@ const OrganizationCreatePage: React.FC = () => {
               <Building2 className='w-6 h-6 text-blue-600 dark:text-blue-400' />
             </div>
             <div>
-              <h2 className='text-xl font-semibold text-gray-900 dark:text-neutral-100'>
-                Новый склад
-              </h2>
+              <h2 className='text-xl font-semibold text-gray-900 dark:text-neutral-100'>Новый склад</h2>
               <p className='text-sm text-gray-500 dark:text-neutral-400'>
                 Создайте новый склад для управления товарами
               </p>
@@ -93,9 +91,7 @@ const OrganizationCreatePage: React.FC = () => {
 
             {/* Описание */}
             <div>
-              <label className='block text-sm font-medium text-gray-700 dark:text-neutral-300 mb-2'>
-                Описание
-              </label>
+              <label className='block text-sm font-medium text-gray-700 dark:text-neutral-300 mb-2'>Описание</label>
               <textarea
                 placeholder='Краткое описание склада (необязательно)'
                 value={formData.description}

@@ -2,7 +2,7 @@
 // import type { Dropzone } from "dropzone";
 // import type { VanillaCalendarPro } from "vanilla-calendar-pro";
 // import type { noUiSlider } from "nouislider";
-import type { IStaticMethods } from "preline/dist";
+import type { IStaticMethods } from 'preline/dist'
 
 declare global {
   interface Window {
@@ -13,8 +13,8 @@ declare global {
     // Dropzone: typeof Dropzone;
     // VanillaCalendarPro: typeof VanillaCalendarPro;
     // noUiSlider: typeof noUiSlider;
-    HSStaticMethods: IStaticMethods;
+    HSStaticMethods: IStaticMethods
   }
 }
 
-export {};
+export {}

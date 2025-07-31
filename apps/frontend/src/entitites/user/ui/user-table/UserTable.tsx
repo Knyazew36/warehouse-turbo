@@ -88,9 +88,7 @@ const UserTable = ({ data }: { data: IUser[] }) => {
                       </span>
                     </td>
                     <td className='size-px whitespace-nowrap px-4 py-3'>
-                      <span className='text-sm text-gray-600 dark:text-neutral-400'>
-                        {getRole(user.role!)}
-                      </span>
+                      <span className='text-sm text-gray-600 dark:text-neutral-400'>{getRole(user.role!)}</span>
                     </td>
 
                     <td className='size-px whitespace-nowrap px-4 py-3'>

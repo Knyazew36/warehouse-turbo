@@ -46,8 +46,7 @@ const CreateProductPage = () => {
 
       open({
         isOpen: true,
-        description:
-          'Товар успешно создан. Вы можете добавить еще один товар или вернуться на главную страницу.'
+        description: 'Товар успешно создан. Вы можете добавить еще один товар или вернуться на главную страницу.'
       })
       hapticFeedback.notificationOccurred('success')
     } catch (e: any) {
@@ -121,9 +120,7 @@ const CreateProductPage = () => {
                 />
               )}
             />
-            {errors.quantity && (
-              <p className='mt-1 text-xs text-red-500'>{errors.quantity.message}</p>
-            )}
+            {errors.quantity && <p className='mt-1 text-xs text-red-500'>{errors.quantity.message}</p>}
           </label>
 
           <Controller
@@ -157,9 +154,7 @@ const CreateProductPage = () => {
                 />
               )}
             />
-            {errors.minThreshold && (
-              <p className='mt-1 text-xs text-red-500'>{errors.minThreshold.message}</p>
-            )}
+            {errors.minThreshold && <p className='mt-1 text-xs text-red-500'>{errors.minThreshold.message}</p>}
           </label>
         </div>
         {/* End Body */}

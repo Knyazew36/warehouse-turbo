@@ -25,11 +25,11 @@ interface IFullName {
 }
 
 interface IFullNameResult {
-  fullName: string      // Полное ФИО (Фамилия Имя Отчество)
-  shortName: string     // Короткое имя (Имя Фамилия)
-  initials: string      // Инициалы (П.И.С.)
-  isValid: boolean      // Валидность данных
-  errors: string[]      // Список ошибок
+  fullName: string // Полное ФИО (Фамилия Имя Отчество)
+  shortName: string // Короткое имя (Имя Фамилия)
+  initials: string // Инициалы (П.И.С.)
+  isValid: boolean // Валидность данных
+  errors: string[] // Список ошибок
 }
 ```
 
@@ -63,12 +63,7 @@ const result5 = getFullName('Мария')
 #### Вспомогательные функции
 
 ```typescript
-import { 
-  isValidFullName,
-  getFullNameString,
-  getShortNameString,
-  getInitialsString
-} from '@/shared/utils/getFullName'
+import { isValidFullName, getFullNameString, getShortNameString, getInitialsString } from '@/shared/utils/getFullName'
 
 // Проверка валидности
 const isValid = isValidFullName('Иванов Иван') // true/false
@@ -89,7 +84,7 @@ const result = getFullName('Петров Иван Сергеевич')
 console.log(result)
 // {
 //   fullName: "Петров Иван Сергеевич",
-//   shortName: "Иван Петров", 
+//   shortName: "Иван Петров",
 //   initials: "П.И.С.",
 //   isValid: true,
 //   errors: []
@@ -122,25 +117,26 @@ console.log(result)
 ### Поддерживаемые форматы
 
 #### Строки
+
 - `"Петров Иван Сергеевич"` → Фамилия Имя Отчество
 - `"Иванов Иван"` → Фамилия Имя
 - `"Мария"` → Имя
 - `"  иванов  иван  "` → автоматическая очистка пробелов
 
 #### Объекты
+
 ```typescript
 {
   firstName: "Иван",
-  lastName: "Петров", 
+  lastName: "Петров",
   middleName: "Сергеевич"
 }
 ```
 
 #### Массивы
+
 ```typescript
-["Петров", "Иван", "Сергеевич"] // Фамилия, Имя, Отчество
-["Иван", "Петров"] // Имя, Фамилия
-["Мария"] // Только имя
+;['Петров', 'Иван', 'Сергеевич'][('Иван', 'Петров')]['Мария'] // Фамилия, Имя, Отчество // Имя, Фамилия // Только имя
 ```
 
 ### Особенности
@@ -190,6 +186,7 @@ console.log(result)
 ### Доступные цвета
 
 Поддерживаются все основные цвета Tailwind CSS:
+
 - `teal`, `indigo`, `yellow`, `blue`, `cyan`, `green`, `pink`
 - `red`, `orange`, `purple`, `gray`, `slate`, `zinc`, `neutral`
 - `stone`, `emerald`, `lime`, `amber`, `sky`, `violet`, `fuchsia`, `rose`
@@ -220,13 +217,6 @@ interface ButtonProps {
 }
 
 const Button = ({ color = 'blue', children }: ButtonProps) => {
-  return (
-    <button className={clsx(
-      'px-4 py-2 rounded-lg',
-      getColorClasses(color)
-    )}>
-      {children}
-    </button>
-  )
+  return <button className={clsx('px-4 py-2 rounded-lg', getColorClasses(color))}>{children}</button>
 }
-``` 
+```

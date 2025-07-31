@@ -21,18 +21,11 @@ import Divide from '@/shared/ui/divide/ui/Divide'
 
 const MenuPage: FC = () => {
   const { isAdmin, isOwner, isIT, isOperator, role } = useAuthStore()
-  const { currentOrganization, isOrganizationLoading, setOrganizationLoading } =
-    useOrganizationStore()
+  const { currentOrganization, isOrganizationLoading, setOrganizationLoading } = useOrganizationStore()
   const user = initDataUser()
   const userId = user?.id?.toString()
 
-  const {
-    data: userRole,
-    isLoading,
-    isPending,
-    error,
-    isFetching
-  } = useUserRole({ id: userId || '' })
+  const { data: userRole, isLoading, isPending, error, isFetching } = useUserRole({ id: userId || '' })
 
   // Сбрасываем состояние загрузки организации после успешной загрузки роли или ошибки
   useEffect(() => {
@@ -89,9 +82,7 @@ const MenuPage: FC = () => {
       to: '/products',
       title: 'Остаток',
       color: 'indigo',
-      icon: (
-        <Package className='shrink-0 size-5 xl:w-6 xl:h-6 text-indigo-600 dark:text-indigo-500' />
-      )
+      icon: <Package className='shrink-0 size-5 xl:w-6 xl:h-6 text-indigo-600 dark:text-indigo-500' />
     },
     {
       to: '/incoming-statistics',
@@ -159,9 +150,7 @@ const MenuPage: FC = () => {
       to: '/organization-selector',
       title: 'Мои склады',
       color: 'purple',
-      icon: (
-        <WarehouseIcon className='shrink-0 size-5 xl:w-6 xl:h-6 text-purple-600 dark:text-purple-500' />
-      )
+      icon: <WarehouseIcon className='shrink-0 size-5 xl:w-6 xl:h-6 text-purple-600 dark:text-purple-500' />
     }
   ]
 

@@ -14,10 +14,7 @@ export interface CreateReceiptDto {
 
 export const receiptCreate = async (dto: CreateReceiptDto): Promise<Receipt> => {
   try {
-    const response: AxiosResponse<BaseResponse<Receipt>> = await $api.post(
-      `${apiDomain}/receipts`,
-      dto
-    )
+    const response: AxiosResponse<BaseResponse<Receipt>> = await $api.post(`${apiDomain}/receipts`, dto)
     return response.data.data
   } catch (error: any) {
     const message = error?.response?.data?.message || 'Ошибка создания поступления'

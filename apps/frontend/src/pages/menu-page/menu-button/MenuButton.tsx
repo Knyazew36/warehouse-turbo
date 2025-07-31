@@ -40,10 +40,9 @@ const MenuButton = ({
       to={to ?? ''}
       className={clsx(
         className,
-        'p-4 group relative overflow-hidden flex flex-col bg-white border border-gray-200 rounded-xl focus:outline-hidden dark:bg-neutral-900 dark:border-neutral-700',
-        'transition-transform duration-150 ease-in-out active:scale-95 select-none',
-        (isBlocked || isDevelop || isLoading) &&
-          'opacity-70 !pointer-events-none cursor-not-allowed'
+        'group relative flex flex-col items-center justify-center overflow-hidden rounded-xl border border-gray-200 bg-white p-4 focus:outline-hidden dark:border-neutral-700 dark:bg-neutral-900',
+        'transition-transform duration-150 ease-in-out select-none active:scale-95',
+        (isBlocked || isDevelop || isLoading) && '!pointer-events-none cursor-not-allowed opacity-70'
       )}
       onClick={() => {
         hapticFeedback.impactOccurred('rigid')
@@ -67,7 +66,7 @@ const MenuButton = ({
 
       <span
         className={clsx(
-          'flex justify-center relative items-center size-12 xl:size-16 mx-auto text-white rounded-2xl',
+          'relative mx-auto flex size-12 items-center justify-center rounded-2xl text-white xl:size-16',
           getColorClasses(color),
           iconClassName
         )}
@@ -75,15 +74,15 @@ const MenuButton = ({
         {icon}
 
         {withNotification && (
-          <span className='flex absolute top-0 end-0 size-3 -mt-1.5 -me-1.5'>
-            <span className='animate-ping absolute inline-flex size-full rounded-full bg-red-400 opacity-75 dark:bg-red-600'></span>
-            <span className='relative inline-flex rounded-full size-3 bg-red-500'></span>
+          <span className='absolute end-0 top-0 -me-1.5 -mt-1.5 flex size-3'>
+            <span className='absolute inline-flex size-full animate-ping rounded-full bg-red-400 opacity-75 dark:bg-red-600'></span>
+            <span className='relative inline-flex size-3 rounded-full bg-red-500'></span>
           </span>
         )}
       </span>
 
-      <div className='text-center mt-2 select-none'>
-        <p className='truncate text-xs xl:text-sm font-medium text-gray-800 group-hover:text-pink-600 group-focus:text-pink-600 dark:text-neutral-200 dark:group-hover:text-neutral-400 dark:group-focus:text-neutral-400 select-none'>
+      <div className='mt-2 text-center select-none'>
+        <p className='truncate text-xs font-medium text-gray-800 select-none group-hover:text-pink-600 group-focus:text-pink-600 xl:text-sm dark:text-neutral-200 dark:group-hover:text-neutral-400 dark:group-focus:text-neutral-400'>
           {title}
         </p>
       </div>

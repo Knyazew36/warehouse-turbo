@@ -201,9 +201,7 @@ const Empty: FC<IEmpty> = ({ title = 'Не найдено', description }) => {
     //   </svg>
     <div className='max-w-sm mx-auto py-4 mb-8'>
       <p className='mt-2 font-medium text-gray-800 dark:text-neutral-200'>{title}</p>
-      {description && (
-        <p className='mb-5 text-sm text-gray-500 dark:text-neutral-500'>{description}</p>
-      )}
+      {description && <p className='mb-5 text-sm text-gray-500 dark:text-neutral-500'>{description}</p>}
     </div>
     // {/* </div> */}
   )

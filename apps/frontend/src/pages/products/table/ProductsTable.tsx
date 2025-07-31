@@ -85,14 +85,10 @@ const ProductsTable: FC<IProps> = ({ data }) => {
                         </div>
                       </td>
                       <td className='size-px whitespace-nowrap py-3 px-5'>
-                        <span className='text-sm text-stone-600 dark:text-neutral-400'>
-                          {item.quantity}
-                        </span>
+                        <span className='text-sm text-stone-600 dark:text-neutral-400'>{item.quantity}</span>
                       </td>
                       <td className='size-px whitespace-nowrap py-3 px-5'>
-                        <span className='text-sm text-stone-600 dark:text-neutral-400'>
-                          {item.minThreshold}
-                        </span>
+                        <span className='text-sm text-stone-600 dark:text-neutral-400'>{item.minThreshold}</span>
                       </td>
                       <td className='size-px whitespace-nowrap py-3 px-5'>
                         <span className='text-sm text-stone-600 dark:text-neutral-400'>

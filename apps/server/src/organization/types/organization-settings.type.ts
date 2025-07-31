@@ -1,8 +1,8 @@
-import { Role } from '@prisma/client'
+import { Role } from '@prisma/client';
 
 export interface OrganizationSettings {
   notifications: {
-    notificationTime: string
-    notificationRoles: Role[]
-  }
+    notificationTime: string;
+    notificationRoles: Role[];
+  };
 }

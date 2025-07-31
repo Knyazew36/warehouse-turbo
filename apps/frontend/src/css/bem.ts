@@ -1,11 +1,11 @@
-import { classNames, isRecord } from '@/css/classnames.js';
+import { classNames, isRecord } from '@/css/classnames.js'
 
 export interface BlockFn {
-  (...mods: any): string;
+  (...mods: any): string
 }
 
 export interface ElemFn {
-  (elem: string, ...mods: any): string;
+  (elem: string, ...mods: any): string
 }
 
 /**
@@ -15,15 +15,13 @@ export interface ElemFn {
  */
 function applyMods(element: string, mod: any): string {
   if (Array.isArray(mod)) {
-    return classNames(mod.map(m => applyMods(element, m)));
+    return classNames(mod.map(m => applyMods(element, m)))
   }
   if (isRecord(mod)) {
-    return classNames(
-      Object.entries(mod).map(([mod, v]) => v && applyMods(element, mod)),
-    );
+    return classNames(Object.entries(mod).map(([mod, v]) => v && applyMods(element, mod)))
   }
-  const v = classNames(mod);
-  return v && `${element}--${v}`;
+  const v = classNames(mod)
+  return v && `${element}--${v}`
 }
 
 /**
@@ -32,7 +30,7 @@ function applyMods(element: string, mod: any): string {
  * @param mods - mod to apply.
  */
 function computeClassnames(element: string, ...mods: any): string {
-  return classNames(element, applyMods(element, mods));
+  return classNames(element, applyMods(element, mods))
 }
 
 /**
@@ -41,8 +39,5 @@ function computeClassnames(element: string, ...mods: any): string {
  * @param block - BEM block name.
  */
 export function bem(block: string): [BlockFn, ElemFn] {
-  return [
-    (...mods) => computeClassnames(block, mods),
-    (elem, ...mods) => computeClassnames(`${block}__${elem}`, mods),
-  ];
+  return [(...mods) => computeClassnames(block, mods), (elem, ...mods) => computeClassnames(`${block}__${elem}`, mods)]
 }

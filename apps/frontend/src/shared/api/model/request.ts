@@ -7,13 +7,7 @@ import { ErrorResponse, BaseResponse } from './type'
 import { toast } from 'sonner'
 // import { json } from 'stream/consumers'
 import React from 'react'
-import {
-  hapticFeedback,
-  initData,
-  isTMA,
-  mockTelegramEnv,
-  retrieveRawInitData
-} from '@telegram-apps/sdk'
+import { hapticFeedback, initData, isTMA, mockTelegramEnv, retrieveRawInitData } from '@telegram-apps/sdk'
 import { getOrganizationIdFromStore } from '../middleware/organization.middleware'
 
 const initDataRaw = import.meta.env.DEV
@@ -124,9 +118,7 @@ $api.interceptors.response.use(
 // Логирование ошибок
 function logErrorDetails(error: AxiosError) {
   log({
-    name: axios.isAxiosError(error)
-      ? (error.config?.url ?? 'undefined url')
-      : 'Not instance of AxiosError',
+    name: axios.isAxiosError(error) ? (error.config?.url ?? 'undefined url') : 'Not instance of AxiosError',
     data: error,
     type: 'catch'
   })

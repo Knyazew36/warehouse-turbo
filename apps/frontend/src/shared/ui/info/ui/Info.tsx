@@ -17,9 +17,7 @@ const InfoMessage: React.FC<InfoProps> = ({ title, items, text, className }) => 
           <InfoIcon className='w-4 h-4 text-blue-600 dark:text-blue-400' />
         </div>
         <div>
-          {title && (
-            <h3 className='text-sm font-medium text-blue-900 dark:text-blue-100 mb-1'>{title}</h3>
-          )}
+          {title && <h3 className='text-sm font-medium text-blue-900 dark:text-blue-100 mb-1'>{title}</h3>}
           {text && <p className='text-sm text-blue-800 dark:text-blue-200 mb-1'>{text}</p>}
           {items && items.length > 0 && (
             <ul className='text-sm text-blue-800 dark:text-blue-200 space-y-1'>

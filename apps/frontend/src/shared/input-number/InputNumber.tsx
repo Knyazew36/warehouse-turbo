@@ -2,8 +2,7 @@
 import { hapticFeedback } from '@telegram-apps/sdk-react'
 import React, { useState } from 'react'
 import { useNumberFormat } from '@react-input/number-format'
-export interface InputNumberProps
-  extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 'onChange' | 'value'> {
+export interface InputNumberProps extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 'onChange' | 'value'> {
   /** Значение поля */
   value?: number | null
   /** Коллбек изменения значения */

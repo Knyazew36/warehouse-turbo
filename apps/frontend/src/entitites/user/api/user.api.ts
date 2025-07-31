@@ -45,19 +45,8 @@ export const useUpdateUser = () => {
 export const useUpdateUserRole = () => {
   const queryClient = useQueryClient()
   return useMutation({
-    mutationFn: async ({
-      organizationId,
-      userId,
-      role
-    }: {
-      organizationId: number
-      userId: number
-      role: Role
-    }) => {
-      const res = await $api.post(
-        `${apiDomain}/organizations/${organizationId}/users/${userId}/role`,
-        { role }
-      )
+    mutationFn: async ({ organizationId, userId, role }: { organizationId: number; userId: number; role: Role }) => {
+      const res = await $api.post(`${apiDomain}/organizations/${organizationId}/users/${userId}/role`, { role })
       return res.data.data
     },
     onSuccess: () => {
