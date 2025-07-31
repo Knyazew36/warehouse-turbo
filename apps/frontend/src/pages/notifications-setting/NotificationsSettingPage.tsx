@@ -1,19 +1,22 @@
 import { Page } from '@/components/Page'
+import { Checkbox } from '@/components/ui/checkbox'
+import { Role } from '@/entitites/user/model/user.type'
 import PageHeader from '@/shared/ui/page-header/ui/PageHeader'
+import { getRole } from '@/shared/utils/getRole'
 import React from 'react'
 
 const NotificationsSettingPage = () => {
   return (
     <Page back>
       <PageHeader title='Настройки уведомлений' />
-      <div className='p-5 md:p-8 bg-white border border-gray-200 shadow-2xs rounded-xl dark:bg-neutral-800 dark:border-neutral-700'>
+      <div className='rounded-xl border border-gray-200 bg-white p-5 shadow-2xs md:p-8 dark:border-neutral-700 dark:bg-neutral-800'>
         {/* Title */}
         <div className='mb-4 xl:mb-8'>
           {/* <h1 className="text-lg font-semibold text-gray-800 dark:text-neutral-200">
       Notifications
     </h1> */}
           <p className='text-sm text-gray-500 dark:text-neutral-500'>
-            Configure email, desktop and mobile app notifications.
+            Настройте уведомления для вашего склада.
           </p>
         </div>
         {/* End Title */}
@@ -22,138 +25,30 @@ const NotificationsSettingPage = () => {
           {/* Notifications */}
           <div className='space-y-5'>
             {/* Header */}
-            <div className='hidden sticky top-14 start-0 bg-white dark:bg-neutral-800 md:block'>
-              {/* Grid */}
-              <div className='grid md:grid-cols-5 lg:gap-x-3 md:gap-x-6 p-3 md:p-5'>
-                <div className='col-span-2 self-center'>
-                  <h2 className='font-semibold text-gray-800 dark:text-neutral-200'>Notify me about</h2>
-                </div>
-                {/* End Col */}
-                <div className='col-span-1 text-center'>
-                  <svg
-                    className='shrink-0 size-5 mx-auto text-gray-500 dark:text-neutral-500'
-                    xmlns='http://www.w3.org/2000/svg'
-                    width={24}
-                    height={24}
-                    viewBox='0 0 24 24'
-                    fill='none'
-                    stroke='currentColor'
-                    strokeWidth={2}
-                    strokeLinecap='round'
-                    strokeLinejoin='round'
-                  >
-                    <rect
-                      width={20}
-                      height={16}
-                      x={2}
-                      y={4}
-                      rx={2}
-                    />
-                    <path d='m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7' />
-                  </svg>
-                  <h3 className='mt-2 text-sm font-medium text-gray-800 dark:text-neutral-200'>Email</h3>
-                </div>
-                {/* End Col */}
-                <div className='col-span-1 text-center'>
-                  <svg
-                    className='shrink-0 size-5 mx-auto text-gray-500 dark:text-neutral-500'
-                    xmlns='http://www.w3.org/2000/svg'
-                    width={24}
-                    height={24}
-                    viewBox='0 0 24 24'
-                    fill='none'
-                    stroke='currentColor'
-                    strokeWidth={2}
-                    strokeLinecap='round'
-                    strokeLinejoin='round'
-                  >
-                    <rect
-                      width={20}
-                      height={14}
-                      x={2}
-                      y={3}
-                      rx={2}
-                    />
-                    <line
-                      x1={8}
-                      x2={16}
-                      y1={21}
-                      y2={21}
-                    />
-                    <line
-                      x1={12}
-                      x2={12}
-                      y1={17}
-                      y2={21}
-                    />
-                  </svg>
-                  <h3 className='mt-2 text-sm font-medium text-gray-800 dark:text-neutral-200'>Desktop</h3>
-                  <p className='text-xs text-gray-500 dark:text-neutral-500'>Push notification</p>
-                </div>
-                {/* End Col */}
-                <div className='col-span-1 text-center'>
-                  <svg
-                    className='shrink-0 size-5 mx-auto text-gray-500 dark:text-neutral-500'
-                    xmlns='http://www.w3.org/2000/svg'
-                    width={24}
-                    height={24}
-                    viewBox='0 0 24 24'
-                    fill='none'
-                    stroke='currentColor'
-                    strokeWidth={2}
-                    strokeLinecap='round'
-                    strokeLinejoin='round'
-                  >
-                    <rect
-                      width={14}
-                      height={20}
-                      x={5}
-                      y={2}
-                      rx={2}
-                      ry={2}
-                    />
-                    <path d='M12 18h.01' />
-                  </svg>
-                  <h3 className='mt-2 text-sm font-medium text-gray-800 dark:text-neutral-200'>Mobile</h3>
-                  <p className='text-xs text-gray-500 dark:text-neutral-500'>Push notification</p>
-                </div>
-                {/* End Col */}
-              </div>
-              {/* End Grid */}
-            </div>
+
             {/* End Header */}
             {/* List */}
-            <ul className='grid md:grid-cols-5 md:gap-x-6 bg-gray-100 rounded-lg p-3 md:p-5 dark:bg-neutral-700'>
+            <ul className='grid rounded-lg bg-gray-100 p-3 md:grid-cols-5 md:gap-x-6 md:p-5 dark:bg-neutral-700'>
               {/* Item */}
               <li className='md:col-span-2'>
-                <h3 className='font-semibold text-gray-800 dark:text-neutral-200'>General</h3>
+                <h3 className='font-semibold text-gray-800 dark:text-neutral-200'>Общие</h3>
               </li>
-              {/* End Item */}
+
               {/* Item */}
-              <li className='hidden md:block md:col-span-1 md:text-center'>
+              <li className='hidden md:col-span-1 md:block md:text-center'>
                 <button
                   type='button'
-                  className='text-xs text-blue-600 decoration-2 hover:underline font-medium focus:outline-hidden focus:underline dark:text-blue-500 dark:hover:text-blue-400'
+                  className='text-xs font-medium text-blue-600 decoration-2 hover:underline focus:underline focus:outline-hidden dark:text-blue-500 dark:hover:text-blue-400'
                 >
                   Toggle all
                 </button>
               </li>
               {/* End Item */}
               {/* Item */}
-              <li className='hidden md:block md:col-span-1 md:text-center'>
+              <li className='hidden md:col-span-1 md:block md:text-center'>
                 <button
                   type='button'
-                  className='text-xs text-blue-600 decoration-2 hover:underline font-medium focus:outline-hidden focus:underline dark:text-blue-500 dark:hover:text-blue-400'
-                >
-                  Toggle all
-                </button>
-              </li>
-              {/* End Item */}
-              {/* Item */}
-              <li className='hidden md:block md:col-span-1 md:text-center'>
-                <button
-                  type='button'
-                  className='text-xs text-blue-600 decoration-2 hover:underline font-medium focus:outline-hidden focus:underline dark:text-blue-500 dark:hover:text-blue-400'
+                  className='text-xs font-medium text-blue-600 decoration-2 hover:underline focus:underline focus:outline-hidden dark:text-blue-500 dark:hover:text-blue-400'
                 >
                   Toggle all
                 </button>
@@ -162,52 +57,35 @@ const NotificationsSettingPage = () => {
             </ul>
 
             {/* List */}
-            <ul className='grid md:grid-cols-5 md:items-center gap-1.5 md:gap-6 px-3 md:px-5'>
+            <ul className='grid gap-1.5 px-3 md:grid-cols-5 md:items-center md:gap-6 md:px-5'>
               {/* Item */}
               <li className='md:col-span-2'>
-                <p className='text-sm font-medium text-gray-800 dark:text-neutral-200'>Task Assignments</p>
-                <p className='text-sm text-gray-500 dark:text-neutral-500'>Notify me when I'm assigned a task</p>
+                <p className='text-sm font-medium text-gray-800 dark:text-neutral-200'>
+                  Уведомления о минимальном остатке товара:
+                </p>
+                <p className='text-sm text-gray-500 dark:text-neutral-500'>
+                  Уведомление о минимальном остатке товара будет отправлено в Telegram бот.
+                  Указанным ниже сотрудникам:
+                </p>
               </li>
-              {/* End Item */}
-              {/* Item */}
-              <li className='col-span-1'>
-                <div className='grid grid-cols-2 items-center md:block'>
-                  <span className='md:hidden text-sm text-gray-500 dark:text-neutral-200'>Email</span>
-                  <div className='text-end md:text-center'>
-                    <input
-                      type='checkbox'
-                      className='shrink-0 border-gray-300 rounded-sm text-blue-600 focus:ring-blue-500 checked:border-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-800 dark:border-neutral-600 dark:checked:bg-blue-500 dark:checked:border-blue-500 dark:focus:ring-offset-gray-800'
-                    />
-                  </div>
-                </div>
-              </li>
-              {/* End Item */}
-              {/* Item */}
-              <li className='col-span-1'>
-                <div className='grid grid-cols-2 items-center md:block'>
-                  <span className='md:hidden text-sm text-gray-500 dark:text-neutral-200'>Desktop</span>
-                  <div className='text-end md:text-center'>
-                    <input
-                      type='checkbox'
-                      className='shrink-0 border-gray-300 rounded-sm text-blue-600 focus:ring-blue-500 checked:border-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-800 dark:border-neutral-600 dark:checked:bg-blue-500 dark:checked:border-blue-500 dark:focus:ring-offset-gray-800'
-                    />
-                  </div>
-                </div>
-              </li>
-              {/* End Item */}
-              {/* Item */}
-              <li className='col-span-1'>
-                <div className='grid grid-cols-2 items-center md:block'>
-                  <span className='md:hidden text-sm text-gray-500 dark:text-neutral-200'>Mobile</span>
-                  <div className='text-end md:text-center'>
-                    <input
-                      type='checkbox'
-                      className='shrink-0 border-gray-300 rounded-sm text-blue-600 focus:ring-blue-500 checked:border-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-800 dark:border-neutral-600 dark:checked:bg-blue-500 dark:checked:border-blue-500 dark:focus:ring-offset-gray-800'
-                    />
-                  </div>
-                </div>
-              </li>
-              {/* End Item */}
+
+              {Object.values(Role).map(role => {
+                if (role === Role.BLOCKED || role === Role.IT || role === Role.GUEST) return null
+
+                return (
+                  <li
+                    key={role}
+                    className='col-span-1'
+                  >
+                    <label className='flex items-center justify-between md:block'>
+                      <span className='text-sm text-gray-500 md:hidden dark:text-neutral-200'>
+                        {getRole(role)}
+                      </span>
+                      <Checkbox />
+                    </label>
+                  </li>
+                )
+              })}
             </ul>
             {/* End List */}
           </div>
@@ -215,31 +93,37 @@ const NotificationsSettingPage = () => {
           <div className='border-t border-gray-200 dark:border-neutral-700' />
           {/* Title */}
           <div>
-            <h2 className='text-lg font-semibold text-gray-800 dark:text-neutral-200'>Preline emails</h2>
-            <p className='text-sm text-gray-500 dark:text-neutral-500'>Stay in-the-know about all things.</p>
+            <h2 className='text-lg font-semibold text-gray-800 dark:text-neutral-200'>
+              Preline emails
+            </h2>
+            <p className='text-sm text-gray-500 dark:text-neutral-500'>
+              Stay in-the-know about all things.
+            </p>
           </div>
           {/* End Title */}
           {/* Grid */}
-          <div className='grid sm:grid-cols-2 gap-y-6 sm:gap-y-0 sm:gap-x-10 md:gap-x-16'>
+          <div className='grid gap-y-6 sm:grid-cols-2 sm:gap-x-10 sm:gap-y-0 md:gap-x-16'>
             <div className='space-y-6'>
               {/* Switch */}
               <div className='flex gap-x-4'>
                 <div className='mt-1'>
                   <label
                     htmlFor='hs-pro-danpe1'
-                    className='relative inline-block w-11 h-6 cursor-pointer'
+                    className='relative inline-block h-6 w-11 cursor-pointer'
                   >
                     <input
                       type='checkbox'
                       id='hs-pro-danpe1'
                       className='peer sr-only'
                     />
-                    <span className='absolute inset-0 bg-gray-200 rounded-full transition-colors duration-200 ease-in-out peer-checked:bg-blue-600 dark:bg-neutral-700 dark:peer-checked:bg-blue-500 peer-disabled:opacity-50 peer-disabled:pointer-events-none' />
-                    <span className='absolute top-1/2 start-0.5 -translate-y-1/2 size-5 bg-white rounded-full shadow-sm transition-transform duration-200 ease-in-out peer-checked:translate-x-full dark:bg-neutral-400 dark:peer-checked:bg-white' />
+                    <span className='absolute inset-0 rounded-full bg-gray-200 transition-colors duration-200 ease-in-out peer-checked:bg-blue-600 peer-disabled:pointer-events-none peer-disabled:opacity-50 dark:bg-neutral-700 dark:peer-checked:bg-blue-500' />
+                    <span className='absolute start-0.5 top-1/2 size-5 -translate-y-1/2 rounded-full bg-white shadow-sm transition-transform duration-200 ease-in-out peer-checked:translate-x-full dark:bg-neutral-400 dark:peer-checked:bg-white' />
                   </label>
                 </div>
                 <div className='flex flex-col'>
-                  <span className='block text-sm font-medium text-gray-800 dark:text-neutral-300'>Daily digest</span>
+                  <span className='block text-sm font-medium text-gray-800 dark:text-neutral-300'>
+                    Daily digest
+                  </span>
                   <p className='text-sm text-gray-500 dark:text-neutral-500'>
                     Personalized productivity stats plus your tasks due today. Sent every morning.
                   </p>
@@ -251,21 +135,24 @@ const NotificationsSettingPage = () => {
                 <div className='mt-1'>
                   <label
                     htmlFor='hs-pro-danpe2'
-                    className='relative inline-block w-11 h-6 cursor-pointer'
+                    className='relative inline-block h-6 w-11 cursor-pointer'
                   >
                     <input
                       type='checkbox'
                       id='hs-pro-danpe2'
                       className='peer sr-only'
                     />
-                    <span className='absolute inset-0 bg-gray-200 rounded-full transition-colors duration-200 ease-in-out peer-checked:bg-blue-600 dark:bg-neutral-700 dark:peer-checked:bg-blue-500 peer-disabled:opacity-50 peer-disabled:pointer-events-none' />
-                    <span className='absolute top-1/2 start-0.5 -translate-y-1/2 size-5 bg-white rounded-full shadow-sm transition-transform duration-200 ease-in-out peer-checked:translate-x-full dark:bg-neutral-400 dark:peer-checked:bg-white' />
+                    <span className='absolute inset-0 rounded-full bg-gray-200 transition-colors duration-200 ease-in-out peer-checked:bg-blue-600 peer-disabled:pointer-events-none peer-disabled:opacity-50 dark:bg-neutral-700 dark:peer-checked:bg-blue-500' />
+                    <span className='absolute start-0.5 top-1/2 size-5 -translate-y-1/2 rounded-full bg-white shadow-sm transition-transform duration-200 ease-in-out peer-checked:translate-x-full dark:bg-neutral-400 dark:peer-checked:bg-white' />
                   </label>
                 </div>
                 <div className='flex flex-col'>
-                  <span className='block text-sm font-medium text-gray-800 dark:text-neutral-300'>What’s new</span>
+                  <span className='block text-sm font-medium text-gray-800 dark:text-neutral-300'>
+                    What’s new
+                  </span>
                   <p className='text-sm text-gray-500 dark:text-neutral-500'>
-                    Exciting features and updates from the Preline team. Sent no more than once a month.
+                    Exciting features and updates from the Preline team. Sent no more than once a
+                    month.
                   </p>
                 </div>
               </div>
@@ -275,19 +162,21 @@ const NotificationsSettingPage = () => {
                 <div className='mt-1'>
                   <label
                     htmlFor='hs-pro-danpe3'
-                    className='relative inline-block w-11 h-6 cursor-pointer'
+                    className='relative inline-block h-6 w-11 cursor-pointer'
                   >
                     <input
                       type='checkbox'
                       id='hs-pro-danpe3'
                       className='peer sr-only'
                     />
-                    <span className='absolute inset-0 bg-gray-200 rounded-full transition-colors duration-200 ease-in-out peer-checked:bg-blue-600 dark:bg-neutral-700 dark:peer-checked:bg-blue-500 peer-disabled:opacity-50 peer-disabled:pointer-events-none' />
-                    <span className='absolute top-1/2 start-0.5 -translate-y-1/2 size-5 bg-white rounded-full shadow-sm transition-transform duration-200 ease-in-out peer-checked:translate-x-full dark:bg-neutral-400 dark:peer-checked:bg-white' />
+                    <span className='absolute inset-0 rounded-full bg-gray-200 transition-colors duration-200 ease-in-out peer-checked:bg-blue-600 peer-disabled:pointer-events-none peer-disabled:opacity-50 dark:bg-neutral-700 dark:peer-checked:bg-blue-500' />
+                    <span className='absolute start-0.5 top-1/2 size-5 -translate-y-1/2 rounded-full bg-white shadow-sm transition-transform duration-200 ease-in-out peer-checked:translate-x-full dark:bg-neutral-400 dark:peer-checked:bg-white' />
                   </label>
                 </div>
                 <div className='flex flex-col'>
-                  <span className='block text-sm font-medium text-gray-800 dark:text-neutral-300'>Tips and tricks</span>
+                  <span className='block text-sm font-medium text-gray-800 dark:text-neutral-300'>
+                    Tips and tricks
+                  </span>
                   <p className='text-sm text-gray-500 dark:text-neutral-500'>
                     Powerful productivity advice in your inbox. Sent once a month.
                   </p>
@@ -299,21 +188,24 @@ const NotificationsSettingPage = () => {
                 <div className='mt-1'>
                   <label
                     htmlFor='hs-pro-danpe4'
-                    className='relative inline-block w-11 h-6 cursor-pointer'
+                    className='relative inline-block h-6 w-11 cursor-pointer'
                   >
                     <input
                       type='checkbox'
                       id='hs-pro-danpe4'
                       className='peer sr-only'
                     />
-                    <span className='absolute inset-0 bg-gray-200 rounded-full transition-colors duration-200 ease-in-out peer-checked:bg-blue-600 dark:bg-neutral-700 dark:peer-checked:bg-blue-500 peer-disabled:opacity-50 peer-disabled:pointer-events-none' />
-                    <span className='absolute top-1/2 start-0.5 -translate-y-1/2 size-5 bg-white rounded-full shadow-sm transition-transform duration-200 ease-in-out peer-checked:translate-x-full dark:bg-neutral-400 dark:peer-checked:bg-white' />
+                    <span className='absolute inset-0 rounded-full bg-gray-200 transition-colors duration-200 ease-in-out peer-checked:bg-blue-600 peer-disabled:pointer-events-none peer-disabled:opacity-50 dark:bg-neutral-700 dark:peer-checked:bg-blue-500' />
+                    <span className='absolute start-0.5 top-1/2 size-5 -translate-y-1/2 rounded-full bg-white shadow-sm transition-transform duration-200 ease-in-out peer-checked:translate-x-full dark:bg-neutral-400 dark:peer-checked:bg-white' />
                   </label>
                 </div>
                 <div className='flex flex-col'>
-                  <span className='block text-sm font-medium text-gray-800 dark:text-neutral-300'>New login alert</span>
+                  <span className='block text-sm font-medium text-gray-800 dark:text-neutral-300'>
+                    New login alert
+                  </span>
                   <p className='text-sm text-gray-500 dark:text-neutral-500'>
-                    Get an email notification every time a new device is logged into your account. Recommended.
+                    Get an email notification every time a new device is logged into your account.
+                    Recommended.
                   </p>
                 </div>
               </div>
@@ -326,22 +218,24 @@ const NotificationsSettingPage = () => {
                 <div className='mt-1'>
                   <label
                     htmlFor='hs-pro-danpe5'
-                    className='relative inline-block w-11 h-6 cursor-pointer'
+                    className='relative inline-block h-6 w-11 cursor-pointer'
                   >
                     <input
                       type='checkbox'
                       id='hs-pro-danpe5'
                       className='peer sr-only'
                     />
-                    <span className='absolute inset-0 bg-gray-200 rounded-full transition-colors duration-200 ease-in-out peer-checked:bg-blue-600 dark:bg-neutral-700 dark:peer-checked:bg-blue-500 peer-disabled:opacity-50 peer-disabled:pointer-events-none' />
-                    <span className='absolute top-1/2 start-0.5 -translate-y-1/2 size-5 bg-white rounded-full shadow-sm transition-transform duration-200 ease-in-out peer-checked:translate-x-full dark:bg-neutral-400 dark:peer-checked:bg-white' />
+                    <span className='absolute inset-0 rounded-full bg-gray-200 transition-colors duration-200 ease-in-out peer-checked:bg-blue-600 peer-disabled:pointer-events-none peer-disabled:opacity-50 dark:bg-neutral-700 dark:peer-checked:bg-blue-500' />
+                    <span className='absolute start-0.5 top-1/2 size-5 -translate-y-1/2 rounded-full bg-white shadow-sm transition-transform duration-200 ease-in-out peer-checked:translate-x-full dark:bg-neutral-400 dark:peer-checked:bg-white' />
                   </label>
                 </div>
                 <div className='flex flex-col'>
                   <span className='block text-sm font-medium text-gray-800 dark:text-neutral-300'>
                     New device login
                   </span>
-                  <p className='text-sm text-gray-500 dark:text-neutral-500'>Notify me when there is a new login.</p>
+                  <p className='text-sm text-gray-500 dark:text-neutral-500'>
+                    Notify me when there is a new login.
+                  </p>
                 </div>
               </div>
               {/* End Switch */}
@@ -350,19 +244,21 @@ const NotificationsSettingPage = () => {
                 <div className='mt-1'>
                   <label
                     htmlFor='hs-pro-danpe6'
-                    className='relative inline-block w-11 h-6 cursor-pointer'
+                    className='relative inline-block h-6 w-11 cursor-pointer'
                   >
                     <input
                       type='checkbox'
                       id='hs-pro-danpe6'
                       className='peer sr-only'
                     />
-                    <span className='absolute inset-0 bg-gray-200 rounded-full transition-colors duration-200 ease-in-out peer-checked:bg-blue-600 dark:bg-neutral-700 dark:peer-checked:bg-blue-500 peer-disabled:opacity-50 peer-disabled:pointer-events-none' />
-                    <span className='absolute top-1/2 start-0.5 -translate-y-1/2 size-5 bg-white rounded-full shadow-sm transition-transform duration-200 ease-in-out peer-checked:translate-x-full dark:bg-neutral-400 dark:peer-checked:bg-white' />
+                    <span className='absolute inset-0 rounded-full bg-gray-200 transition-colors duration-200 ease-in-out peer-checked:bg-blue-600 peer-disabled:pointer-events-none peer-disabled:opacity-50 dark:bg-neutral-700 dark:peer-checked:bg-blue-500' />
+                    <span className='absolute start-0.5 top-1/2 size-5 -translate-y-1/2 rounded-full bg-white shadow-sm transition-transform duration-200 ease-in-out peer-checked:translate-x-full dark:bg-neutral-400 dark:peer-checked:bg-white' />
                   </label>
                 </div>
                 <div className='flex flex-col'>
-                  <span className='block text-sm font-medium text-gray-800 dark:text-neutral-300'>Perks</span>
+                  <span className='block text-sm font-medium text-gray-800 dark:text-neutral-300'>
+                    Perks
+                  </span>
                   <p className='text-sm text-gray-500 dark:text-neutral-500'>
                     Special discounts, partner offers, invitations to events, and more
                   </p>
@@ -374,15 +270,15 @@ const NotificationsSettingPage = () => {
                 <div className='mt-1'>
                   <label
                     htmlFor='hs-pro-danpe7'
-                    className='relative inline-block w-11 h-6 cursor-pointer'
+                    className='relative inline-block h-6 w-11 cursor-pointer'
                   >
                     <input
                       type='checkbox'
                       id='hs-pro-danpe7'
                       className='peer sr-only'
                     />
-                    <span className='absolute inset-0 bg-gray-200 rounded-full transition-colors duration-200 ease-in-out peer-checked:bg-blue-600 dark:bg-neutral-700 dark:peer-checked:bg-blue-500 peer-disabled:opacity-50 peer-disabled:pointer-events-none' />
-                    <span className='absolute top-1/2 start-0.5 -translate-y-1/2 size-5 bg-white rounded-full shadow-sm transition-transform duration-200 ease-in-out peer-checked:translate-x-full dark:bg-neutral-400 dark:peer-checked:bg-white' />
+                    <span className='absolute inset-0 rounded-full bg-gray-200 transition-colors duration-200 ease-in-out peer-checked:bg-blue-600 peer-disabled:pointer-events-none peer-disabled:opacity-50 dark:bg-neutral-700 dark:peer-checked:bg-blue-500' />
+                    <span className='absolute start-0.5 top-1/2 size-5 -translate-y-1/2 rounded-full bg-white shadow-sm transition-transform duration-200 ease-in-out peer-checked:translate-x-full dark:bg-neutral-400 dark:peer-checked:bg-white' />
                   </label>
                 </div>
                 <div className='flex flex-col'>
@@ -405,10 +301,10 @@ const NotificationsSettingPage = () => {
             <div className='mt-3'>
               <button
                 type='button'
-                className='py-2 px-3 inline-flex items-center gap-x-2 text-sm font-medium rounded-lg border border-gray-200 bg-white text-gray-800 shadow-2xs hover:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none focus:outline-hidden focus:bg-gray-50 dark:bg-neutral-800 dark:border-neutral-700 dark:text-neutral-300 dark:hover:bg-neutral-700 dark:focus:bg-neutral-700'
+                className='inline-flex items-center gap-x-2 rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm font-medium text-gray-800 shadow-2xs hover:bg-gray-50 focus:bg-gray-50 focus:outline-hidden disabled:pointer-events-none disabled:opacity-50 dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-300 dark:hover:bg-neutral-700 dark:focus:bg-neutral-700'
               >
                 <svg
-                  className='shrink-0 size-3.5'
+                  className='size-3.5 shrink-0'
                   xmlns='http://www.w3.org/2000/svg'
                   width={24}
                   height={24}
@@ -432,8 +328,8 @@ const NotificationsSettingPage = () => {
             <h4 className='font-medium text-gray-800 dark:text-neutral-200'>Расписание</h4>
             <div className='mt-3'>
               {/* Input Group */}
-              <div className='flex flex-col sm:flex-row sm:items-center gap-2'>
-                <div className='flex '>
+              <div className='flex flex-col gap-2 sm:flex-row sm:items-center'>
+                <div className='flex'>
                   {/* <input
               type="checkbox"
               className="shrink-0 size-3.5 border-gray-300 rounded-sm text-blue-600 focus:ring-blue-500 checked:border-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-800 dark:border-neutral-600 dark:checked:bg-blue-500 dark:checked:border-blue-500 dark:focus:ring-offset-gray-800"
@@ -441,7 +337,7 @@ const NotificationsSettingPage = () => {
             /> */}
                   <label
                     htmlFor='hs-pro-danscch'
-                    className='text-sm text-gray-500  dark:text-neutral-500'
+                    className='text-sm text-gray-500 dark:text-neutral-500'
                   >
                     Отправлять уведомление об остатке товара в:
                   </label>
@@ -449,7 +345,7 @@ const NotificationsSettingPage = () => {
                 <div className='flex items-center gap-x-2'>
                   <input
                     type='text'
-                    className='py-1.5 sm:py-2 px-3 max-w-24 border-gray-200 rounded-lg sm:text-sm placeholder:text-gray-400 focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-transparent dark:border-neutral-700 dark:text-neutral-300 dark:placeholder:text-white/60 dark:focus:ring-neutral-600'
+                    className='max-w-24 rounded-lg border-gray-200 px-3 py-1.5 placeholder:text-gray-400 focus:border-blue-500 focus:ring-blue-500 disabled:pointer-events-none disabled:opacity-50 sm:py-2 sm:text-sm dark:border-neutral-700 dark:bg-transparent dark:text-neutral-300 dark:placeholder:text-white/60 dark:focus:ring-neutral-600'
                     defaultValue='5:00pm'
                   />
                   {/* <span className="text-sm text-gray-500 dark:text-neutral-500">
@@ -471,46 +367,46 @@ const NotificationsSettingPage = () => {
             </h4>
             <div className='mt-3'>
               {/* Button Group */}
-              <div className='grid sm:inline-flex rounded-lg shadow-2xs'>
+              <div className='grid rounded-lg shadow-2xs sm:inline-flex'>
                 <button
                   type='button'
-                  className='py-2 px-3 inline-flex justify-center items-center gap-x-2 -mt-px sm:mt-0 sm:-ms-px first:rounded-t-lg last:rounded-b-lg sm:first:rounded-s-lg sm:first:ms-0 sm:first:rounded-se-none sm:last:rounded-es-none sm:last:rounded-e-lg text-start text-sm font-medium border border-gray-200 bg-white text-gray-800 shadow-2xs hover:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none focus:outline-hidden focus:bg-gray-800 focus:text-white dark:bg-neutral-800 dark:border-neutral-700 dark:text-neutral-300 dark:hover:bg-neutral-700 dark:focus:bg-neutral-200 dark:focus:text-neutral-800'
+                  className='-mt-px inline-flex items-center justify-center gap-x-2 border border-gray-200 bg-white px-3 py-2 text-start text-sm font-medium text-gray-800 shadow-2xs first:rounded-t-lg last:rounded-b-lg hover:bg-gray-50 focus:bg-gray-800 focus:text-white focus:outline-hidden disabled:pointer-events-none disabled:opacity-50 sm:-ms-px sm:mt-0 sm:first:ms-0 sm:first:rounded-s-lg sm:first:rounded-se-none sm:last:rounded-e-lg sm:last:rounded-es-none dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-300 dark:hover:bg-neutral-700 dark:focus:bg-neutral-200 dark:focus:text-neutral-800'
                 >
                   Пон<span className='-ms-2 sm:hidden'>едельник</span>
                 </button>
                 <button
                   type='button'
-                  className='py-2 px-3 inline-flex justify-center items-center gap-x-2 -mt-px sm:mt-0 sm:-ms-px first:rounded-t-lg last:rounded-b-lg sm:first:rounded-s-lg sm:first:ms-0 sm:first:rounded-se-none sm:last:rounded-es-none sm:last:rounded-e-lg text-start text-sm font-medium border border-gray-200 bg-white text-gray-800 shadow-2xs hover:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none focus:outline-hidden focus:bg-gray-800 focus:text-white dark:bg-neutral-800 dark:border-neutral-700 dark:text-neutral-300 dark:hover:bg-neutral-700 dark:focus:bg-neutral-200 dark:focus:text-neutral-800'
+                  className='-mt-px inline-flex items-center justify-center gap-x-2 border border-gray-200 bg-white px-3 py-2 text-start text-sm font-medium text-gray-800 shadow-2xs first:rounded-t-lg last:rounded-b-lg hover:bg-gray-50 focus:bg-gray-800 focus:text-white focus:outline-hidden disabled:pointer-events-none disabled:opacity-50 sm:-ms-px sm:mt-0 sm:first:ms-0 sm:first:rounded-s-lg sm:first:rounded-se-none sm:last:rounded-e-lg sm:last:rounded-es-none dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-300 dark:hover:bg-neutral-700 dark:focus:bg-neutral-200 dark:focus:text-neutral-800'
                 >
                   Втор<span className='-ms-2 sm:hidden'>ник</span>
                 </button>
                 <button
                   type='button'
-                  className='py-2 px-3 inline-flex justify-center items-center gap-x-2 -mt-px sm:mt-0 sm:-ms-px first:rounded-t-lg last:rounded-b-lg sm:first:rounded-s-lg sm:first:ms-0 sm:first:rounded-se-none sm:last:rounded-es-none sm:last:rounded-e-lg text-start text-sm font-medium border border-gray-200 bg-white text-gray-800 shadow-2xs hover:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none focus:outline-hidden focus:bg-gray-800 focus:text-white dark:bg-neutral-800 dark:border-neutral-700 dark:text-neutral-300 dark:hover:bg-neutral-700 dark:focus:bg-neutral-200 dark:focus:text-neutral-800'
+                  className='-mt-px inline-flex items-center justify-center gap-x-2 border border-gray-200 bg-white px-3 py-2 text-start text-sm font-medium text-gray-800 shadow-2xs first:rounded-t-lg last:rounded-b-lg hover:bg-gray-50 focus:bg-gray-800 focus:text-white focus:outline-hidden disabled:pointer-events-none disabled:opacity-50 sm:-ms-px sm:mt-0 sm:first:ms-0 sm:first:rounded-s-lg sm:first:rounded-se-none sm:last:rounded-e-lg sm:last:rounded-es-none dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-300 dark:hover:bg-neutral-700 dark:focus:bg-neutral-200 dark:focus:text-neutral-800'
                 >
                   Сре<span className='-ms-2 sm:hidden'>да</span>
                 </button>
                 <button
                   type='button'
-                  className='py-2 px-3 inline-flex justify-center items-center gap-x-2 -mt-px sm:mt-0 sm:-ms-px first:rounded-t-lg last:rounded-b-lg sm:first:rounded-s-lg sm:first:ms-0 sm:first:rounded-se-none sm:last:rounded-es-none sm:last:rounded-e-lg text-start text-sm font-medium border border-gray-200 bg-white text-gray-800 shadow-2xs hover:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none focus:outline-hidden focus:bg-gray-800 focus:text-white dark:bg-neutral-800 dark:border-neutral-700 dark:text-neutral-300 dark:hover:bg-neutral-700 dark:focus:bg-neutral-200 dark:focus:text-neutral-800'
+                  className='-mt-px inline-flex items-center justify-center gap-x-2 border border-gray-200 bg-white px-3 py-2 text-start text-sm font-medium text-gray-800 shadow-2xs first:rounded-t-lg last:rounded-b-lg hover:bg-gray-50 focus:bg-gray-800 focus:text-white focus:outline-hidden disabled:pointer-events-none disabled:opacity-50 sm:-ms-px sm:mt-0 sm:first:ms-0 sm:first:rounded-s-lg sm:first:rounded-se-none sm:last:rounded-e-lg sm:last:rounded-es-none dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-300 dark:hover:bg-neutral-700 dark:focus:bg-neutral-200 dark:focus:text-neutral-800'
                 >
                   Чет<span className='-ms-2 sm:hidden'>верг</span>
                 </button>
                 <button
                   type='button'
-                  className='py-2 px-3 inline-flex justify-center items-center gap-x-2 -mt-px sm:mt-0 sm:-ms-px first:rounded-t-lg last:rounded-b-lg sm:first:rounded-s-lg sm:first:ms-0 sm:first:rounded-se-none sm:last:rounded-es-none sm:last:rounded-e-lg text-start text-sm font-medium border border-gray-200 bg-white text-gray-800 shadow-2xs hover:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none focus:outline-hidden focus:bg-gray-800 focus:text-white dark:bg-neutral-800 dark:border-neutral-700 dark:text-neutral-300 dark:hover:bg-neutral-700 dark:focus:bg-neutral-200 dark:focus:text-neutral-800'
+                  className='-mt-px inline-flex items-center justify-center gap-x-2 border border-gray-200 bg-white px-3 py-2 text-start text-sm font-medium text-gray-800 shadow-2xs first:rounded-t-lg last:rounded-b-lg hover:bg-gray-50 focus:bg-gray-800 focus:text-white focus:outline-hidden disabled:pointer-events-none disabled:opacity-50 sm:-ms-px sm:mt-0 sm:first:ms-0 sm:first:rounded-s-lg sm:first:rounded-se-none sm:last:rounded-e-lg sm:last:rounded-es-none dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-300 dark:hover:bg-neutral-700 dark:focus:bg-neutral-200 dark:focus:text-neutral-800'
                 >
                   Пят<span className='-ms-2 sm:hidden'>ниц</span>
                 </button>
                 <button
                   type='button'
-                  className='py-2 px-3 inline-flex justify-center items-center gap-x-2 -mt-px sm:mt-0 sm:-ms-px first:rounded-t-lg last:rounded-b-lg sm:first:rounded-s-lg sm:first:ms-0 sm:first:rounded-se-none sm:last:rounded-es-none sm:last:rounded-e-lg text-start text-sm font-medium border border-gray-200 bg-white text-gray-800 shadow-2xs hover:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none focus:outline-hidden focus:bg-gray-800 focus:text-white dark:bg-neutral-800 dark:border-neutral-700 dark:text-neutral-300 dark:hover:bg-neutral-700 dark:focus:bg-neutral-200 dark:focus:text-neutral-800'
+                  className='-mt-px inline-flex items-center justify-center gap-x-2 border border-gray-200 bg-white px-3 py-2 text-start text-sm font-medium text-gray-800 shadow-2xs first:rounded-t-lg last:rounded-b-lg hover:bg-gray-50 focus:bg-gray-800 focus:text-white focus:outline-hidden disabled:pointer-events-none disabled:opacity-50 sm:-ms-px sm:mt-0 sm:first:ms-0 sm:first:rounded-s-lg sm:first:rounded-se-none sm:last:rounded-e-lg sm:last:rounded-es-none dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-300 dark:hover:bg-neutral-700 dark:focus:bg-neutral-200 dark:focus:text-neutral-800'
                 >
                   Суб<span className='-ms-2 sm:hidden'>бота</span>
                 </button>
                 <button
                   type='button'
-                  className='py-2 px-3 inline-flex justify-center items-center gap-x-2 -mt-px sm:mt-0 sm:-ms-px first:rounded-t-lg last:rounded-b-lg sm:first:rounded-s-lg sm:first:ms-0 sm:first:rounded-se-none sm:last:rounded-es-none sm:last:rounded-e-lg text-start text-sm font-medium border border-gray-200 bg-white text-gray-800 shadow-2xs hover:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none focus:outline-hidden focus:bg-gray-800 focus:text-white dark:bg-neutral-800 dark:border-neutral-700 dark:text-neutral-300 dark:hover:bg-neutral-700 dark:focus:bg-neutral-200 dark:focus:text-neutral-800'
+                  className='-mt-px inline-flex items-center justify-center gap-x-2 border border-gray-200 bg-white px-3 py-2 text-start text-sm font-medium text-gray-800 shadow-2xs first:rounded-t-lg last:rounded-b-lg hover:bg-gray-50 focus:bg-gray-800 focus:text-white focus:outline-hidden disabled:pointer-events-none disabled:opacity-50 sm:-ms-px sm:mt-0 sm:first:ms-0 sm:first:rounded-s-lg sm:first:rounded-se-none sm:last:rounded-e-lg sm:last:rounded-es-none dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-300 dark:hover:bg-neutral-700 dark:focus:bg-neutral-200 dark:focus:text-neutral-800'
                 >
                   Вос<span className='-ms-2 sm:hidden'>кресенье</span>
                 </button>
@@ -522,13 +418,13 @@ const NotificationsSettingPage = () => {
           <div className='flex gap-x-3'>
             <button
               type='button'
-              className='py-2 px-3 inline-flex items-center gap-x-2 text-sm font-medium rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none focus:outline-hidden focus:ring-2 focus:ring-blue-500'
+              className='inline-flex items-center gap-x-2 rounded-lg border border-transparent bg-blue-600 px-3 py-2 text-sm font-medium text-white hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:outline-hidden disabled:pointer-events-none disabled:opacity-50'
             >
               Сохранить изменения
             </button>
             <button
               type='button'
-              className='py-2 px-3 inline-flex items-center gap-x-2 text-sm font-medium rounded-lg border border-gray-200 bg-white text-gray-800 shadow-2xs hover:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none focus:outline-hidden focus:bg-gray-50 dark:bg-neutral-800 dark:border-neutral-700 dark:text-neutral-300 dark:hover:bg-neutral-700 dark:focus:bg-neutral-700'
+              className='inline-flex items-center gap-x-2 rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm font-medium text-gray-800 shadow-2xs hover:bg-gray-50 focus:bg-gray-50 focus:outline-hidden disabled:pointer-events-none disabled:opacity-50 dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-300 dark:hover:bg-neutral-700 dark:focus:bg-neutral-700'
             >
               Отмена
             </button>

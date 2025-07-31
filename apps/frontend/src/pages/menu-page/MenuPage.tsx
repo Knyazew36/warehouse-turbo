@@ -21,11 +21,18 @@ import Divide from '@/shared/ui/divide/ui/Divide'
 
 const MenuPage: FC = () => {
   const { isAdmin, isOwner, isIT, isOperator, role } = useAuthStore()
-  const { currentOrganization, isOrganizationLoading, setOrganizationLoading } = useOrganizationStore()
+  const { currentOrganization, isOrganizationLoading, setOrganizationLoading } =
+    useOrganizationStore()
   const user = initDataUser()
   const userId = user?.id?.toString()
 
-  const { data: userRole, isLoading, isPending, error, isFetching } = useUserRole({ id: userId || '' })
+  const {
+    data: userRole,
+    isLoading,
+    isPending,
+    error,
+    isFetching
+  } = useUserRole({ id: userId || '' })
 
   // Сбрасываем состояние загрузки организации после успешной загрузки роли или ошибки
   useEffect(() => {
@@ -61,7 +68,7 @@ const MenuPage: FC = () => {
           strokeWidth='2'
           strokeLinecap='round'
           strokeLinejoin='round'
-          className='shrink-0 size-5 xl:w-6 xl:h-6 text-teal-600 dark:text-teal-500'
+          className='size-5 shrink-0 text-teal-600 xl:h-6 xl:w-6 dark:text-teal-500'
         >
           <path d='M14 17H5' />
           <path d='M19 7h-9' />
@@ -82,7 +89,9 @@ const MenuPage: FC = () => {
       to: '/products',
       title: 'Остаток',
       color: 'indigo',
-      icon: <Package className='shrink-0 size-5 xl:w-6 xl:h-6 text-indigo-600 dark:text-indigo-500' />
+      icon: (
+        <Package className='size-5 shrink-0 text-indigo-600 xl:h-6 xl:w-6 dark:text-indigo-500' />
+      )
     },
     {
       to: '/incoming-statistics',
@@ -101,7 +110,7 @@ const MenuPage: FC = () => {
           strokeWidth='2'
           strokeLinecap='round'
           strokeLinejoin='round'
-          className='shrink-0 size-5 xl:w-6 xl:h-6 text-yellow-600 dark:text-yellow-500'
+          className='size-5 shrink-0 text-yellow-600 xl:h-6 xl:w-6 dark:text-yellow-500'
         >
           <path d='M3 3v16a2 2 0 0 0 2 2h16' />
           <path d='M7 16h8' />
@@ -126,7 +135,7 @@ const MenuPage: FC = () => {
           strokeWidth='2'
           strokeLinecap='round'
           strokeLinejoin='round'
-          className='shrink-0 size-5 xl:w-6 xl:h-6 text-blue-600 dark:text-blue-500'
+          className='size-5 shrink-0 text-blue-600 xl:h-6 xl:w-6 dark:text-blue-500'
         >
           <path d='M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2' />
           <path d='M16 3.128a4 4 0 0 1 0 7.744' />
@@ -144,13 +153,15 @@ const MenuPage: FC = () => {
       title: 'Добавить',
       color: 'lime',
       isBlocked: isOperator,
-      icon: <UserPlus className='shrink-0 size-5 xl:w-6 xl:h-6 text-lime-600 dark:text-lime-500' />
+      icon: <UserPlus className='size-5 shrink-0 text-lime-600 xl:h-6 xl:w-6 dark:text-lime-500' />
     },
     {
       to: '/organization-selector',
       title: 'Мои склады',
       color: 'purple',
-      icon: <WarehouseIcon className='shrink-0 size-5 xl:w-6 xl:h-6 text-purple-600 dark:text-purple-500' />
+      icon: (
+        <WarehouseIcon className='size-5 shrink-0 text-purple-600 xl:h-6 xl:w-6 dark:text-purple-500' />
+      )
     }
   ]
 
@@ -164,17 +175,17 @@ const MenuPage: FC = () => {
 
       <Link
         className={clsx(
-          'p-4 group mt-4 flex flex-col bg-pink-50 rounded-xl focus:outline-hidden dark:bg-pink-800/40',
+          'group mt-4 flex flex-col rounded-xl bg-pink-50 p-4 focus:outline-hidden dark:bg-pink-800/40',
           'transition-transform duration-150 ease-in-out active:scale-95',
           'select-none'
         )}
         onClick={() => hapticFeedback.impactOccurred('rigid')}
         to={'/report'}
       >
-        <div className='mb-4 flex flex-col justify-center items-center h-full'>
-          <span className='flex justify-center items-center size-12 xl:size-16 mx-auto bg-pink-200/50 text-white rounded-2xl dark:bg-pink-800/30'>
+        <div className='mb-4 flex h-full flex-col items-center justify-center'>
+          <span className='mx-auto flex size-12 items-center justify-center rounded-2xl bg-pink-200/50 text-white xl:size-16 dark:bg-pink-800/30'>
             <svg
-              className='shrink-0 size-5 xl:w-6 xl:h-6 text-pink-600 dark:text-pink-500'
+              className='size-5 shrink-0 text-pink-600 xl:h-6 xl:w-6 dark:text-pink-500'
               xmlns='http://www.w3.org/2000/svg'
               width='24'
               height='24'
@@ -197,25 +208,25 @@ const MenuPage: FC = () => {
             </svg>
           </span>
         </div>
-        <div className='text-center mt-auto'>
-          <p className='truncate flex justify-center items-center gap-x-1 text-xs xl:text-sm font-medium text-gray-800 group-hover:text-pink-600 group-focus:text-pink-600 dark:text-neutral-200 dark:group-hover:text-neutral-400 dark:group-focus:text-neutral-400'>
+        <div className='mt-auto text-center'>
+          <p className='flex items-center justify-center gap-x-1 truncate text-xs font-medium text-gray-800 group-hover:text-pink-600 group-focus:text-pink-600 xl:text-sm dark:text-neutral-200 dark:group-hover:text-neutral-400 dark:group-focus:text-neutral-400'>
             Расход
           </p>
         </div>
       </Link>
       <Link
         className={clsx(
-          'p-4 group mt-4 flex flex-col bg-pink-50 rounded-xl focus:outline-hidden dark:bg-green-800/40',
+          'group mt-4 flex flex-col rounded-xl bg-pink-50 p-4 focus:outline-hidden dark:bg-green-800/40',
           'transition-transform duration-150 ease-in-out active:scale-95',
           'select-none'
         )}
         onClick={() => hapticFeedback.impactOccurred('rigid')}
         to={'/incoming-to-warehouse'}
       >
-        <div className='mb-4 flex flex-col justify-center items-center h-full'>
-          <span className='flex justify-center items-center size-12 xl:size-16 mx-auto bg-green-200/50 text-white rounded-2xl dark:bg-green-800/30'>
+        <div className='mb-4 flex h-full flex-col items-center justify-center'>
+          <span className='mx-auto flex size-12 items-center justify-center rounded-2xl bg-green-200/50 text-white xl:size-16 dark:bg-green-800/30'>
             <svg
-              className='shrink-0 size-5 xl:w-6 xl:h-6 text-green-600 dark:text-green-500'
+              className='size-5 shrink-0 text-green-600 xl:h-6 xl:w-6 dark:text-green-500'
               xmlns='http://www.w3.org/2000/svg'
               width='24'
               height='24'
@@ -238,15 +249,15 @@ const MenuPage: FC = () => {
             </svg>
           </span>
         </div>
-        <div className='text-center mt-auto'>
-          <p className='truncate flex justify-center items-center gap-x-1 text-xs xl:text-sm font-medium text-gray-800 group-hover:text-green-600 group-focus:text-green-600 dark:text-neutral-200 dark:group-hover:text-neutral-400 dark:group-focus:text-neutral-400'>
+        <div className='mt-auto text-center'>
+          <p className='flex items-center justify-center gap-x-1 truncate text-xs font-medium text-gray-800 group-hover:text-green-600 group-focus:text-green-600 xl:text-sm dark:text-neutral-200 dark:group-hover:text-neutral-400 dark:group-focus:text-neutral-400'>
             Поступление
           </p>
         </div>
       </Link>
-      <div className='w-28 h-px mx-auto bg-gray-300 dark:bg-neutral-700 mt-8' />
+      <div className='mx-auto mt-8 h-px w-28 bg-gray-300 dark:bg-neutral-700' />
 
-      <div className='grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 xl:grid-cols-6 gap-2 lg:gap-4 mt-8'>
+      <div className='mt-8 grid grid-cols-3 gap-2 sm:grid-cols-4 md:grid-cols-5 lg:gap-4 xl:grid-cols-6'>
         {menuButtons.map(button => (
           <MenuButton
             key={button.to}
@@ -257,13 +268,13 @@ const MenuPage: FC = () => {
         {isIT && (
           <Link
             to={'/'}
-            className='p-4 group flex flex-col bg-white border border-gray-200 rounded-xl focus:outline-hidden dark:bg-neutral-900 dark:border-neutral-700'
+            className='group flex flex-col rounded-xl border border-gray-200 bg-white p-4 focus:outline-hidden dark:border-neutral-700 dark:bg-neutral-900'
             onClick={() => hapticFeedback.impactOccurred('rigid')}
           >
-            <div className='mb-4 flex flex-col justify-center items-center h-full'>
-              <span className='flex justify-center items-center size-12 xl:size-16 mx-auto bg-yellow-50 text-white rounded-2xl dark:bg-yellow-800/30'>
+            <div className='mb-4 flex h-full flex-col items-center justify-center'>
+              <span className='mx-auto flex size-12 items-center justify-center rounded-2xl bg-yellow-50 text-white xl:size-16 dark:bg-yellow-800/30'>
                 <svg
-                  className='shrink-0 size-5 xl:w-6 xl:h-6 text-yellow-600 dark:text-yellow-500'
+                  className='size-5 shrink-0 text-yellow-600 xl:h-6 xl:w-6 dark:text-yellow-500'
                   xmlns='http://www.w3.org/2000/svg'
                   width='24'
                   height='24'
@@ -281,8 +292,8 @@ const MenuPage: FC = () => {
                 </svg>
               </span>
             </div>
-            <div className='text-center mt-auto'>
-              <p className='truncate text-xs xl:text-sm font-medium text-gray-800 group-hover:text-pink-600 group-focus:text-pink-600 dark:text-neutral-200 dark:group-hover:text-neutral-400 dark:group-focus:text-neutral-400'>
+            <div className='mt-auto text-center'>
+              <p className='truncate text-xs font-medium text-gray-800 group-hover:text-pink-600 group-focus:text-pink-600 xl:text-sm dark:text-neutral-200 dark:group-hover:text-neutral-400 dark:group-focus:text-neutral-400'>
                 /auth
               </p>
             </div>
@@ -293,12 +304,12 @@ const MenuPage: FC = () => {
       </div>
       <Divide />
 
-      <div className='grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 xl:grid-cols-6 gap-2 lg:gap-4 mt-8'>
+      <div className='mt-8 grid grid-cols-3 gap-2 sm:grid-cols-4 md:grid-cols-5 lg:gap-4 xl:grid-cols-6'>
         <MenuButton
           to='/info-page'
           title='Информация'
           color='zinc'
-          icon={<Info className='shrink-0 size-5 xl:w-6 xl:h-6 text-zinc-600 dark:text-zinc-500' />}
+          icon={<Info className='size-5 shrink-0 text-zinc-600 xl:h-6 xl:w-6 dark:text-zinc-500' />}
         />
 
         <button
@@ -307,21 +318,21 @@ const MenuPage: FC = () => {
             hapticFeedback.impactOccurred('rigid')
           }}
           className={clsx(
-            'p-4 group relative overflow-hidden flex flex-col bg-white border border-gray-200 rounded-xl focus:outline-hidden dark:bg-neutral-900 dark:border-neutral-700',
+            'group relative flex flex-col overflow-hidden rounded-xl border border-gray-200 bg-white p-4 focus:outline-hidden dark:border-neutral-700 dark:bg-neutral-900',
             'transition-transform duration-150 ease-in-out active:scale-95',
             'select-none'
           )}
         >
           <span
             className={clsx(
-              'flex justify-center relative items-center size-12 xl:size-16 mx-auto text-orange-600 dark:text-orange-500 rounded-2xl bg-orange-50 dark:bg-orange-900'
+              'relative mx-auto flex size-12 items-center justify-center rounded-2xl bg-orange-50 text-orange-600 xl:size-16 dark:bg-orange-900 dark:text-orange-500'
             )}
           >
-            <MessageCircle className='shrink-0 size-5 xl:w-6 xl:h-6 text-orange-600 dark:text-orange-500' />
+            <MessageCircle className='size-5 shrink-0 text-orange-600 xl:h-6 xl:w-6 dark:text-orange-500' />
           </span>
 
-          <div className='text-center  mt-2'>
-            <p className='truncate text-xs xl:text-sm text-center font-medium text-gray-800 group-hover:text-pink-600 group-focus:text-pink-600 dark:text-neutral-200 dark:group-hover:text-neutral-400 dark:group-focus:text-neutral-400'>
+          <div className='mt-2 text-center'>
+            <p className='truncate text-center text-xs font-medium text-gray-800 group-hover:text-pink-600 group-focus:text-pink-600 xl:text-sm dark:text-neutral-200 dark:group-hover:text-neutral-400 dark:group-focus:text-neutral-400'>
               Поддержка
             </p>
           </div>
@@ -329,12 +340,12 @@ const MenuPage: FC = () => {
         <MenuButton
           to='/settings'
           title='Настройки'
-          color='gray'
           isDevelop={true}
+          color='gray'
           icon={
             <svg
               xmlns='http://www.w3.org/2000/svg'
-              className='shrink-0 size-5 xl:w-6 xl:h-6 text-gray-600 dark:text-gray-500'
+              className='size-5 shrink-0 text-gray-600 xl:h-6 xl:w-6 dark:text-gray-500'
               width={24}
               height={24}
               viewBox='0 0 24 24'

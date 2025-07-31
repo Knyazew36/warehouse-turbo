@@ -42,7 +42,7 @@ export const ProductsPage = () => {
     >
       <PageHeader title='Остаток' />
 
-      <div className='max-w-[85rem] py-10 pt-0 sm:px-6 lg:px-8 lg:py-14 mx-auto'>
+      <div className='mx-auto py-10 pt-0 sm:px-6 lg:px-8 lg:py-14'>
         <InputDefault
           value={searchTerm}
           onChange={setSearchTerm}
@@ -51,12 +51,12 @@ export const ProductsPage = () => {
         <AlertProductLowStock />
 
         {filteredData.length > 0 && (
-          <div className='flex bg-gray-100 rounded-lg p-0.5 dark:bg-neutral-800 w-max mt-8 ml-auto'>
+          <div className='mt-8 ml-auto flex w-max rounded-lg bg-gray-100 p-0.5 dark:bg-neutral-800'>
             <div className='flex gap-x-0.5 md:gap-x-1'>
               <button
                 type='button'
                 className={clsx(
-                  'hs-tab-active:shadow-sm hs-tab-active:hover:border-transparent hs-tab-active:focus:border-transparent text-xs md:text-[13px] text-gray-800 border border-transparent hover:border-gray-400 focus:outline-hidden focus:border-gray-400 font-medium rounded-md px-1.5 sm:px-2 py-2 dark:text-neutral-200 dark:hover:text-white dark:hover:border-neutral-500 dark:focus:text-white dark:focus:border-neutral-500 dark:hs-tab-active:bg-neutral-700 dark:hs-tab-active:text-neutral-200 dark:hs-tab-active:hover:border-transparent dark:hs-tab-active:focus:border-transparent ',
+                  'hs-tab-active:shadow-sm hs-tab-active:hover:border-transparent hs-tab-active:focus:border-transparent dark:hs-tab-active:bg-neutral-700 dark:hs-tab-active:text-neutral-200 dark:hs-tab-active:hover:border-transparent dark:hs-tab-active:focus:border-transparent rounded-md border border-transparent px-1.5 py-2 text-xs font-medium text-gray-800 hover:border-gray-400 focus:border-gray-400 focus:outline-hidden sm:px-2 md:text-[13px] dark:text-neutral-200 dark:hover:border-neutral-500 dark:hover:text-white dark:focus:border-neutral-500 dark:focus:text-white',
                   view === 'tile' && 'active'
                 )}
                 aria-selected='true'
@@ -73,7 +73,7 @@ export const ProductsPage = () => {
               <button
                 type='button'
                 className={clsx(
-                  'hs-tab-active:shadow-sm hs-tab-active:hover:border-transparent hs-tab-active:focus:border-transparent text-xs md:text-[13px] text-gray-800 border border-transparent hover:border-gray-400 focus:outline-hidden focus:border-gray-400 font-medium rounded-md px-1.5 sm:px-2 py-2 dark:text-neutral-200 dark:hover:text-white dark:hover:border-neutral-500 dark:focus:text-white dark:focus:border-neutral-500 dark:hs-tab-active:bg-neutral-700 dark:hs-tab-active:text-neutral-200 dark:hs-tab-active:hover:border-transparent dark:hs-tab-active:focus:border-transparent ',
+                  'hs-tab-active:shadow-sm hs-tab-active:hover:border-transparent hs-tab-active:focus:border-transparent dark:hs-tab-active:bg-neutral-700 dark:hs-tab-active:text-neutral-200 dark:hs-tab-active:hover:border-transparent dark:hs-tab-active:focus:border-transparent rounded-md border border-transparent px-1.5 py-2 text-xs font-medium text-gray-800 hover:border-gray-400 focus:border-gray-400 focus:outline-hidden sm:px-2 md:text-[13px] dark:text-neutral-200 dark:hover:border-neutral-500 dark:hover:text-white dark:focus:border-neutral-500 dark:focus:text-white',
                   view === 'table' && 'active'
                 )}
                 id='example-tab-html-item'
@@ -93,7 +93,7 @@ export const ProductsPage = () => {
         )}
 
         {view === 'tile' && (
-          <div className='grid sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 mt-4'>
+          <div className='mt-4 flex flex-col gap-4'>
             {filteredData.length > 0 ? (
               filteredData.map(card => (
                 <ProductsCard

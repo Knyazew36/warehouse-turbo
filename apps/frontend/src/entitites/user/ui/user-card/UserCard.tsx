@@ -39,8 +39,8 @@ const UserCard = ({ data, organizationId, currentUserId }: IProps) => {
   }
 
   return (
-    <div className='flex relative overflow-hidden  flex-col mb-4 bg-white border border-gray-200 rounded-xl dark:bg-neutral-900 dark:border-neutral-700 '>
-      {data?.role !== Role.OWNER && (
+    <div className='relative mb-4 flex flex-col overflow-hidden rounded-xl border border-gray-200 bg-white dark:border-neutral-700 dark:bg-neutral-900'>
+      {data?.role !== Role.OWNER && data.id !== currentUserId && (
         <div className='absolute top-2 left-2'>
           <UserDelete
             userId={data.id}
@@ -49,22 +49,22 @@ const UserCard = ({ data, organizationId, currentUserId }: IProps) => {
         </div>
       )}
       {/* Header */}
-      <div className='p-3 md:pt-5 md:px-5 grid grid-cols-3 gap-x-2'>
+      <div className='grid grid-cols-3 gap-x-2 p-3 md:px-5 md:pt-5'>
         <div>
-          <span className='hidden md:inline-flex items-center gap-x-1.5 py-1 px-2.5 text-xs font-medium bg-gray-100 text-gray-800 rounded-full dark:bg-neutral-700 dark:text-neutral-200'>
-            <span className='size-1.5 shrink-0 inline-block bg-gray-800 rounded-full dark:bg-neutral-200' />
+          <span className='hidden items-center gap-x-1.5 rounded-full bg-gray-100 px-2.5 py-1 text-xs font-medium text-gray-800 md:inline-flex dark:bg-neutral-700 dark:text-neutral-200'>
+            <span className='inline-block size-1.5 shrink-0 rounded-full bg-gray-800 dark:bg-neutral-200' />
             Online
           </span>
         </div>
-        <div className='shrink-0 relative size-11 md:w-15.5 md:h-15.5 mx-auto'>
+        <div className='relative mx-auto size-11 shrink-0 md:h-15.5 md:w-15.5'>
           {data.data.photo_url ? (
             <img
-              className='shrink-0 size-11 md:w-15.5 md:h-15.5 rounded-full'
+              className='size-11 shrink-0 rounded-full md:h-15.5 md:w-15.5'
               src={data.data.photo_url}
               alt='Avatar'
             />
           ) : (
-            <span className='flex shrink-0 justify-center items-center size-9.5 bg-white border border-gray-200 text-gray-700 text-xs font-medium uppercase rounded-full dark:bg-neutral-800 dark:border-neutral-700 dark:text-neutral-300'>
+            <span className='flex size-9.5 shrink-0 items-center justify-center rounded-full border border-gray-200 bg-white text-xs font-medium text-gray-700 uppercase dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-300'>
               {
                 getFullName({
                   firstName: data.data.first_name,
@@ -77,8 +77,8 @@ const UserCard = ({ data, organizationId, currentUserId }: IProps) => {
       </div>
       {/* End Header */}
       {/* Body */}
-      <div className='p-3 pt-0 md:px-5 md:pb-5 text-center'>
-        <h3 className='md:text-lg font-medium text-gray-800 dark:text-neutral-200'>
+      <div className='p-3 pt-0 text-center md:px-5 md:pb-5'>
+        <h3 className='font-medium text-gray-800 md:text-lg dark:text-neutral-200'>
           {
             getFullName({
               firstName: data.data.first_name,
@@ -86,27 +86,27 @@ const UserCard = ({ data, organizationId, currentUserId }: IProps) => {
             }).shortName
           }
         </h3>
-        <div className='inline-flex justify-center items-center gap-x-2'>
+        <div className='inline-flex items-center justify-center gap-x-2'>
           <p className='text-sm text-gray-500 dark:text-neutral-500'>{getRole(data.role!)}</p>
         </div>
       </div>
       {/* End Body */}
 
-      <div className='border-t border-gray-200 dark:border-neutral-700 px-2'>
+      <div className='border-t border-gray-200 px-2 dark:border-neutral-700'>
         {/* List */}
-        <div className='grid grid-cols-2 gap-x-3 '>
-          <div className='py-1 relative overflow-hidden truncate text-sm text-gray-500 text-end sm:text-start after:hidden sm:after:block after:absolute after:top-1/2 after:w-full after:mx-3 after:border-t after:border-dashed after:border-gray-200 dark:text-neutral-500 dark:border-neutral-700 dark:after:border-neutral-700'>
-            <span className='relative z-1 pe-2 '>Логин</span>
+        <div className='grid grid-cols-2 gap-x-3'>
+          <div className='relative truncate overflow-hidden py-1 text-end text-sm text-gray-500 after:absolute after:top-1/2 after:mx-3 after:hidden after:w-full after:border-t after:border-dashed after:border-gray-200 sm:text-start sm:after:block dark:border-neutral-700 dark:text-neutral-500 dark:after:border-neutral-700'>
+            <span className='relative z-1 pe-2'>Логин</span>
           </div>
-          <div className='py-1 text-sm text-gray-800 dark:text-neutral-200 truncate'>
+          <div className='truncate py-1 text-sm text-gray-800 dark:text-neutral-200'>
             <span id='hs-pro-shmaccl'>{data.data.username}</span>
           </div>
         </div>
-        <div className='grid grid-cols-2 gap-x-3  border-gray-200 dark:border-neutral-700'>
-          <div className='py-1 relative overflow-hidden truncate text-sm text-gray-500 text-end sm:text-start after:hidden sm:after:block after:absolute after:top-1/2 after:w-full after:mx-3 after:border-t after:border-dashed after:border-gray-200 dark:text-neutral-500 dark:border-neutral-700 dark:after:border-neutral-700'>
-            <span className='relative z-1 pe-2 '>Последняя активность</span>
+        <div className='grid grid-cols-2 gap-x-3 border-gray-200 dark:border-neutral-700'>
+          <div className='relative truncate overflow-hidden py-1 text-end text-sm text-gray-500 after:absolute after:top-1/2 after:mx-3 after:hidden after:w-full after:border-t after:border-dashed after:border-gray-200 sm:text-start sm:after:block dark:border-neutral-700 dark:text-neutral-500 dark:after:border-neutral-700'>
+            <span className='relative z-1 pe-2'>Последняя активность</span>
           </div>
-          <div className='py-1 text-sm text-gray-800 dark:text-neutral-200 truncate'>
+          <div className='truncate py-1 text-sm text-gray-800 dark:text-neutral-200'>
             <span id='hs-pro-shmaccl'>
               {new Date(data.updatedAt).toLocaleDateString('ru-RU', {
                 year: 'numeric',
@@ -122,7 +122,7 @@ const UserCard = ({ data, organizationId, currentUserId }: IProps) => {
       </div>
 
       {data?.role !== Role.OWNER && (
-        <div className='py-3 overflow-hidden relative px-5 flex flex-col sm:flex-row sm:justify-between sm:items-center gap-y-1 sm:gap-y-0 gap-x-2 text-center sm:text-start border-t border-gray-200 dark:border-neutral-700'>
+        <div className='relative flex flex-col gap-x-2 gap-y-1 overflow-hidden border-t border-gray-200 px-5 py-3 text-center sm:flex-row sm:items-center sm:justify-between sm:gap-y-0 sm:text-start dark:border-neutral-700'>
           {(isUpdateRolePending || isDeletePending) && <LoaderSection />}
           <div>
             <p className='text-sm text-gray-500 dark:text-neutral-500'>Сменить роль</p>

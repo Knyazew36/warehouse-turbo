@@ -13,30 +13,32 @@ const ProductsCard: FC<IProductsCard> = ({ data, variant = 'default' }) => {
   return (
     <div
       className={clsx(
-        'flex flex-col gap-y-3 lg:gap-y-5 p-4 md:p-5 bg-white border border-gray-200 shadow-2xs rounded-xl dark:bg-neutral-900 dark:border-neutral-800',
+        'flex flex-1 flex-col gap-y-3 rounded-xl border border-gray-200 bg-white p-4 shadow-2xs md:p-5 lg:gap-y-5 dark:border-neutral-800 dark:bg-neutral-900',
         +data.quantity < +data.minThreshold && '!border-red-500'
       )}
     >
-      <div className='inline-flex justify-center items-center'>
+      <div className='flex items-center justify-center truncate'>
         <span
           className={clsx(
-            'size-2 inline-block  rounded-full me-2',
+            'me-2 inline-block size-2 shrink-0 rounded-full',
             +data.quantity < +data.minThreshold ? 'bg-red-500' : 'bg-gray-500'
           )}
         />
-        <span className='text-xs font-semibold uppercase text-gray-600 dark:text-white'>{data.name}</span>
+        <span className='truncate text-xs font-semibold text-gray-600 uppercase dark:text-white'>
+          {data.name}
+        </span>
       </div>
 
       <div className='text-center'>
         <span className='block text-sm text-gray-500 dark:text-neutral-500'>остаток на складе</span>
 
-        <h3 className='text-3xl sm:text-4xl lg:text-5xl font-semibold text-gray-800 dark:text-neutral-200'>
+        <h3 className='text-3xl font-semibold text-gray-800 sm:text-4xl lg:text-5xl dark:text-neutral-200'>
           {`${formatNumber(+data.quantity)} `}
 
-          <span className='text-xl  dark:text-neutral-400'>{data.unit ? data.unit : ''}</span>
+          <span className='text-xl dark:text-neutral-400'>{data.unit ? data.unit : ''}</span>
         </h3>
         {variant === 'change' && (
-          <div className='flex flex-col gap-2 mt-4'>
+          <div className='mt-4 flex flex-col gap-2'>
             <span className='block text-sm text-gray-500 dark:text-neutral-500'>Израсходовано</span>
 
             <InputNumber
@@ -47,9 +49,9 @@ const ProductsCard: FC<IProductsCard> = ({ data, variant = 'default' }) => {
         )}
       </div>
       {variant !== 'change' && (
-        <dl className='flex justify-center items-center divide-x divide-gray-200 dark:divide-neutral-800'>
-          <dt className='pe-3 flex flex-col'>
-            <span className='text-green-600 self-end'>
+        <dl className='flex items-center justify-center divide-x divide-gray-200 dark:divide-neutral-800'>
+          <dt className='flex flex-col pe-3'>
+            <span className='self-end text-green-600'>
               {/* <svg
                 className='inline-block size-4 self-center'
                 xmlns='http://www.w3.org/2000/svg'
@@ -63,12 +65,12 @@ const ProductsCard: FC<IProductsCard> = ({ data, variant = 'default' }) => {
                   d='m7.247 4.86-4.796 5.481c-.566.647-.106 1.659.753 1.659h9.592a1 1 0 0 0 .753-1.659l-4.796-5.48a1 1 0 0 0-1.506 0z'
                 />
               </svg> */}
-              <span className='inline-block  text-sm'>{formatNumber(+data.minThreshold)}</span>
+              <span className='inline-block text-sm'>{formatNumber(+data.minThreshold)}</span>
             </span>
             <span className='block text-sm text-gray-500 dark:text-neutral-500'>мин. остаток</span>
           </dt>
-          <dd className='text-start ps-3'>
-            <span className='text-sm font-semibold  text-gray-500 dark:text-neutral-500'>
+          <dd className='ps-3 text-start'>
+            <span className='text-sm font-semibold text-gray-500 dark:text-neutral-500'>
               {new Date(data.updatedAt).toLocaleString().split(',')[0]}
             </span>
             <span className='block text-sm text-gray-500 dark:text-neutral-500'>обновление</span>

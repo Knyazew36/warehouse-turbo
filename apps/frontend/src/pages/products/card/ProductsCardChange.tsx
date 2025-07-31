@@ -90,13 +90,13 @@ const ProductsCardChange: FC<IProductsCard> = ({
   return (
     <div
       className={clsx(
-        'flex flex-col gap-y-3 relative overflow-hidden lg:gap-y-5 p-4 md:p-5 bg-white border border-gray-200 shadow-2xs rounded-xl dark:bg-neutral-900 dark:border-neutral-800',
+        'relative flex flex-col gap-y-3 overflow-hidden rounded-xl border border-gray-200 bg-white p-4 shadow-2xs md:p-5 lg:gap-y-5 dark:border-neutral-800 dark:bg-neutral-900',
         +data.quantity < +data.minThreshold && isActive && '!border-red-500',
-        !isActive && 'opacity-50 '
+        !isActive && 'opacity-50'
       )}
     >
       {isLoading && <LoaderSection />}
-      <div className='flex justify-between items-center'>
+      <div className='flex items-center justify-between'>
         {withDelete && (
           <div>
             <ProductDelete
@@ -115,27 +115,31 @@ const ProductsCardChange: FC<IProductsCard> = ({
         )}
       </div>
 
-      <div className='inline-flex justify-center items-center'>
+      <div className='inline-flex items-center justify-center'>
         <span
           className={clsx(
-            'size-2 inline-block  rounded-full me-2',
+            'me-2 inline-block size-2 shrink-0 rounded-full',
             +data.quantity < +data.minThreshold ? 'bg-red-500' : 'bg-gray-500'
           )}
         />
-        <span className='text-xs font-semibold uppercase text-gray-600 dark:text-white'>{data.name}</span>
+        <span className='truncate text-xs font-semibold text-gray-600 uppercase dark:text-white'>
+          {data.name}
+        </span>
       </div>
 
       <div className='text-center'>
         <span className='block text-sm text-gray-500 dark:text-neutral-500'>остаток на складе</span>
 
-        <h3 className='text-3xl sm:text-4xl lg:text-5xl font-semibold text-gray-800 dark:text-neutral-200'>{`${formatNumber(
+        <h3 className='text-3xl font-semibold text-gray-800 sm:text-4xl lg:text-5xl dark:text-neutral-200'>{`${formatNumber(
           +data.quantity
         )} ${data.unit ? data.unit : ''}`}</h3>
 
         {withInputNumber && (
-          <div className='flex flex-col gap-2 mt-4'>
-            <span className='block text-sm text-gray-500 dark:text-neutral-500'>{inputNumberLabel}</span>
-            <div className='flex items-center gap-x-2 w-full'>
+          <div className='mt-4 flex flex-col gap-2'>
+            <span className='block text-sm text-gray-500 dark:text-neutral-500'>
+              {inputNumberLabel}
+            </span>
+            <div className='flex w-full items-center gap-x-2'>
               {withInputNumber && (
                 <InputNumber
                   onChange={handleInputChange}
@@ -149,7 +153,7 @@ const ProductsCardChange: FC<IProductsCard> = ({
                   type='button'
                   onClick={handleSave}
                   disabled={isLoading || localMinThreshold === value}
-                  className='py-2 h-10 w-30  justify-center  px-3 inline-flex items-center gap-x-2 text-sm font-medium rounded-lg border border-transparent bg-green-600 text-white hover:bg-green-700 focus:outline-hidden focus:bg-green-700 disabled:opacity-50 disabled:pointer-events-none'
+                  className='inline-flex h-10 w-30 items-center justify-center gap-x-2 rounded-lg border border-transparent bg-green-600 px-3 py-2 text-sm font-medium text-white hover:bg-green-700 focus:bg-green-700 focus:outline-hidden disabled:pointer-events-none disabled:opacity-50'
                 >
                   Сохранить
                 </button>
