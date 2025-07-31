@@ -20,7 +20,7 @@ interface IProps {
 const Pagination = ({ data, onPageChange, pageParamName = 'page' }: IProps) => {
   const [searchParams, setSearchParams] = useSearchParams()
 
-  if (!data) return null
+  if (!data || data.totalPages === 1) return null
 
   const handlePageChange = (page: number) => {
     // Update URL query parameters
