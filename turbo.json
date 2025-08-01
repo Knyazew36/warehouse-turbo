@@ -22,6 +22,9 @@
     },
     "deploy": {
       "cache": false
+    },
+    "deploy-dev": {
+      "cache": false
     }
   }
 }
