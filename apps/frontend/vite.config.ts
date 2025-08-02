@@ -3,6 +3,28 @@ import tsconfigPaths from 'vite-tsconfig-paths'
 import react from '@vitejs/plugin-react-swc'
 import mkcert from 'vite-plugin-mkcert'
 import tailwindcss from '@tailwindcss/vite'
+
+// Определяем порты для разных режимов
+const getPort = () => {
+  const mode = process.env.NODE_ENV || 'development'
+  const customPort = process.env.VITE_PORT || process.env.PORT
+
+  if (customPort) {
+    return parseInt(customPort)
+  }
+
+  switch (mode) {
+    case 'development':
+      return 5172
+    case 'production':
+      return 5173
+    case 'preview':
+      return 4173
+    default:
+      return 5173
+  }
+}
+
 // https://vitejs.dev/config/
 export default defineConfig({
   // base: '/reactjs-template/',
@@ -32,18 +54,11 @@ export default defineConfig({
   },
   publicDir: './public',
   server: {
-    port: 5173
+    port: getPort(),
+    host: true
   },
   preview: {
-    port: 5173
+    port: getPort(),
+    host: true
   }
-  // server: {
-  //   port: 3000
-  //   // allowedHosts:['5278831-ad07030.twc1.net']
-  // }
-  // server: {
-  //   // Exposes your dev server and makes it accessible for the devices in the same network.
-  //   host: true,
-  //   port: 10004
-  // }
 })
