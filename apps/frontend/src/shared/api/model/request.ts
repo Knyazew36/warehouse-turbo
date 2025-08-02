@@ -106,7 +106,7 @@ $api.interceptors.response.use(
     if (error.response?.data?.message === 'Product already exists in this organization') {
       const errorData: ErrorEventEmitter = {
         action: 'bottom-sheet',
-        message: 'Продукт уже существует в организации',
+        message: 'Товар уже существует в организации',
         variant: 'error'
       }
       eventEmitter.emit('request-error', errorData)

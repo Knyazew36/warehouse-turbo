@@ -106,11 +106,10 @@ export class ProductsService {
           id: { not: id } // Исключаем текущий продукт из проверки
         }
       })
+      //FIXME: сделать коды нормально
 
       if (productWithSameName) {
-        throw new NotFoundException(
-          `Product with name "${dto.name}" already exists in this organization`
-        )
+        throw new NotFoundException(`Product already exists in this organization`)
       }
     }
 
