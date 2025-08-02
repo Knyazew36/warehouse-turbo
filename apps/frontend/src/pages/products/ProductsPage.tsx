@@ -1,12 +1,10 @@
 import { Page } from '@/components/Page'
-import React, { useEffect, useState, useMemo } from 'react'
+import React, { useState, useMemo } from 'react'
 import ProductsCard from './card/ProductsCard'
-import { Button } from '@/components/ui/button'
 
 import ProductCreate from './create/ProductCreate'
 
 import AlertProductLowStock from '@/widgets/alert-product-low-stock/AlertProductLowStock'
-import { useProducts } from '@/entitites/product/api/product.api'
 import clsx from 'clsx'
 import ProductsTable from './table/ProductsTable'
 import Empty from '@/shared/empty/ui/Empty'
@@ -14,9 +12,11 @@ import { hapticFeedback } from '@telegram-apps/sdk-react'
 import PageHeader from '@/shared/ui/page-header/ui/PageHeader'
 import InputDefault from '@/shared/ui/input-default/ui/InputDefault'
 import Loader from '@/shared/loader/ui/Loader'
+import { useCategoryWithProducts } from '@/entitites/category/api/category.api'
 
 export const ProductsPage = () => {
-  const { data = [], isLoading, isFetching } = useProducts(true)
+  const { data: categoryWithProducts, isLoading, isFetching } = useCategoryWithProducts()
+
   const [view, setView] = useState<'tile' | 'table'>('tile')
 
   const handleViewChange = (view: 'tile' | 'table') => {
@@ -27,9 +27,11 @@ export const ProductsPage = () => {
 
   const filteredData = useMemo(() => {
     const term = searchTerm.trim().toLowerCase()
-    if (!term) return data
-    return data.filter(item => item.name.toLowerCase().includes(term))
-  }, [data, searchTerm])
+    if (!term) return categoryWithProducts?.productsWithoutCategory
+    return categoryWithProducts?.productsWithoutCategory?.filter(item =>
+      item.name.toLowerCase().includes(term)
+    )
+  }, [categoryWithProducts, searchTerm])
 
   if (isLoading) {
     return <Loader />
@@ -50,7 +52,7 @@ export const ProductsPage = () => {
 
         <AlertProductLowStock />
 
-        {filteredData.length > 0 && (
+        {filteredData && filteredData?.length > 0 && (
           <div className='mt-8 ml-auto flex w-max rounded-lg bg-gray-100 p-0.5 dark:bg-neutral-800'>
             <div className='flex gap-x-0.5 md:gap-x-1'>
               <button
@@ -94,7 +96,7 @@ export const ProductsPage = () => {
 
         {view === 'tile' && (
           <div className='mt-4 flex flex-col gap-4'>
-            {filteredData.length > 0 ? (
+            {filteredData && filteredData?.length > 0 ? (
               filteredData.map(card => (
                 <ProductsCard
                   key={card.id}
@@ -107,7 +109,7 @@ export const ProductsPage = () => {
           </div>
         )}
 
-        {view === 'table' && <ProductsTable data={filteredData} />}
+        {view === 'table' && filteredData && <ProductsTable data={filteredData} />}
 
         {/* Кнопка создания нового товара */}
         <div className='mt-8'>

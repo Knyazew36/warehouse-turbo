@@ -3,7 +3,7 @@ import { Drawer, DrawerClose, DrawerContent } from '@/components/ui/drawer'
 import { IBottomSheetSuccessProps } from '../model/bottomSheetSuccess.type'
 import { hapticFeedback, requestContact } from '@telegram-apps/sdk-react'
 import clsx from 'clsx'
-import { Loader2 } from 'lucide-react'
+import { Loader2, OctagonAlert } from 'lucide-react'
 
 const BottomSheetSuccess = ({
   isOpen,
@@ -38,12 +38,12 @@ const BottomSheetSuccess = ({
       activeSnapPoint={1}
     >
       <DrawerContent className='bg-white dark:bg-neutral-900'>
-        <div className='flex flex-col px-4 pb-8 pt-5'>
+        <div className='flex flex-col px-4 pt-5 pb-8'>
           {/* Icon */}
-          <div className='mb-5 sm:mb-7 text-center'>
+          <div className='mb-5 text-center sm:mb-7'>
             <span
               className={clsx(
-                'shrink-0 size-14 md:size-16 mx-auto flex justify-center items-center border-2 rounded-full',
+                'mx-auto flex size-14 shrink-0 items-center justify-center rounded-full border-2 md:size-16',
                 variant === 'success' && 'border-green-500 text-green-500',
                 variant === 'error' && 'border-red-500 text-red-500',
                 variant === 'warning' || (variant === 'auth' && 'border-yellow-500 text-yellow-500')
@@ -51,7 +51,7 @@ const BottomSheetSuccess = ({
             >
               {variant === 'success' && (
                 <svg
-                  className='shrink-0 size-8'
+                  className='size-8 shrink-0'
                   xmlns='http://www.w3.org/2000/svg'
                   width={24}
                   height={24}
@@ -65,6 +65,7 @@ const BottomSheetSuccess = ({
                   <path d='M20 6 9 17l-5-5' />
                 </svg>
               )}
+              {variant === 'error' && <OctagonAlert className='size-8 shrink-0' />}
 
               {variant === 'warning' ||
                 (variant === 'auth' && (
@@ -89,11 +90,13 @@ const BottomSheetSuccess = ({
           </div>
           {/* End Icon */}
           {/* Heading */}
-          <div className='mb-5 sm:mb-8 text-center'>
-            <h1 className='mb-1 md:mb-3 font-semibold text-xl md:text-2xl text-gray-800 dark:text-neutral-200'>
+          <div className='mb-5 text-center sm:mb-8'>
+            <h1 className='mb-1 text-xl font-semibold text-gray-800 md:mb-3 md:text-2xl dark:text-neutral-200'>
               {title}
             </h1>
-            {description && <p className='text-sm text-gray-500 dark:text-neutral-500'>{description}</p>}
+            {description && (
+              <p className='text-sm text-gray-500 dark:text-neutral-500'>{description}</p>
+            )}
           </div>
           {/* End Heading */}
           {variant !== 'auth' && (
@@ -104,7 +107,7 @@ const BottomSheetSuccess = ({
                   onClick?.()
                 }}
                 className={clsx(
-                  'py-2.5  w-full sm:py-3 px-4  inline-flex justify-center items-center gap-x-2 font-medium sm:text-sm rounded-xl border border-transparent text-white hover:bg-green-600 disabled:opacity-50 disabled:pointer-events-none focus:outline-hidden focus:bg-green-600',
+                  'inline-flex w-full items-center justify-center gap-x-2 rounded-xl border border-transparent px-4 py-2.5 font-medium text-white hover:bg-green-600 focus:bg-green-600 focus:outline-hidden disabled:pointer-events-none disabled:opacity-50 sm:py-3 sm:text-sm',
                   variant === 'success' && 'bg-green-600 hover:bg-green-600',
                   variant === 'error' && 'bg-red-600 hover:bg-red-600',
                   variant === 'warning' && 'bg-yellow-600 hover:bg-yellow-600'
@@ -124,7 +127,7 @@ const BottomSheetSuccess = ({
                 })
               }}
               className={clsx(
-                'py-2.5  w-full sm:py-3 px-4  inline-flex justify-center items-center gap-x-2 font-medium sm:text-sm rounded-xl border border-transparent text-white hover:bg-green-600 disabled:opacity-50 disabled:pointer-events-none focus:outline-hidden focus:bg-green-600',
+                'inline-flex w-full items-center justify-center gap-x-2 rounded-xl border border-transparent px-4 py-2.5 font-medium text-white hover:bg-green-600 focus:bg-green-600 focus:outline-hidden disabled:pointer-events-none disabled:opacity-50 sm:py-3 sm:text-sm',
                 'bg-yellow-600 hover:bg-yellow-600'
               )}
             >

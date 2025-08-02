@@ -52,6 +52,7 @@ model Organization {
   receipts          Receipt[]
   shiftReports      ShiftReport[]
   allowedPhones     AllowedPhoneOrganization[]
+  productCategories ProductCategory[]
 }
 
 model UserOrganization {
@@ -89,8 +90,13 @@ model Product {
   organizationId Int
   organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
 
+  // Связь с категорией
+  categoryId      Int?
+  productCategory ProductCategory? @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+
   @@unique([organizationId, name]) // Уникальное имя в рамках организации
   @@index([organizationId])
+  @@index([categoryId])
 }
 
 model Receipt {
@@ -161,5 +167,26 @@ model AllowedPhoneOrganization {
 
   @@unique([allowedPhoneId, organizationId])
   @@index([allowedPhoneId])
+  @@index([organizationId])
+}
+
+model ProductCategory {
+  id          Int      @id @default(autoincrement())
+  name        String
+  description String?
+  color       String? // Цвет для UI (hex код)
+  icon        String? // Иконка для UI
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  active      Boolean  @default(true)
+
+  // Связь с организацией
+  organizationId Int
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  // Связь с продуктами
+  products Product[]
+
+  @@unique([organizationId, name]) // Уникальное имя категории в рамках организации
   @@index([organizationId])
 }

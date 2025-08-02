@@ -18,10 +18,36 @@ export class ProductsService {
       throw new NotFoundException(`Organization #${organizationId} not found`)
     }
 
+    // Проверяем уникальность названия продукта в рамках организации
+    const existingProduct = await this.prisma.product.findFirst({
+      where: {
+        name: dto.name,
+        organizationId: Number(organizationId)
+      }
+    })
+
+    if (existingProduct) {
+      throw new NotFoundException(`Product already exists in this organization`)
+    }
+
+    // Если указана категория, проверяем её существование
+    if (dto.categoryId) {
+      const category = await this.prisma.productCategory.findUnique({
+        where: { id: dto.categoryId }
+      })
+
+      if (!category) {
+        throw new NotFoundException(`Category #${dto.categoryId} not found`)
+      }
+    }
+
     return this.prisma.product.create({
       data: {
         ...dto,
         organizationId: Number(organizationId)
+      },
+      include: {
+        productCategory: true
       }
     })
   }
@@ -39,19 +65,62 @@ export class ProductsService {
 
     return this.prisma.product.findMany({
       where: whereClause,
-      orderBy: { name: 'desc' }
+      orderBy: { name: 'desc' },
+      include: {
+        productCategory: true
+      }
     })
   }
 
   async findOne(id: number) {
-    const product = await this.prisma.product.findUnique({ where: { id } })
+    const product = await this.prisma.product.findUnique({
+      where: { id },
+      include: {
+        productCategory: true
+      }
+    })
     if (!product) throw new NotFoundException(`Product #${id} not found`)
     return product
   }
 
   async update(id: number, dto: UpdateProductDto) {
-    await this.findOne(id)
-    return this.prisma.product.update({ where: { id }, data: dto })
+    const existingProduct = await this.findOne(id)
+
+    // Если указана категория, проверяем её существование
+    if (dto.categoryId) {
+      const category = await this.prisma.productCategory.findUnique({
+        where: { id: dto.categoryId }
+      })
+
+      if (!category) {
+        throw new NotFoundException(`Category #${dto.categoryId} not found`)
+      }
+    }
+
+    // Если изменяется название, проверяем уникальность в рамках организации
+    if (dto.name && dto.name !== existingProduct.name) {
+      const productWithSameName = await this.prisma.product.findFirst({
+        where: {
+          name: dto.name,
+          organizationId: existingProduct.organizationId,
+          id: { not: id } // Исключаем текущий продукт из проверки
+        }
+      })
+
+      if (productWithSameName) {
+        throw new NotFoundException(
+          `Product with name "${dto.name}" already exists in this organization`
+        )
+      }
+    }
+
+    return this.prisma.product.update({
+      where: { id },
+      data: dto,
+      include: {
+        productCategory: true
+      }
+    })
   }
 
   async remove(id: number) {
@@ -67,6 +136,9 @@ export class ProductsService {
       where: {
         organizationId,
         active: true
+      },
+      include: {
+        productCategory: true
       }
     })
 
@@ -87,5 +159,36 @@ export class ProductsService {
       hasLowStock: true,
       products: lowStockProducts
     }
+  }
+
+  /**
+   * Получить продукты по категории
+   */
+  async findByCategory(categoryId: number, organizationId: number) {
+    return this.prisma.product.findMany({
+      where: {
+        categoryId,
+        organizationId: Number(organizationId),
+        active: true
+      },
+      include: {
+        productCategory: true
+      },
+      orderBy: { name: 'asc' }
+    })
+  }
+
+  /**
+   * Получить продукты без категории
+   */
+  async findWithoutCategory(organizationId: number) {
+    return this.prisma.product.findMany({
+      where: {
+        categoryId: null,
+        organizationId: Number(organizationId),
+        active: true
+      },
+      orderBy: { name: 'asc' }
+    })
   }
 }

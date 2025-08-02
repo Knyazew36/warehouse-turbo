@@ -102,6 +102,17 @@ $api.interceptors.response.use(
 
     handleResponseError(error)
     logErrorDetails(error)
+
+    if (error.response?.data?.message === 'Product already exists in this organization') {
+      const errorData: ErrorEventEmitter = {
+        action: 'bottom-sheet',
+        message: 'Продукт уже существует в организации',
+        variant: 'error'
+      }
+      eventEmitter.emit('request-error', errorData)
+      return
+    }
+
     toast(error?.response?.data?.message || error?.message, {
       style: { backgroundColor: '#FB2C36', color: '#fff' },
       description: import.meta.env.DEV
@@ -111,7 +122,7 @@ $api.interceptors.response.use(
             React.createElement(
               'code',
               { className: 'text-white' },
-              JSON.stringify(error.response?.data ?? {}, null, 2)
+              JSON.stringify(error.response?.data?.message ?? {}, null, 2)
             )
           )
         : error?.response?.data?.message || error?.message

@@ -19,8 +19,8 @@ const AlertProductLowStock = () => {
       <AlertDescription>
         {lowStockProducts.map(p => (
           <div key={p.id}>
-            <span className='font-medium'>{p.name}</span> остаток: {formatNumber(+p.quantity)} {p.unit} (минимум:{' '}
-            {formatNumber(+p.minThreshold)} {p.unit})
+            <span className='font-medium'>{p.name}</span> остаток: {formatNumber(+p.quantity)}{' '}
+            {p.unit} (минимум: {formatNumber(+p.minThreshold)} {p.unit})
           </div>
         ))}
       </AlertDescription>

@@ -6,17 +6,21 @@ import { hapticFeedback } from '@telegram-apps/sdk-react'
 import PageHeader from '@/shared/ui/page-header/ui/PageHeader'
 import MenuButton from '../menu-page/menu-button/MenuButton'
 import { useAuthStore } from '@/entitites/auth/model/auth.store'
-import { Package } from 'lucide-react'
+import { FilePlus2, Package } from 'lucide-react'
 import Divide from '@/shared/ui/divide/ui/Divide'
+import { useCategoryWithProducts } from '@/entitites/category/api/category.api'
 
 const SettingsWarehousePage = () => {
   const { isIT, isOwner, isAdmin } = useAuthStore()
+  // const { data: categoryWithProducts } = useCategoryWithProducts()
+
+  // console.log(categoryWithProducts)
 
   return (
     <Page>
       <PageHeader title='Настройки склада' />
 
-      <div className='grid grid-cols-2 sm:grid-cols-4 md:grid-cols-5 xl:grid-cols-6 gap-2 lg:gap-4 mt-8'>
+      <div className='mt-8 grid grid-cols-2 gap-2 sm:grid-cols-4 md:grid-cols-5 lg:gap-4 xl:grid-cols-6'>
         <ProductCreate />
 
         <MenuButton
@@ -36,7 +40,7 @@ const SettingsWarehousePage = () => {
               stroke-width='2'
               stroke-linecap='round'
               stroke-linejoin='round'
-              className='shrink-0 size-5'
+              className='size-5 shrink-0'
             >
               <rect
                 width='18'
@@ -51,6 +55,14 @@ const SettingsWarehousePage = () => {
             </svg>
           }
         />
+        {/* <MenuButton
+          to={'/category/create'}
+          title=' Создать категорию'
+          color='neutral'
+          isBlocked={!isIT && !isOwner && !isAdmin}
+          iconClassName='border-2 border-dotted border-neutral-700'
+          icon={<FilePlus2 className='size-5 shrink-0' />}
+        /> */}
       </div>
       <Divide />
 
@@ -58,7 +70,9 @@ const SettingsWarehousePage = () => {
         to='/products'
         title='Остаток'
         color='indigo'
-        icon={<Package className='shrink-0 size-5 xl:w-6 xl:h-6 text-indigo-600 dark:text-indigo-500' />}
+        icon={
+          <Package className='size-5 shrink-0 text-indigo-600 xl:h-6 xl:w-6 dark:text-indigo-500' />
+        }
       />
     </Page>
   )

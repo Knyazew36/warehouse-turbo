@@ -18,7 +18,7 @@ type UpdateProductDto = Partial<CreateProductDto>
 
 export const useProducts = (onlyActive?: boolean) => {
   return useQuery<Product[]>({
-    queryKey: ['products', onlyActive],
+    queryKey: ['products', 'category-with-products', onlyActive],
     queryFn: async () => {
       const params = onlyActive !== undefined ? { onlyActive } : undefined
       const res = await $api.get(`${apiDomain}/products`, { params })
@@ -48,7 +48,8 @@ export const useCreateProduct = () => {
       return res.data.data as Product
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['products'] })
+      queryClient.invalidateQueries({ queryKey: ['products', 'category-with-products', true] })
+      queryClient.invalidateQueries({ queryKey: ['category-with-products'] })
       hapticFeedback.notificationOccurred('success')
     },
     onError: () => {
@@ -66,7 +67,11 @@ export const useUpdateProduct = () => {
       return res.data.data as Product
     },
     onSuccess: () => {
+      console.log('Invalidating queries after product update...')
+      queryClient.invalidateQueries({ queryKey: ['products', 'category-with-products'] })
+      queryClient.invalidateQueries({ queryKey: ['category-with-products'] })
       queryClient.invalidateQueries({ queryKey: ['products'] })
+      queryClient.invalidateQueries({ queryKey: ['products', 'category-with-products', true] })
       hapticFeedback.notificationOccurred('success')
     }
   })
@@ -79,7 +84,11 @@ export const useDeleteProduct = () => {
       await $api.post(`${apiDomain}/products/delete/${id}`)
     },
     onSuccess: () => {
+      console.log('Invalidating queries after product deletion...')
+      queryClient.invalidateQueries({ queryKey: ['products', 'category-with-products'] })
+      queryClient.invalidateQueries({ queryKey: ['category-with-products'] })
       queryClient.invalidateQueries({ queryKey: ['products'] })
+      queryClient.invalidateQueries({ queryKey: ['products', 'category-with-products', true] })
       hapticFeedback.notificationOccurred('success')
     }
   })

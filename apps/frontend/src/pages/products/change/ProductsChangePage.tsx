@@ -1,7 +1,6 @@
 import { Page } from '@/components/Page'
 import React, { useMemo, useState } from 'react'
-import { useProducts, useUpdateProduct } from '@/entitites/product/api/product.api'
-import ProductsCardChange from '../card/ProductsCardChange'
+
 import PageHeader from '@/shared/ui/page-header/ui/PageHeader'
 import InputDefault from '@/shared/ui/input-default/ui/InputDefault'
 import Loader from '@/shared/loader/ui/Loader'
@@ -9,23 +8,33 @@ import ProductCreate from '../create/ProductCreate'
 import Empty from '@/shared/empty/ui/Empty'
 import ProductCardChangeForm from '../card/ProductCardChangeForm'
 import InfoMessage from '@/shared/ui/info/ui/Info'
+import { useCategoryWithProducts } from '@/entitites/category/api/category.api'
 
 export const ProductsChangePage = () => {
   const [searchTerm, setSearchTerm] = useState('')
-  const { data = [], isLoading, isFetching } = useProducts(false)
+  const {
+    data: categoryWithProducts,
+    isLoading,
+    refetch,
+    isFetching
+  } = useCategoryWithProducts(false)
 
-  const { mutate: updateProduct } = useUpdateProduct()
+  // const { mutate: updateProduct } = useUpdateProduct()
 
   const filteredData = useMemo(() => {
     const term = searchTerm.trim().toLowerCase()
-    const filtered = term ? data.filter(item => item.name.toLowerCase().includes(term)) : data
+    const filtered = term
+      ? categoryWithProducts?.productsWithoutCategory?.filter(item =>
+          item.name.toLowerCase().includes(term)
+        )
+      : categoryWithProducts?.productsWithoutCategory
 
     // Активные товары должны быть перед неактивными
-    return filtered.sort((a, b) => {
+    return filtered?.sort((a, b) => {
       if (a.active === b.active) return 0
       return a.active ? -1 : 1 // если a активен, он раньше
     })
-  }, [data, searchTerm])
+  }, [categoryWithProducts, searchTerm])
 
   if (isLoading) {
     return <Loader />
@@ -53,9 +62,9 @@ export const ProductsChangePage = () => {
         ]}
       />
       {/* Сетка товаров */}
-      <div className='grid sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 mt-8'>
-        {filteredData.length > 0 ? (
-          filteredData.map(card => (
+      <div className='mt-8 grid gap-4 sm:grid-cols-2 sm:gap-6 lg:grid-cols-3'>
+        {filteredData && filteredData?.length > 0 ? (
+          filteredData?.map(card => (
             <ProductCardChangeForm
               key={card.id}
               data={card}

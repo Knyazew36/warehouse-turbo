@@ -23,6 +23,7 @@ import InfoPage from '@/pages/info/ui/InfoPage'
 import OrganizationSelectorPage from '@/pages/organization/selector/ui/OrganizationSelectorPage'
 import OrganizationChangePage from '@/pages/organization/change/ui/OrganizationChange.page'
 import { ProductsChangePage } from '@/pages/products/change/ProductsChangePage'
+import CreateCategoryPage from '@/pages/category/create/ui/CreateCategory.page'
 
 interface Route {
   path: string
@@ -40,6 +41,7 @@ export const routes: Route[] = [
   { path: '/products', Component: ProductsPage, title: 'Init Data' },
   { path: '/products-change', Component: ProductsChangePage, title: 'Init Data' },
   { path: '/create-product', Component: CreateProductPage, title: 'Init Data' },
+  { path: '/category/create', Component: CreateCategoryPage, title: 'Init Data' },
   { path: '/init-data', Component: InitDataPage, title: 'Init Data' },
   { path: '/report', Component: ReportPage, title: 'Init Data' },
   {
