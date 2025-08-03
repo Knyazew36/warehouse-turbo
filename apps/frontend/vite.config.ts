@@ -28,7 +28,7 @@ const getPort = () => {
 // https://vitejs.dev/config/
 export default defineConfig({
   // base: '/reactjs-template/',
-  base: '/test/',
+  // base: '/test/',
 
   css: {
     preprocessorOptions: {
