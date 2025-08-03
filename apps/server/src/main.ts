@@ -17,6 +17,7 @@ async function bootstrap() {
       'http://localhost:5173',
       'https://localhost:5173',
       'https://localhost:5172',
+      'http://localhost:5172',
       // 'https://localhost:5173/',
       // 'https://localhost:10004/',
       'https://localhost:10004',
