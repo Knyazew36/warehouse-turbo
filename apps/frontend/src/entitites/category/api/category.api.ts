@@ -24,6 +24,21 @@ export const useCategoryWithProducts = (onlyActive?: boolean) => {
     retryDelay: 5000
   })
 }
+export const useCategory = (onlyActive?: boolean) => {
+  return useQuery<Category[]>({
+    queryKey: ['category'],
+    queryFn: async () => {
+      const params = onlyActive !== undefined ? { onlyActive } : undefined
+      const res: AxiosResponse<BaseResponse<Category[]>> = await $api.get(
+        `${apiDomain}/categories`,
+        { params }
+      )
+      return res.data.data
+    },
+    retry: 3,
+    retryDelay: 5000
+  })
+}
 
 export const useCreateCategory = () => {
   const queryClient = useQueryClient()
@@ -72,4 +87,16 @@ export const useDeleteCategory = () => {
       hapticFeedback.notificationOccurred('success')
     }
   })
+}
+
+export const getCategoryById = async (id: string): Promise<Category> => {
+  try {
+    const response: AxiosResponse<BaseResponse<Category>> = await $api.get(
+      `${apiDomain}/categories/${id}`
+    )
+    return response.data.data
+  } catch (error: any) {
+    const message = error?.response?.data?.message || 'Ошибка авторизации'
+    throw new Error(message)
+  }
 }

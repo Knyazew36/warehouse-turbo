@@ -55,14 +55,22 @@ const SettingsWarehousePage = () => {
             </svg>
           }
         />
-        {/* <MenuButton
+        <MenuButton
           to={'/category/create'}
           title=' Создать категорию'
           color='neutral'
           isBlocked={!isIT && !isOwner && !isAdmin}
           iconClassName='border-2 border-dotted border-neutral-700'
           icon={<FilePlus2 className='size-5 shrink-0' />}
-        /> */}
+        />
+        <MenuButton
+          to={'/category/list'}
+          title='Мои категории'
+          color='neutral'
+          isBlocked={!isIT && !isOwner && !isAdmin}
+          iconClassName='border-2 border-dotted border-neutral-700'
+          icon={<FilePlus2 className='size-5 shrink-0' />}
+        />
       </div>
       <Divide />
 
