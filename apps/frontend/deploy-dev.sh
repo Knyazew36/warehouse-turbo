@@ -1,6 +1,7 @@
 #!/bin/bash
 set -e
 {
-    yarn build
+    echo "Deploying dev server"
+    # yarn dev
  
 }

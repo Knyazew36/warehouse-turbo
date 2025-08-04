@@ -10,8 +10,8 @@ echo "🚀 Deploying to DEVELOPMENT environment..."
     echo "🔧 Generating Prisma client for development..."
     yarn prisma:generate:development
     
-    echo "🏗️ Building application..."
-    yarn build
+    # echo "🏗️ Building application..."
+    # yarn build
     
     echo "✅ Development deployment completed successfully!"
 }

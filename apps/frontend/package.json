@@ -5,10 +5,7 @@
   "type": "module",
   "homepage": "https://telegram-mini-apps.github.io/reactjs-template",
   "scripts": {
-    "dev": "vite",
-    "dev:3000": "cross-env VITE_PORT=3000 vite",
-    "dev:4000": "cross-env VITE_PORT=4000 vite",
-    "dev:5000": "cross-env VITE_PORT=5000 vite",
+    "dev": "vite ",
     "start": "vite preview",
     "start:3000": "cross-env VITE_PORT=3000 vite preview",
     "start:4000": "cross-env VITE_PORT=4000 vite preview",

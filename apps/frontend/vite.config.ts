@@ -19,7 +19,7 @@ const getPort = () => {
     case 'production':
       return 5173
     case 'preview':
-      return 4173
+      return 5172
     default:
       return 5173
   }
