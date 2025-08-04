@@ -8,4 +8,4 @@ export const apiDomain = import.meta.env.DEV ? `${apiDomainAccountDev}` : `${api
 // export const apiDomain = `${apiDomainAccountProd}`
 // export const apiDomain = `${apiDomainAccountProd}`
 // export const apiDomainFile = `${apiDomainAccount}`
-https://test.5278831-ad07030.twc1.net/api/
+// https://test.5278831-ad07030.twc1.net/api/
