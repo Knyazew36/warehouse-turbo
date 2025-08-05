@@ -1,12 +1,12 @@
 import React from 'react'
 import PageHeader from '@/shared/ui/page-header/ui/PageHeader'
 import { Page } from '@/components/Page'
-import { useCategory } from '@/entitites/category/api/category.api'
 import { Pencil } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
+import { useCategoryList } from '@/entitites/category/api/category.api'
 
 const ListCategoryPage = () => {
-  const { data: categories } = useCategory(false)
+  const { data: categories } = useCategoryList(false)
   const navigate = useNavigate()
 
   const handleEdit = (id: number) => {

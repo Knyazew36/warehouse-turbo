@@ -6,11 +6,7 @@ import ButtonAction from '@/shared/button-action/ButtonAction'
 import { useBottomSheetStore } from '@/shared/bottom-sheet/model/store.bottom-sheet'
 import PageHeader from '@/shared/ui/page-header/ui/PageHeader'
 import InputDefault from '@/shared/ui/input-default/ui/InputDefault'
-import {
-  getCategoryById,
-  useCategory,
-  useCreateCategory
-} from '@/entitites/category/api/category.api'
+import { getCategoryById, useCreateCategory } from '@/entitites/category/api/category.api'
 import { useParams } from 'react-router-dom'
 import { Category } from '@/entitites/category/model/category.type'
 

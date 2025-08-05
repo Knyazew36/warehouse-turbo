@@ -2,7 +2,6 @@ import { Injectable, NotFoundException } from '@nestjs/common'
 import { CreateCategoryDto } from './dto/create-category.dto'
 import { UpdateCategoryDto } from './dto/update-category.dto'
 import { PrismaService } from 'nestjs-prisma'
-import { ProductCategory } from '@prisma/client'
 
 @Injectable()
 export class CategoriesService {
@@ -26,7 +25,7 @@ export class CategoriesService {
     })
   }
 
-  async findAll(onlyActive = true, organizationId?: number) {
+  async findAll(onlyActive = true, organizationId?: number, isSelectOptions = false) {
     const whereClause: any = {}
 
     if (onlyActive) {
@@ -37,12 +36,24 @@ export class CategoriesService {
       whereClause.organizationId = Number(organizationId)
     }
 
-    // Получаем все категории с продуктами
-    return await this.prisma.productCategory.findMany({
+    // Получаем все категории
+    const categories = await this.prisma.productCategory.findMany({
       where: whereClause,
       orderBy: { name: 'asc' }
     })
+
+    // Если запрошены selectOptions, возвращаем массив с label и value
+    if (isSelectOptions) {
+      return categories.map(category => ({
+        label: category.name,
+        value: category.id
+      }))
+    }
+
+    // Иначе возвращаем полные данные категорий
+    return categories
   }
+
   async findAllWithProducts(onlyActive = true, organizationId?: number) {
     const whereClause: any = {}
 

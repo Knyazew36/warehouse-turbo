@@ -8,6 +8,7 @@ import {
 } from '../model/category.type'
 import { AxiosResponse } from 'axios'
 import { hapticFeedback } from '@telegram-apps/sdk-react'
+import { ISelectOption } from '@/shared/ui/select/model/select.type'
 
 export const useCategoryWithProducts = (onlyActive?: boolean) => {
   return useQuery<GetCategoryWithProducts>({
@@ -24,14 +25,43 @@ export const useCategoryWithProducts = (onlyActive?: boolean) => {
     retryDelay: 5000
   })
 }
-export const useCategory = (onlyActive?: boolean) => {
-  return useQuery<Category[]>({
-    queryKey: ['category'],
+
+// Отдельный хук для получения категорий в формате для селекта
+export const useCategorySelectOptions = (onlyActive?: boolean) => {
+  return useQuery<ISelectOption[]>({
+    queryKey: ['category-select-options', onlyActive],
     queryFn: async () => {
-      const params = onlyActive !== undefined ? { onlyActive } : undefined
-      const res: AxiosResponse<BaseResponse<Category[]>> = await $api.get(
+      const params: Record<string, any> = { isSelectOptions: true }
+
+      if (onlyActive !== undefined) {
+        params.onlyActive = onlyActive
+      }
+
+      const res: AxiosResponse<BaseResponse<ISelectOption[]>> = await $api.get(
         `${apiDomain}/categories`,
         { params }
+      )
+      return res.data.data
+    },
+    retry: 3,
+    retryDelay: 5000
+  })
+}
+
+// Отдельный хук для получения полных данных категорий
+export const useCategoryList = (onlyActive?: boolean) => {
+  return useQuery<Category[]>({
+    queryKey: ['category-list', onlyActive],
+    queryFn: async () => {
+      const params: Record<string, any> = {}
+
+      if (onlyActive !== undefined) {
+        params.onlyActive = onlyActive
+      }
+
+      const res: AxiosResponse<BaseResponse<Category[]>> = await $api.get(
+        `${apiDomain}/categories`,
+        { params: Object.keys(params).length > 0 ? params : undefined }
       )
       return res.data.data
     },

@@ -1,15 +1,4 @@
-import {
-  Controller,
-  Get,
-  Post,
-  Body,
-  Patch,
-  Param,
-  Delete,
-  Query,
-  UseGuards,
-  Request
-} from '@nestjs/common'
+import { Controller, Get, Post, Body, Param, Query, UseGuards } from '@nestjs/common'
 import { CategoriesService } from './categories.service'
 import { CreateCategoryDto } from './dto/create-category.dto'
 import { UpdateCategoryDto } from './dto/update-category.dto'
@@ -34,9 +23,14 @@ export class CategoriesController {
   @Roles(Role.OWNER, Role.ADMIN, Role.OPERATOR, Role.GUEST)
   findAll(
     @Query('onlyActive') onlyActive: string = 'true',
+    @Query('isSelectOptions') isSelectOptions: string = 'false',
     @OrganizationId() organizationId: number
   ) {
-    return this.categoriesService.findAll(onlyActive === 'true', organizationId)
+    return this.categoriesService.findAll(
+      onlyActive === 'true',
+      organizationId,
+      isSelectOptions === 'true'
+    )
   }
 
   @Get('with-products')

@@ -16,12 +16,12 @@ import {
 } from '@telegram-apps/sdk'
 import { getOrganizationIdFromStore } from '../middleware/organization.middleware'
 
-// const initDataRaw = import.meta.env.DEV
-//   ? 'user=%7B%22id%22%3A239676985%2C%22first_name%22%3A%22%D0%A1%D0%B5%D1%80%D0%B3%D0%B5%D0%B9%22%2C%22last_name%22%3A%22%D0%9A%D0%BD%D1%8F%D0%B7%D0%B5%D0%B2%22%2C%22username%22%3A%22Knyaz_sv%22%2C%22language_code%22%3A%22ru%22%2C%22is_premium%22%3Atrue%2C%22allows_write_to_pm%22%3Atrue%2C%22photo_url%22%3A%22https%3A%5C%2F%5C%2Ft.me%5C%2Fi%5C%2Fuserpic%5C%2F320%5C%2FdVwpqY8rwKcDgyKCeVKKd95SfUDZ89Fhpw-zbGDB6Rg.svg%22%7D&chat_instance=-7589269444137015133&chat_type=private&auth_date=1754128630&signature=UauNuo5lqxv4jNCDElNTglSP-hythLLL0twDuunt4ap76lBPP-Hvt9PmzBo4k8A2alDjqv0pcJwcWGtrnVFUDw&hash=52846c32269e3d096efab4aeb091ef5a5f1cfa4d88f7762ba1ba313336f5172e'
-//   : isTMA()
-//     ? retrieveRawInitData()
-//     : ''
-const initDataRaw = isTMA() ? retrieveRawInitData() : ''
+const initDataRaw = import.meta.env.DEV
+  ? 'query_id=AAE5LkkOAAAAADkuSQ5LAtKc&user=%7B%22id%22%3A239676985%2C%22first_name%22%3A%22%D0%A1%D0%B5%D1%80%D0%B3%D0%B5%D0%B9%22%2C%22last_name%22%3A%22%D0%9A%D0%BD%D1%8F%D0%B7%D0%B5%D0%B2%22%2C%22username%22%3A%22Knyaz_sv%22%2C%22language_code%22%3A%22ru%22%2C%22is_premium%22%3Atrue%2C%22allows_write_to_pm%22%3Atrue%2C%22photo_url%22%3A%22https%3A%5C%2F%5C%2Ft.me%5C%2Fi%5C%2Fuserpic%5C%2F320%5C%2FdVwpqY8rwKcDgyKCeVKKd95SfUDZ89Fhpw-zbGDB6Rg.svg%22%7D&auth_date=1754384284&signature=XnXENOGJ79YBemg6xHaKKoZFu4kZRCSgrVYmIEmAY-ZQCDsIJJEBjMUI2RmNr0wjUtnT8OfQjLAI0MZ7xUVEDw&hash=d8da94178bd4e7c33964d6dce0147de5141cbe9fe38e631455bcc8e70f32db6f'
+  : isTMA()
+    ? retrieveRawInitData()
+    : ''
+// const initDataRaw = isTMA() ? retrieveRawInitData() : ''
 const isProduction = import.meta.env.PROD
 
 // Создаем экземпляр Axios

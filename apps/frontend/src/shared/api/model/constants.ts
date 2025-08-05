@@ -1,5 +1,5 @@
-// export const apiDomainAccountDev = 'http://localhost:4001/api'
-export const apiDomainAccountDev = 'https://test.5278831-ad07030.twc1.net/api/api'
+export const apiDomainAccountDev = 'http://localhost:4001/api'
+// export const apiDomainAccountDev = 'https://test.5278831-ad07030.twc1.net/api/api'
 // export const apiDomainAccountProd = 'https://front-test.devmill.ru/api'
 export const apiDomainAccountProd = 'https://5278831-ad07030.twc1.net/api/api'
 // export const apiDomainAccountProd = 'https://big-grain-nest.vercel.app/api'
