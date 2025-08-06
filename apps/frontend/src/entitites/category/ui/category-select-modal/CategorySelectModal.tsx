@@ -106,8 +106,10 @@ const CategorySelectModal = ({
     setIsOpen(false)
   }
 
-  const handleSelectChange = (selectedOption: ISelectOption | null) => {
-    if (onChange) {
+  const handleSelectChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    const selectedValue = event.target.value
+    const selectedOption = data.find(item => item.value === selectedValue)
+    if (onChange && selectedOption) {
       onChange(selectedOption)
       onClose()
     }
@@ -244,7 +246,6 @@ const CategorySelectModal = ({
           value={value?.value}
           className='block w-full rounded-lg border-gray-200 px-4 py-3 pe-9 text-sm focus:border-blue-500 focus:ring-blue-500 disabled:pointer-events-none disabled:opacity-50 dark:border-neutral-700 dark:bg-neutral-900 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600'
           // styles={customStyles}
-          placeholder='Выберите категорию...'
         >
           {data.map(item => (
             <option

@@ -298,18 +298,16 @@ const CreateProductPage = () => {
         ]}
       />
 
-      <div className='sticky bottom-4'>
-        <button
-          disabled={isSubmitting || buttonLoading || !isValid}
-          onClick={() => {
-            hapticFeedback.impactOccurred('light')
-            handleSubmit(onSubmit)()
-          }}
-          className='inline-flex w-full items-center justify-center gap-x-2 rounded-lg border border-transparent bg-indigo-600 px-4 py-3 font-medium text-white transition-transform duration-150 ease-in-out select-none hover:bg-indigo-700 focus:bg-indigo-700 focus:outline-hidden active:scale-95 disabled:pointer-events-none disabled:opacity-50 sm:text-sm'
-        >
-          Создать товар
-        </button>
-      </div>
+      <button
+        disabled={isSubmitting || buttonLoading || !isValid}
+        onClick={() => {
+          hapticFeedback.impactOccurred('light')
+          handleSubmit(onSubmit)()
+        }}
+        className='inline-flex w-full items-center justify-center gap-x-2 rounded-lg border border-transparent bg-indigo-600 px-4 py-3 font-medium text-white transition-transform duration-150 ease-in-out select-none hover:bg-indigo-700 focus:bg-indigo-700 focus:outline-hidden active:scale-95 disabled:pointer-events-none disabled:opacity-50 sm:text-sm'
+      >
+        Создать товар
+      </button>
       {/* <ButtonAction
         onSuccessClick={handleSubmit(onSubmit)}
         onCancelClick={handleReset}

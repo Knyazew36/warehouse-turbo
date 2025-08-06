@@ -84,26 +84,9 @@ export const ProductsPage = () => {
         />
 
         <AlertProductLowStock />
-
+        {/* 
         {data?.categoriesWithProducts && data?.categoriesWithProducts.length > 0 && (
           <div className='flex gap-1'>
-            <button
-              className='border'
-              onClick={() => handleCategoryClick(null)}
-            >
-              <p className='text-sm text-gray-500'>Все</p>
-            </button>
-
-            {/* TODO: Добавить категорию без категории */}
-            {/* {data.productsWithoutCategory && data.productsWithoutCategory?.length > 0 && (
-              <button
-                className='border'
-                onClick={() => handleCategoryClick(null)}
-              >
-                <p className='text-sm text-gray-500'>Без категории</p>
-              </button>
-            )} */}
-
             {data?.categoriesWithProducts.map(category => (
               <button
                 className='border'
@@ -114,7 +97,34 @@ export const ProductsPage = () => {
               </button>
             ))}
           </div>
+        )} */}
+
+        {data?.categoriesWithProducts && data?.categoriesWithProducts.length > 0 && (
+          <nav className='scrollbar-hide relative mt-2 flex gap-1 overflow-x-auto'>
+            <button
+              type='button'
+              onClick={() => handleCategoryClick(null)}
+              className='hs-tab-active:after:bg-gray-800 hs-tab-active:text-gray-800 dark:hs-tab-active:text-neutral-200 dark:hs-tab-active:after:bg-neutral-400 active relative mb-2 inline-flex items-center justify-center gap-x-2 rounded-lg px-2.5 py-1.5 text-sm text-gray-500 after:pointer-events-none after:absolute after:inset-x-0 after:-bottom-2 after:z-10 after:h-0.5 hover:bg-gray-100 hover:text-gray-800 focus:bg-gray-100 focus:outline-hidden disabled:pointer-events-none disabled:opacity-50 dark:text-neutral-500 dark:hover:bg-neutral-700 dark:hover:text-neutral-300 dark:focus:bg-neutral-700'
+            >
+              Все
+            </button>
+            {data.categoriesWithProducts.map(item => (
+              <button
+                type='button'
+                className='hs-tab-active:after:bg-gray-800 hs-tab-active:text-gray-800 dark:hs-tab-active:text-neutral-200 dark:hs-tab-active:after:bg-neutral-400 relative mb-2 inline-flex items-center justify-center gap-x-2 rounded-lg px-2.5 py-1.5 text-sm text-gray-500 after:pointer-events-none after:absolute after:inset-x-0 after:-bottom-2 after:z-10 after:h-0.5 hover:bg-gray-100 hover:text-gray-800 focus:bg-gray-100 focus:outline-hidden disabled:pointer-events-none disabled:opacity-50 dark:text-neutral-500 dark:hover:bg-neutral-700 dark:hover:text-neutral-300 dark:focus:bg-neutral-700'
+                id='hs-pro-tabs-fwb-item-archived'
+                aria-selected='false'
+                data-hs-tab='#hs-pro-tabs-fwb-archived'
+                aria-controls='hs-pro-tabs-fwb-archived'
+                role='tab'
+                onClick={() => handleCategoryClick(item)}
+              >
+                {item.name}
+              </button>
+            ))}
+          </nav>
         )}
+
         {/* 
         {productWithoutCategory && productWithoutCategory?.length > 0 && (
           <div className='mt-8 ml-auto flex w-max rounded-lg bg-gray-100 p-0.5 dark:bg-neutral-800'>
