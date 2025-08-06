@@ -77,11 +77,12 @@ const CategorySelectModal = ({ data }: IProps) => {
   const customStyles = {
     control: (provided: any, state: any) => ({
       ...provided,
-      minHeight: '44px',
-      padding: '8px 12px',
+      minHeight: '40px',
+
+      padding: '6px 8px',
       border: '1px solid #e5e7eb',
-      borderRadius: '8px',
-      fontSize: '14px',
+      borderRadius: '13px',
+      fontSize: '16px',
       backgroundColor: 'white',
       '&:hover': {
         borderColor: '#3b82f6'
@@ -187,9 +188,9 @@ const CategorySelectModal = ({ data }: IProps) => {
       <DialogTrigger>
         <button
           type='button'
-          className='inline-flex items-center gap-x-2 rounded-lg border border-transparent bg-blue-600 px-4 py-3 text-sm font-medium text-white hover:bg-blue-700 focus:bg-blue-700 focus:outline-hidden disabled:pointer-events-none disabled:opacity-50'
+          className='block w-full rounded-lg border border-gray-200 px-4 py-2.5 text-start text-[15px] transition-transform duration-150 ease-in-out select-none focus:border-blue-500 focus:ring-blue-500 active:scale-95 disabled:pointer-events-none disabled:opacity-50 sm:py-3 sm:text-sm dark:border-neutral-700 dark:bg-neutral-900 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600'
         >
-          Open modal
+          {watch('name') || 'Выберите категорию'}
         </button>
       </DialogTrigger>
       <DialogContent>
@@ -199,7 +200,7 @@ const CategorySelectModal = ({ data }: IProps) => {
 
         <div className='flex flex-col gap-1'>
           <label className='inline-block text-sm text-gray-500 sm:mt-2.5 dark:text-neutral-500'>
-            Выберите категории
+            Выберите категорию
           </label>
 
           <Select
@@ -211,7 +212,7 @@ const CategorySelectModal = ({ data }: IProps) => {
             // isMulti
             className='w-full'
             styles={customStyles}
-            placeholder='Выберите категории...'
+            placeholder='Выберите категорию...'
             noOptionsMessage={() => 'Нет доступных категорий'}
           />
         </div>
@@ -222,26 +223,32 @@ const CategorySelectModal = ({ data }: IProps) => {
           className='flex flex-col gap-2'
           onSubmit={handleSubmit(onSubmit)}
         >
-          <Controller
-            control={control}
-            name='name'
-            rules={{
-              required: 'Название обязательно',
-              validate: value => {
-                if (!value || value.trim().length === 0) {
-                  return 'Название обязательно'
+          <div>
+            <Controller
+              control={control}
+              name='name'
+              rules={{
+                // required: 'Название обязательно',
+                validate: value => {
+                  if (!value || value.trim().length === 0) {
+                    return 'Название обязательно'
+                  }
                 }
-              }
-            }}
-            render={({ field }) => (
-              <InputDefault
-                label='Или создайте новую'
-                {...field}
-                placeholder='Категория'
-                error={errors.name?.message}
-              />
-            )}
-          />
+              }}
+              render={({ field }) => (
+                <InputDefault
+                  label='Или создайте новую'
+                  {...field}
+                  placeholder='Категория'
+                  error={errors.name?.message}
+                />
+              )}
+            />
+          </div>
+
+          <button className='ms-auto rounded-md border border-gray-200 bg-white px-1.5 py-1 text-xs text-gray-800 shadow-2xs dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-300'>
+            Добавить
+          </button>
         </form>
 
         <div className='flex items-center justify-end gap-x-2 border-t border-gray-200 py-3 dark:border-neutral-700'>
@@ -250,7 +257,7 @@ const CategorySelectModal = ({ data }: IProps) => {
               type='button'
               className='inline-flex items-center gap-x-2 rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm font-medium text-gray-800 shadow-2xs hover:bg-gray-50 focus:bg-gray-50 focus:outline-hidden disabled:pointer-events-none disabled:opacity-50 dark:border-neutral-700 dark:bg-neutral-800 dark:text-white dark:hover:bg-neutral-700 dark:focus:bg-neutral-700'
             >
-              Close
+              Отмена
             </button>
           </DialogClose>
 

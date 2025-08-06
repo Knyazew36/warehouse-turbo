@@ -17,7 +17,7 @@ import {
 import { getOrganizationIdFromStore } from '../middleware/organization.middleware'
 
 const initDataRaw = import.meta.env.DEV
-  ? 'query_id=AAE5LkkOAAAAADkuSQ5LAtKc&user=%7B%22id%22%3A239676985%2C%22first_name%22%3A%22%D0%A1%D0%B5%D1%80%D0%B3%D0%B5%D0%B9%22%2C%22last_name%22%3A%22%D0%9A%D0%BD%D1%8F%D0%B7%D0%B5%D0%B2%22%2C%22username%22%3A%22Knyaz_sv%22%2C%22language_code%22%3A%22ru%22%2C%22is_premium%22%3Atrue%2C%22allows_write_to_pm%22%3Atrue%2C%22photo_url%22%3A%22https%3A%5C%2F%5C%2Ft.me%5C%2Fi%5C%2Fuserpic%5C%2F320%5C%2FdVwpqY8rwKcDgyKCeVKKd95SfUDZ89Fhpw-zbGDB6Rg.svg%22%7D&auth_date=1754384284&signature=XnXENOGJ79YBemg6xHaKKoZFu4kZRCSgrVYmIEmAY-ZQCDsIJJEBjMUI2RmNr0wjUtnT8OfQjLAI0MZ7xUVEDw&hash=d8da94178bd4e7c33964d6dce0147de5141cbe9fe38e631455bcc8e70f32db6f'
+  ? 'user=%7B%22id%22%3A239676985%2C%22first_name%22%3A%22%D0%A1%D0%B5%D1%80%D0%B3%D0%B5%D0%B9%22%2C%22last_name%22%3A%22%D0%9A%D0%BD%D1%8F%D0%B7%D0%B5%D0%B2%22%2C%22username%22%3A%22Knyaz_sv%22%2C%22language_code%22%3A%22ru%22%2C%22is_premium%22%3Atrue%2C%22allows_write_to_pm%22%3Atrue%2C%22photo_url%22%3A%22https%3A%5C%2F%5C%2Ft.me%5C%2Fi%5C%2Fuserpic%5C%2F320%5C%2FdVwpqY8rwKcDgyKCeVKKd95SfUDZ89Fhpw-zbGDB6Rg.svg%22%7D&chat_instance=-840460746764897797&chat_type=private&auth_date=1754499644&signature=qtPvh0crqnGjuxJu9r3EHTXU_G938YVAA4nw7e1lx2pfrMsbRAyoHlReO6OhHPg8McLgLoscO59q2cDgZuC_BA&hash=1f14608d4b4ee87db2f7dbf8bd93f162c2494c42ffa6be6a6e008a16e186b486'
   : isTMA()
     ? retrieveRawInitData()
     : ''
@@ -83,6 +83,7 @@ $api.interceptors.response.use(
     }
 
     if (response.data?.user?.allowedPhone === false) {
+      if (import.meta.env.DEV) return response
       const errorData: ErrorEventEmitter = {
         action: 'bottom-sheet',
         description:
