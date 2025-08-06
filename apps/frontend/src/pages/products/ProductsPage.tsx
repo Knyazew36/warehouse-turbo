@@ -56,6 +56,8 @@ export const ProductsPage = () => {
   }, [data, searchTerm])
 
   const handleCategoryClick = (category: Category | null) => {
+    hapticFeedback.impactOccurred('light')
+
     if (category) {
       const categories = data?.categoriesWithProducts?.filter(item => item.id === category?.id)
       setProductsWithCategory(categories)
