@@ -76,7 +76,7 @@ const CategorySelectModal = ({
 
       // Автоматически выбираем созданную категорию
       const selectedOption: ISelectOption = {
-        value: newCategory.id.toString(),
+        value: newCategory.id,
         label: newCategory.name
       }
       if (onChange) {
@@ -89,7 +89,6 @@ const CategorySelectModal = ({
       })
 
       // queryClient.invalidateQueries({ queryKey: ['category-select-options'] })
-      hapticFeedback.notificationOccurred('success')
 
       // Закрываем модальное окно после создания
       onClose()
