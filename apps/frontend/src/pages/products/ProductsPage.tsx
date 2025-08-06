@@ -102,11 +102,14 @@ export const ProductsPage = () => {
         )} */}
 
         {data?.categoriesWithProducts && data?.categoriesWithProducts.length > 0 && (
-          <nav className='scrollbar-hide relative mt-2 flex gap-1 overflow-x-auto'>
+          <nav className='scrollbar-hide relative mt-4 flex gap-1 overflow-x-auto py-1'>
             <button
               type='button'
               onClick={() => handleCategoryClick(null)}
-              className='hs-tab-active:after:bg-gray-800 hs-tab-active:text-gray-800 dark:hs-tab-active:text-neutral-200 dark:hs-tab-active:after:bg-neutral-400 active relative mb-2 inline-flex items-center justify-center gap-x-2 rounded-lg px-2.5 py-1.5 text-sm text-gray-500 after:pointer-events-none after:absolute after:inset-x-0 after:-bottom-2 after:z-10 after:h-0.5 hover:bg-gray-100 hover:text-gray-800 focus:bg-gray-100 focus:outline-hidden disabled:pointer-events-none disabled:opacity-50 dark:text-neutral-500 dark:hover:bg-neutral-700 dark:hover:text-neutral-300 dark:focus:bg-neutral-700'
+              className={clsx(
+                'hs-tab-active:after:bg-gray-800 hs-tab-active:text-gray-800 dark:hs-tab-active:text-neutral-200 dark:hs-tab-active:after:bg-neutral-400 active relative mb-2 inline-flex items-center justify-center gap-x-2 rounded-lg px-2.5 py-1.5 text-sm text-gray-500 after:pointer-events-none after:absolute after:inset-x-0 after:-bottom-2 after:z-10 after:h-0.5 hover:bg-gray-100 hover:text-gray-800 focus:bg-gray-100 focus:outline-hidden disabled:pointer-events-none disabled:opacity-50 dark:text-neutral-500 dark:hover:bg-neutral-700 dark:hover:text-neutral-300 dark:focus:bg-neutral-700',
+                !selectedCategory && 'bg-blue-700 dark:text-white'
+              )}
             >
               Все
             </button>
@@ -115,7 +118,7 @@ export const ProductsPage = () => {
                 type='button'
                 className={clsx(
                   'hs-tab-active:after:bg-gray-800 hs-tab-active:text-gray-800 dark:hs-tab-active:text-neutral-200 dark:hs-tab-active:after:bg-neutral-400 relative mb-2 inline-flex items-center justify-center gap-x-2 rounded-lg px-2.5 py-1.5 text-sm text-nowrap text-gray-500 after:pointer-events-none after:absolute after:inset-x-0 after:-bottom-2 after:z-10 after:h-0.5 hover:bg-gray-100 hover:text-gray-800 focus:bg-gray-100 focus:outline-hidden disabled:pointer-events-none disabled:opacity-50 dark:text-neutral-500 dark:hover:bg-neutral-700 dark:hover:text-neutral-300 dark:focus:bg-neutral-700',
-                  item.id === selectedCategory?.id && 'bg-blue-700 text-white'
+                  item.id === selectedCategory?.id && 'bg-blue-700 dark:text-white'
                 )}
                 onClick={() => handleCategoryClick(item)}
               >
