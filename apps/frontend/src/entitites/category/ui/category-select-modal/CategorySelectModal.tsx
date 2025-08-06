@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { ISelectOption } from '@/shared/ui/select/model/select.type'
 import {
   Dialog,
@@ -10,7 +10,7 @@ import {
   DialogTrigger
 } from '@/components/ui/dialog'
 
-import Select from 'react-select'
+import Select, { GroupBase } from 'react-select'
 import Divide from '@/shared/ui/divide/ui/Divide'
 import { Controller, useForm } from 'react-hook-form'
 import { useCreateCategory } from '../../api/category.api'
@@ -42,6 +42,13 @@ const CategorySelectModal = ({
   const [isOpen, setIsOpen] = useState(false)
   const { open } = useBottomSheetStore()
   const queryClient = useQueryClient()
+  const ref = useRef<any>(null)
+
+  useEffect(() => {
+    if (ref.current && isOpen) {
+      ref.current.blur()
+    }
+  }, [ref, isOpen])
 
   const {
     register,
@@ -239,6 +246,7 @@ const CategorySelectModal = ({
           </label>
 
           <Select
+            ref={ref}
             options={data}
             onChange={handleSelectChange}
             value={value}
@@ -246,8 +254,8 @@ const CategorySelectModal = ({
             styles={customStyles}
             placeholder='Выберите категорию...'
             noOptionsMessage={() => 'Нет доступных категорий'}
-            menuIsOpen={false}
-            onMenuOpen={() => {}}
+            // menuIsOpen={false}
+            // onMenuOpen={() => {}}
           />
         </div>
 
@@ -281,10 +289,10 @@ const CategorySelectModal = ({
           </div>
 
           <button
-            type='button'
+            type='submit'
             onClick={() => {
               hapticFeedback.impactOccurred('light')
-              handleSubmit(onSubmit)
+              // handleSubmit(onSubmit)
             }}
             disabled={isSubmitting || !isValid}
             className='ms-auto rounded-md border border-blue-200 bg-white px-1.5 py-1 text-xs text-blue-800 shadow-2xs disabled:pointer-events-none disabled:opacity-50 dark:border-blue-700 dark:bg-blue-800 dark:text-neutral-300'
