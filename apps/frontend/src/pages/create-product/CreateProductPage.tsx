@@ -292,7 +292,7 @@ const CreateProductPage = () => {
       </form>
 
       <InfoMessage
-        className='mt-4'
+        className='my-4'
         items={[
           'Минимальный остаток - это количество товара, при котором будут отправляться уведомления о том, что товар заканчивается.'
         ]}
@@ -300,6 +300,7 @@ const CreateProductPage = () => {
 
       <div className='sticky bottom-4'>
         <button
+          disabled={isSubmitting || buttonLoading || !isValid}
           onClick={() => {
             hapticFeedback.impactOccurred('light')
             handleSubmit(onSubmit)()
@@ -309,11 +310,11 @@ const CreateProductPage = () => {
           Создать товар
         </button>
       </div>
-      <ButtonAction
+      {/* <ButtonAction
         onSuccessClick={handleSubmit(onSubmit)}
         onCancelClick={handleReset}
         isLoading={buttonLoading}
-      />
+      /> */}
     </Page>
   )
 }
