@@ -246,6 +246,8 @@ const CategorySelectModal = ({
             styles={customStyles}
             placeholder='Выберите категорию...'
             noOptionsMessage={() => 'Нет доступных категорий'}
+            menuIsOpen={false}
+            onMenuOpen={() => {}}
           />
         </div>
 
