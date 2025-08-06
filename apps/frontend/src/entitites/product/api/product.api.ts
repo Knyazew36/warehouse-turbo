@@ -10,7 +10,7 @@ interface CreateProductDto {
   quantity: number
   minThreshold: number
   unit?: string
-  categoryId?: string
+  categoryId?: number
   active?: boolean
 }
 

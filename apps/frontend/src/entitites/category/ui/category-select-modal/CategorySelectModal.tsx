@@ -221,100 +221,66 @@ const CategorySelectModal = ({
   }
 
   return (
-    <Dialog
-      open={isOpen}
-      onOpenChange={setIsOpen}
-    >
-      <DialogTrigger>
-        <button
-          type='button'
-          onClick={() => hapticFeedback.impactOccurred('light')}
-          className='block w-full rounded-lg border border-gray-200 px-4 py-2.5 text-start text-[15px] transition-transform duration-150 ease-in-out select-none focus:border-blue-500 focus:ring-blue-500 active:scale-95 disabled:pointer-events-none disabled:opacity-50 sm:py-3 sm:text-sm dark:border-neutral-700 dark:bg-neutral-900 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600'
-        >
-          {value?.label || placeholder}
-        </button>
-      </DialogTrigger>
-      <DialogContent>
-        <DialogHeader>
-          <DialogTitle>Категории</DialogTitle>
-        </DialogHeader>
+    <div className='flex flex-col gap-2 rounded-md border-1 border-dashed border-neutral-700 p-2'>
+      <div className='flex flex-col gap-1'>
+        <label className='inline-block text-sm text-gray-500 sm:mt-2.5 dark:text-neutral-500'>
+          Выберите категорию
+        </label>
 
-        <div className='flex flex-col gap-1'>
-          <label className='inline-block text-sm text-gray-500 sm:mt-2.5 dark:text-neutral-500'>
-            Выберите категорию
-          </label>
+        <Select
+          ref={ref}
+          options={data}
+          onChange={handleSelectChange}
+          value={value}
+          className='w-full'
+          styles={customStyles}
+          placeholder='Выберите категорию...'
+          noOptionsMessage={() => 'Нет доступных категорий'}
+        />
+      </div>
 
-          <Select
-            ref={ref}
-            options={data}
-            onChange={handleSelectChange}
-            value={value}
-            className='w-full'
-            styles={customStyles}
-            placeholder='Выберите категорию...'
-            noOptionsMessage={() => 'Нет доступных категорий'}
+      <div className='mx-auto my-2 h-px w-28 bg-gray-300 dark:bg-neutral-700' />
+
+      <form
+        className='flex flex-col gap-2'
+        onSubmit={handleSubmit(onSubmit)}
+      >
+        <div>
+          <Controller
+            control={control}
+            name='name'
+            rules={{
+              // required: 'Название обязательно',
+              validate: value => {
+                if (!value || value.trim().length === 0) {
+                  return 'Название обязательно'
+                }
+              }
+            }}
+            render={({ field }) => (
+              <InputDefault
+                label='Или создайте новую'
+                {...field}
+                placeholder='Категория'
+                error={errors.name?.message}
+              />
+            )}
           />
         </div>
 
-        <div className='mx-auto my-2 h-px w-28 bg-gray-300 dark:bg-neutral-700' />
-
-        <form
-          className='flex flex-col gap-2'
-          onSubmit={handleSubmit(onSubmit)}
+        <button
+          type='button'
+          onClick={() => {
+            hapticFeedback.impactOccurred('light')
+            handleSubmit(onSubmit)()
+          }}
+          disabled={isSubmitting || buttonLoading}
+          className='ms-auto rounded-md border border-blue-200 bg-white px-1.5 py-1 text-xs text-blue-800 shadow-2xs disabled:pointer-events-none disabled:opacity-50 dark:border-blue-700 dark:bg-blue-800 dark:text-neutral-300'
         >
-          <div>
-            <Controller
-              control={control}
-              name='name'
-              rules={{
-                // required: 'Название обязательно',
-                validate: value => {
-                  if (!value || value.trim().length === 0) {
-                    return 'Название обязательно'
-                  }
-                }
-              }}
-              render={({ field }) => (
-                <InputDefault
-                  label='Или создайте новую'
-                  {...field}
-                  placeholder='Категория'
-                  error={errors.name?.message}
-                />
-              )}
-            />
-          </div>
-
-          <button
-            type='submit'
-            onClick={() => {
-              hapticFeedback.impactOccurred('light')
-              // handleSubmit(onSubmit)
-            }}
-            disabled={isSubmitting || !isValid}
-            className='ms-auto rounded-md border border-blue-200 bg-white px-1.5 py-1 text-xs text-blue-800 shadow-2xs disabled:pointer-events-none disabled:opacity-50 dark:border-blue-700 dark:bg-blue-800 dark:text-neutral-300'
-          >
-            Добавить
-          </button>
-        </form>
-
-        <div className='flex items-center justify-end gap-x-2 border-t border-gray-200 py-3 dark:border-neutral-700'>
-          <DialogClose>
-            <button
-              type='button'
-              onClick={() => hapticFeedback.impactOccurred('light')}
-              className='inline-flex items-center gap-x-2 rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm font-medium text-gray-800 shadow-2xs hover:bg-gray-50 focus:bg-gray-50 focus:outline-hidden disabled:pointer-events-none disabled:opacity-50 dark:border-neutral-700 dark:bg-neutral-800 dark:text-white dark:hover:bg-neutral-700 dark:focus:bg-neutral-700'
-            >
-              Отмена
-            </button>
-          </DialogClose>
-
-          {/* <button className='inline-flex items-center gap-x-2 rounded-lg border border-transparent bg-blue-600 px-3 py-2 text-sm font-medium text-white hover:bg-blue-700 focus:bg-blue-700 focus:outline-hidden disabled:pointer-events-none disabled:opacity-50'>
-            Сохранить
-          </button> */}
-        </div>
-      </DialogContent>
-    </Dialog>
+          Добавить
+        </button>
+      </form>
+    </div>
   )
 }
 
