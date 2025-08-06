@@ -108,7 +108,7 @@ export const ProductsPage = () => {
               onClick={() => handleCategoryClick(null)}
               className={clsx(
                 'hs-tab-active:after:bg-gray-800 hs-tab-active:text-gray-800 dark:hs-tab-active:text-neutral-200 dark:hs-tab-active:after:bg-neutral-400 active relative mb-2 inline-flex items-center justify-center gap-x-2 rounded-lg px-2.5 py-1.5 text-sm text-gray-500 after:pointer-events-none after:absolute after:inset-x-0 after:-bottom-2 after:z-10 after:h-0.5 hover:bg-gray-100 hover:text-gray-800 focus:bg-gray-100 focus:outline-hidden disabled:pointer-events-none disabled:opacity-50 dark:text-neutral-500 dark:hover:bg-neutral-700 dark:hover:text-neutral-300 dark:focus:bg-neutral-700',
-                !selectedCategory && 'bg-blue-700 dark:text-white'
+                (!selectedCategory || selectedCategory === null) && 'bg-blue-700 dark:text-white'
               )}
             >
               Все
@@ -192,18 +192,20 @@ export const ProductsPage = () => {
               </>
             )}
 
-            {productWithoutCategory && productWithoutCategory.length > 0 && (
-              <>
-                <p className='text-sm text-gray-500'>Товары без категории</p>
+            {productWithoutCategory &&
+              productWithoutCategory.length > 0 &&
+              selectedCategory === null && (
+                <>
+                  <p className='text-sm text-gray-500'>Товары без категории</p>
 
-                {productWithoutCategory.map(card => (
-                  <ProductsCard
-                    key={card.id}
-                    data={card}
-                  />
-                ))}
-              </>
-            )}
+                  {productWithoutCategory.map(card => (
+                    <ProductsCard
+                      key={card.id}
+                      data={card}
+                    />
+                  ))}
+                </>
+              )}
           </div>
         )}
 
