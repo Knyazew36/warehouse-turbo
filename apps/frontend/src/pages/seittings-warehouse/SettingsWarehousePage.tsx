@@ -57,9 +57,9 @@ const SettingsWarehousePage = () => {
         />
       </div>
 
-      <Divide className='my-4' />
+      <Divide className='!my-4' />
 
-      <div className='mt-8 grid grid-cols-2 gap-2 sm:grid-cols-4 md:grid-cols-5 lg:gap-4 xl:grid-cols-6'>
+      <div className='mt-4 grid grid-cols-2 gap-2 sm:grid-cols-4 md:grid-cols-5 lg:gap-4 xl:grid-cols-6'>
         <MenuButton
           to={'/category/create'}
           title=' Создать категорию'

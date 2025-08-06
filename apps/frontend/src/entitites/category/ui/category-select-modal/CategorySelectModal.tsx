@@ -253,8 +253,6 @@ const CategorySelectModal = ({
             styles={customStyles}
             placeholder='Выберите категорию...'
             noOptionsMessage={() => 'Нет доступных категорий'}
-            // menuIsOpen={false}
-            // onMenuOpen={() => {}}
           />
         </div>
 
@@ -315,16 +313,6 @@ const CategorySelectModal = ({
             Сохранить
           </button> */}
         </div>
-
-        {/* </div> */}
-
-        {/* <DialogHeader>
-      <DialogTitle>Are you absolutely sure?</DialogTitle>
-      <DialogDescription>
-        This action cannot be undone. This will permanently delete your account
-        and remove your data from our servers.
-      </DialogDescription>
-    </DialogHeader> */}
       </DialogContent>
     </Dialog>
   )
