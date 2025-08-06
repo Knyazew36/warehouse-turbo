@@ -25,6 +25,7 @@ export const ProductsPage = () => {
   const [productsWithCategory, setProductsWithCategory] = useState<Category[] | undefined>(
     undefined
   )
+  const [selectedCategory, setSelectedCategory] = useState<Category | null>(null)
   const [categories, setCategories] = useState<Category[] | undefined>(undefined)
   const [view, setView] = useState<'tile' | 'table'>('tile')
 
@@ -60,6 +61,7 @@ export const ProductsPage = () => {
 
     if (category) {
       const categories = data?.categoriesWithProducts?.filter(item => item.id === category?.id)
+      setSelectedCategory(category)
       setProductsWithCategory(categories)
     } else {
       setProductsWithCategory(data?.categoriesWithProducts)
@@ -111,12 +113,10 @@ export const ProductsPage = () => {
             {data.categoriesWithProducts.map(item => (
               <button
                 type='button'
-                className='hs-tab-active:after:bg-gray-800 hs-tab-active:text-gray-800 dark:hs-tab-active:text-neutral-200 dark:hs-tab-active:after:bg-neutral-400 relative mb-2 inline-flex items-center justify-center gap-x-2 rounded-lg px-2.5 py-1.5 text-sm text-gray-500 after:pointer-events-none after:absolute after:inset-x-0 after:-bottom-2 after:z-10 after:h-0.5 hover:bg-gray-100 hover:text-gray-800 focus:bg-gray-100 focus:outline-hidden disabled:pointer-events-none disabled:opacity-50 dark:text-neutral-500 dark:hover:bg-neutral-700 dark:hover:text-neutral-300 dark:focus:bg-neutral-700'
-                id='hs-pro-tabs-fwb-item-archived'
-                aria-selected='false'
-                data-hs-tab='#hs-pro-tabs-fwb-archived'
-                aria-controls='hs-pro-tabs-fwb-archived'
-                role='tab'
+                className={clsx(
+                  'hs-tab-active:after:bg-gray-800 hs-tab-active:text-gray-800 dark:hs-tab-active:text-neutral-200 dark:hs-tab-active:after:bg-neutral-400 relative mb-2 inline-flex items-center justify-center gap-x-2 rounded-lg px-2.5 py-1.5 text-sm text-nowrap text-gray-500 after:pointer-events-none after:absolute after:inset-x-0 after:-bottom-2 after:z-10 after:h-0.5 hover:bg-gray-100 hover:text-gray-800 focus:bg-gray-100 focus:outline-hidden disabled:pointer-events-none disabled:opacity-50 dark:text-neutral-500 dark:hover:bg-neutral-700 dark:hover:text-neutral-300 dark:focus:bg-neutral-700',
+                  item.id === selectedCategory?.id && 'bg-blue-700 text-white'
+                )}
                 onClick={() => handleCategoryClick(item)}
               >
                 {item.name}
