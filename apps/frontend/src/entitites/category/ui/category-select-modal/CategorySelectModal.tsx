@@ -221,7 +221,7 @@ const CategorySelectModal = ({
   }
 
   return (
-    <div className='flex flex-col gap-2 rounded-md border-1 border-dashed border-neutral-700 p-2'>
+    <div className='flex flex-col gap-2 rounded-md border-1 border-dashed border-neutral-700 p-3'>
       <div className='flex flex-col gap-1'>
         <label className='inline-block text-sm text-gray-500 sm:mt-2.5 dark:text-neutral-500'>
           Выберите категорию
@@ -237,6 +237,17 @@ const CategorySelectModal = ({
           placeholder='Выберите категорию...'
           noOptionsMessage={() => 'Нет доступных категорий'}
         />
+
+        <select>
+          {data.map(item => (
+            <option
+              key={item.value}
+              value={item.value}
+            >
+              {item.label}
+            </option>
+          ))}
+        </select>
       </div>
 
       <div className='mx-auto my-2 h-px w-28 bg-gray-300 dark:bg-neutral-700' />
