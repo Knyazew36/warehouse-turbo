@@ -80,7 +80,7 @@ model Product {
   quantity     Decimal
   minThreshold Decimal
   unit         String?   @default("ед")
-  category     String?
+  // category     String?
   createdAt    DateTime  @default(now())
   updatedAt    DateTime  @updatedAt
   receipts     Receipt[]

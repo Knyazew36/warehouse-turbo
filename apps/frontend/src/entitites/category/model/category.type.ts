@@ -6,10 +6,11 @@ export interface Category {
   description: string
   color: string
   icon: string
+  products: Product[] | undefined
 }
 
 export interface GetCategoryWithProducts {
-  categories: Category[]
+  categoriesWithProducts: Category[]
   productsWithoutCategory: Product[]
 }
 
@@ -27,6 +28,6 @@ export interface CategoryWithProducts {
   }[]
 }
 
-export type CreateCategoryDto = Omit<Category, 'id' | 'createdAt' | 'updatedAt'>
+export type CreateCategoryDto = Omit<Category, 'id' | 'createdAt' | 'updatedAt' | 'products'>
 
 export type UpdateCategoryDto = Partial<CreateCategoryDto>

@@ -6,7 +6,7 @@ import ButtonAction from '@/shared/button-action/ButtonAction'
 import { useBottomSheetStore } from '@/shared/bottom-sheet/model/store.bottom-sheet'
 import PageHeader from '@/shared/ui/page-header/ui/PageHeader'
 import InputDefault from '@/shared/ui/input-default/ui/InputDefault'
-import { getCategoryById, useCreateCategory } from '@/entitites/category/api/category.api'
+import { getCategoryById, useUpdateCategory } from '@/entitites/category/api/category.api'
 import { useParams } from 'react-router-dom'
 import { Category } from '@/entitites/category/model/category.type'
 
@@ -16,6 +16,7 @@ type FormValues = {
   color: string
   icon: string
 }
+
 const CategoryChangePage = () => {
   const { open } = useBottomSheetStore()
   const {
@@ -26,7 +27,12 @@ const CategoryChangePage = () => {
     watch,
     formState: { errors, isSubmitting, isValid }
   } = useForm<FormValues>({
-    defaultValues: { name: '' }
+    defaultValues: {
+      name: '',
+      description: '',
+      color: '',
+      icon: ''
+    }
   })
 
   const { id } = useParams()
@@ -38,53 +44,64 @@ const CategoryChangePage = () => {
     const fetchData = async () => {
       const category = await getCategoryById(id)
       setData(category)
+      // Заполняем форму данными существующей категории
+      reset({
+        name: category.name,
+        description: category.description,
+        color: category.color,
+        icon: category.icon
+      })
     }
     fetchData()
-  }, [id])
+  }, [id, reset])
 
-  const { mutateAsync: createCategory } = useCreateCategory()
+  const { mutateAsync: updateCategory } = useUpdateCategory()
   const [buttonLoading, setButtonLoading] = useState(false)
 
-  const onSubmit = async (data: FormValues) => {
+  const onSubmit = async (formData: FormValues) => {
+    if (!id || !data) return
+
     try {
       setButtonLoading(true)
-      await createCategory({
-        name: data.name.trim(),
-        description: '',
-        color: '',
-        icon: ''
+      await updateCategory({
+        id: parseInt(id),
+        dto: {
+          name: formData.name.trim(),
+          description: formData.description.trim(),
+          color: formData.color.trim(),
+          icon: formData.icon.trim()
+        }
       })
 
       open({
         isOpen: true,
         description:
-          'Товар успешно создан. Вы можете добавить еще один товар или вернуться на главную страницу.'
+          'Категория успешно изменена. Вы можете продолжить редактирование или вернуться на главную страницу.'
       })
       hapticFeedback.notificationOccurred('success')
     } catch (e: any) {
       hapticFeedback.notificationOccurred('error')
     } finally {
       setButtonLoading(false)
-      // Сбрасываем форму после успешного создания
-      handleReset()
     }
   }
 
   const handleReset = () => {
-    // Сначала сбрасываем к defaultValues
-    reset()
-    // Затем принудительно устанавливаем нужные значения
-    setTimeout(() => {
+    if (data) {
       reset({
-        name: ''
+        name: data.name,
+        description: data.description,
+        color: data.color,
+        icon: data.icon
       })
-    }, 0)
+    }
   }
+
   console.info('data', data)
   return (
     data && (
       <Page back>
-        <PageHeader title='Создать категорию' />
+        <PageHeader title='Изменить категорию' />
 
         <form
           onSubmit={handleSubmit(onSubmit)}
@@ -95,7 +112,6 @@ const CategoryChangePage = () => {
             <Controller
               control={control}
               name='name'
-              defaultValue={data?.name}
               rules={{
                 required: 'Название обязательно',
                 validate: value => {
@@ -113,16 +129,49 @@ const CategoryChangePage = () => {
                 />
               )}
             />
+
+            {/* <Controller
+              control={control}
+              name='description'
+              render={({ field }) => (
+                <InputDefault
+                  label='Описание'
+                  {...field}
+                  placeholder='Описание категории'
+                  error={errors.description?.message}
+                />
+              )}
+            />
+
+            <Controller
+              control={control}
+              name='color'
+              render={({ field }) => (
+                <InputDefault
+                  label='Цвет'
+                  {...field}
+                  placeholder='Цвет категории'
+                  error={errors.color?.message}
+                />
+              )}
+            />
+
+            <Controller
+              control={control}
+              name='icon'
+              render={({ field }) => (
+                <InputDefault
+                  label='Иконка'
+                  {...field}
+                  placeholder='Иконка категории'
+                  error={errors.icon?.message}
+                />
+              )}
+            /> */}
           </div>
           {/* End Body */}
         </form>
 
-        {/* <InfoMessage
-        className='mt-4'
-        items={[
-          'Минимальный остаток - это количество товара, при котором будут отправляться уведомления о том, что товар заканчивается.'
-        ]}
-      /> */}
         <ButtonAction
           onSuccessClick={handleSubmit(onSubmit)}
           onCancelClick={handleReset}

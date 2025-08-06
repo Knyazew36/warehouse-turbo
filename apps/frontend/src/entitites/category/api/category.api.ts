@@ -78,7 +78,10 @@ export const useCreateCategory = () => {
       return res.data.data as Category
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['category-with-products', true] })
+      // Инвалидируем все связанные запросы
+      queryClient.invalidateQueries({ queryKey: ['category-list'] })
+      queryClient.invalidateQueries({ queryKey: ['category-with-products'] })
+      queryClient.invalidateQueries({ queryKey: ['category-select-options'] })
       hapticFeedback.notificationOccurred('success')
     },
     onError: () => {
@@ -96,9 +99,11 @@ export const useUpdateCategory = () => {
       return res.data.data as Category
     },
     onSuccess: () => {
-      console.log('Invalidating queries after product update...')
-      queryClient.invalidateQueries({ queryKey: ['category-with-products', true] })
+      console.log('Invalidating queries after category update...')
+      // Инвалидируем все связанные запросы
+      queryClient.invalidateQueries({ queryKey: ['category-list'] })
       queryClient.invalidateQueries({ queryKey: ['category-with-products'] })
+      queryClient.invalidateQueries({ queryKey: ['category-select-options'] })
       hapticFeedback.notificationOccurred('success')
     }
   })
@@ -110,10 +115,113 @@ export const useDeleteCategory = () => {
     mutationFn: async (id: number) => {
       await $api.post(`${apiDomain}/categories/delete/${id}`)
     },
-    onSuccess: () => {
-      console.log('Invalidating queries after product deletion...')
-      queryClient.invalidateQueries({ queryKey: ['category-with-products', true] })
+    onMutate: async (id: number) => {
+      // Отменяем исходящие запросы
+      await queryClient.cancelQueries({ queryKey: ['category-list'] })
+      await queryClient.cancelQueries({ queryKey: ['category-with-products'] })
+      await queryClient.cancelQueries({ queryKey: ['category-select-options'] })
+
+      // Сохраняем предыдущие данные
+      const previousCategories = queryClient.getQueryData(['category-list'])
+      const previousCategoriesWithProducts = queryClient.getQueryData(['category-with-products'])
+      const previousSelectOptions = queryClient.getQueryData(['category-select-options'])
+
+      // Оптимистично удаляем категорию из всех кэшей
+      queryClient.setQueryData(['category-list'], (old: Category[] | undefined) => {
+        if (!old) return old
+        return old.filter(category => category.id !== id)
+      })
+
+      queryClient.setQueryData(['category-list', false], (old: Category[] | undefined) => {
+        if (!old) return old
+        return old.filter(category => category.id !== id)
+      })
+
+      queryClient.setQueryData(['category-list', true], (old: Category[] | undefined) => {
+        if (!old) return old
+        return old.filter(category => category.id !== id)
+      })
+
+      queryClient.setQueryData(
+        ['category-with-products'],
+        (old: GetCategoryWithProducts | undefined) => {
+          if (!old) return old
+          return {
+            ...old,
+            categories: old.categoriesWithProducts.filter(category => category.id !== id)
+          }
+        }
+      )
+
+      queryClient.setQueryData(
+        ['category-with-products', false],
+        (old: GetCategoryWithProducts | undefined) => {
+          if (!old) return old
+          return {
+            ...old,
+            categories: old.categoriesWithProducts.filter(category => category.id !== id)
+          }
+        }
+      )
+
+      queryClient.setQueryData(
+        ['category-with-products', true],
+        (old: GetCategoryWithProducts | undefined) => {
+          if (!old) return old
+          return {
+            ...old,
+            categories: old.categoriesWithProducts.filter(category => category.id !== id)
+          }
+        }
+      )
+
+      queryClient.setQueryData(['category-select-options'], (old: ISelectOption[] | undefined) => {
+        if (!old) return old
+        return old.filter(option => option.value !== id.toString())
+      })
+
+      queryClient.setQueryData(
+        ['category-select-options', false],
+        (old: ISelectOption[] | undefined) => {
+          if (!old) return old
+          return old.filter(option => option.value !== id.toString())
+        }
+      )
+
+      queryClient.setQueryData(
+        ['category-select-options', true],
+        (old: ISelectOption[] | undefined) => {
+          if (!old) return old
+          return old.filter(option => option.value !== id.toString())
+        }
+      )
+
+      return {
+        previousCategories,
+        previousCategoriesWithProducts,
+        previousSelectOptions
+      }
+    },
+    onError: (err, id, context) => {
+      // Восстанавливаем предыдущие данные при ошибке
+      if (context?.previousCategories) {
+        queryClient.setQueryData(['category-list'], context.previousCategories)
+      }
+      if (context?.previousCategoriesWithProducts) {
+        queryClient.setQueryData(['category-with-products'], context.previousCategoriesWithProducts)
+      }
+      if (context?.previousSelectOptions) {
+        queryClient.setQueryData(['category-select-options'], context.previousSelectOptions)
+      }
+      hapticFeedback.notificationOccurred('error')
+    },
+    onSettled: () => {
+      // Инвалидируем все связанные запросы для синхронизации с сервером
+      queryClient.invalidateQueries({ queryKey: ['category-list'] })
       queryClient.invalidateQueries({ queryKey: ['category-with-products'] })
+      queryClient.invalidateQueries({ queryKey: ['category-select-options'] })
+    },
+    onSuccess: () => {
       hapticFeedback.notificationOccurred('success')
     }
   })

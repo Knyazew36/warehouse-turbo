@@ -14,12 +14,14 @@ import { useCategorySelectOptions } from '@/entitites/category/api/category.api'
 
 import Select from 'react-select'
 import CategorySelectModal from '@/entitites/category/ui/category-select-modal/CategorySelectModal'
+import { ISelectOption } from '@/shared/ui/select/model/select.type'
 
 type FormValues = {
   name: string
   minThreshold: number | undefined
   unit: string
   quantity: number | undefined
+  category: ISelectOption
 }
 
 const CreateProductPage = () => {
@@ -32,7 +34,13 @@ const CreateProductPage = () => {
     watch,
     formState: { errors, isSubmitting, isValid }
   } = useForm<FormValues>({
-    defaultValues: { name: '', minThreshold: undefined, quantity: undefined, unit: 'ед' }
+    defaultValues: {
+      name: '',
+      minThreshold: undefined,
+      quantity: undefined,
+      unit: 'ед',
+      category: undefined
+    }
   })
   const { mutateAsync: createProduct } = useCreateProduct()
   const [buttonLoading, setButtonLoading] = useState(false)
@@ -42,11 +50,13 @@ const CreateProductPage = () => {
   const onSubmit = async (data: FormValues) => {
     try {
       setButtonLoading(true)
+
       await createProduct({
         name: data.name.trim(),
         quantity: data.quantity || 0,
         minThreshold: data.minThreshold || 0,
-        unit: `${data.unit.trim()[0].toLowerCase()}${data.unit.trim().slice(1)}` || 'ед'
+        unit: `${data.unit.trim()[0].toLowerCase()}${data.unit.trim().slice(1)}` || 'ед',
+        categoryId: data.category.value || undefined
       })
 
       open({
@@ -55,12 +65,12 @@ const CreateProductPage = () => {
           'Товар успешно создан. Вы можете добавить еще один товар или вернуться на главную страницу.'
       })
       hapticFeedback.notificationOccurred('success')
+      handleReset()
     } catch (e: any) {
       hapticFeedback.notificationOccurred('error')
     } finally {
       setButtonLoading(false)
       // Сбрасываем форму после успешного создания
-      handleReset()
     }
   }
 
@@ -108,8 +118,17 @@ const CreateProductPage = () => {
               />
             )}
           />
-
-          <CategorySelectModal data={categories || []} />
+          <Controller
+            control={control}
+            name='category'
+            render={({ field }) => (
+              <CategorySelectModal
+                data={categories || []}
+                value={field.value}
+                onChange={field.onChange}
+              />
+            )}
+          />
 
           {/* <AsyncSelect
             cacheOptions

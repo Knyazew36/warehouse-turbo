@@ -21,7 +21,11 @@ import { useQueries, useQueryClient } from '@tanstack/react-query'
 
 interface IProps {
   data: ISelectOption[]
+  value?: ISelectOption | null
+  onChange?: (value: ISelectOption | null) => void
+  placeholder?: string
 }
+
 type FormValues = {
   name: string
   description: string
@@ -29,7 +33,12 @@ type FormValues = {
   icon: string
 }
 
-const CategorySelectModal = ({ data }: IProps) => {
+const CategorySelectModal = ({
+  data,
+  value,
+  onChange,
+  placeholder = 'Выберите категорию'
+}: IProps) => {
   const [isOpen, setIsOpen] = useState(false)
   const { open } = useBottomSheetStore()
   const queryClient = useQueryClient()
@@ -51,25 +60,50 @@ const CategorySelectModal = ({ data }: IProps) => {
   const onSubmit = async (data: FormValues) => {
     try {
       setButtonLoading(true)
-      await createCategory({
+      const newCategory = await createCategory({
         name: data.name.trim(),
         description: '',
         color: '',
         icon: ''
       })
 
+      // Автоматически выбираем созданную категорию
+      const selectedOption: ISelectOption = {
+        value: newCategory.id.toString(),
+        label: newCategory.name
+      }
+      if (onChange) {
+        onChange(selectedOption)
+      }
+
       open({
         isOpen: true,
-        description: 'Категория успешно создана. Теперь вы можете выбрать ее из списка.'
+        description: 'Категория успешно создана и выбрана.'
       })
 
-      queryClient.invalidateQueries({ queryKey: ['category-select-options'] })
+      // queryClient.invalidateQueries({ queryKey: ['category-select-options'] })
       hapticFeedback.notificationOccurred('success')
+
+      // Закрываем модальное окно после создания
+      onClose()
     } catch (e: any) {
       hapticFeedback.notificationOccurred('error')
     } finally {
       setButtonLoading(false)
       // Сбрасываем форму после успешного создания
+      reset()
+    }
+  }
+
+  const onClose = () => {
+    reset()
+    setIsOpen(false)
+  }
+
+  const handleSelectChange = (selectedOption: ISelectOption | null) => {
+    if (onChange) {
+      onChange(selectedOption)
+      onClose()
     }
   }
 
@@ -188,9 +222,10 @@ const CategorySelectModal = ({ data }: IProps) => {
       <DialogTrigger>
         <button
           type='button'
+          onClick={() => hapticFeedback.impactOccurred('light')}
           className='block w-full rounded-lg border border-gray-200 px-4 py-2.5 text-start text-[15px] transition-transform duration-150 ease-in-out select-none focus:border-blue-500 focus:ring-blue-500 active:scale-95 disabled:pointer-events-none disabled:opacity-50 sm:py-3 sm:text-sm dark:border-neutral-700 dark:bg-neutral-900 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600'
         >
-          {watch('name') || 'Выберите категорию'}
+          {value?.label || placeholder}
         </button>
       </DialogTrigger>
       <DialogContent>
@@ -205,11 +240,8 @@ const CategorySelectModal = ({ data }: IProps) => {
 
           <Select
             options={data}
-            // onChange={value => {
-            //   console.log(value)
-            // }}
-            // value={watch('name')}
-            // isMulti
+            onChange={handleSelectChange}
+            value={value}
             className='w-full'
             styles={customStyles}
             placeholder='Выберите категорию...'
@@ -246,7 +278,15 @@ const CategorySelectModal = ({ data }: IProps) => {
             />
           </div>
 
-          <button className='ms-auto rounded-md border border-gray-200 bg-white px-1.5 py-1 text-xs text-gray-800 shadow-2xs dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-300'>
+          <button
+            type='button'
+            onClick={() => {
+              hapticFeedback.impactOccurred('light')
+              handleSubmit(onSubmit)
+            }}
+            disabled={isSubmitting || !isValid}
+            className='ms-auto rounded-md border border-blue-200 bg-white px-1.5 py-1 text-xs text-blue-800 shadow-2xs disabled:pointer-events-none disabled:opacity-50 dark:border-blue-700 dark:bg-blue-800 dark:text-neutral-300'
+          >
             Добавить
           </button>
         </form>
@@ -255,15 +295,16 @@ const CategorySelectModal = ({ data }: IProps) => {
           <DialogClose>
             <button
               type='button'
+              onClick={() => hapticFeedback.impactOccurred('light')}
               className='inline-flex items-center gap-x-2 rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm font-medium text-gray-800 shadow-2xs hover:bg-gray-50 focus:bg-gray-50 focus:outline-hidden disabled:pointer-events-none disabled:opacity-50 dark:border-neutral-700 dark:bg-neutral-800 dark:text-white dark:hover:bg-neutral-700 dark:focus:bg-neutral-700'
             >
               Отмена
             </button>
           </DialogClose>
 
-          <button className='inline-flex items-center gap-x-2 rounded-lg border border-transparent bg-blue-600 px-3 py-2 text-sm font-medium text-white hover:bg-blue-700 focus:bg-blue-700 focus:outline-hidden disabled:pointer-events-none disabled:opacity-50'>
+          {/* <button className='inline-flex items-center gap-x-2 rounded-lg border border-transparent bg-blue-600 px-3 py-2 text-sm font-medium text-white hover:bg-blue-700 focus:bg-blue-700 focus:outline-hidden disabled:pointer-events-none disabled:opacity-50'>
             Сохранить
-          </button>
+          </button> */}
         </div>
 
         {/* </div> */}

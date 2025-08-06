@@ -1,5 +1,5 @@
 import { Page } from '@/components/Page'
-import React, { useState, useMemo } from 'react'
+import React, { useState, useMemo, useEffect } from 'react'
 import ProductsCard from './card/ProductsCard'
 
 import ProductCreate from './create/ProductCreate'
@@ -13,25 +13,56 @@ import PageHeader from '@/shared/ui/page-header/ui/PageHeader'
 import InputDefault from '@/shared/ui/input-default/ui/InputDefault'
 import Loader from '@/shared/loader/ui/Loader'
 import { useCategoryWithProducts } from '@/entitites/category/api/category.api'
+import { Product } from '@/entitites/product/model/product.type'
+import { Category } from '@/entitites/category/model/category.type'
 
 export const ProductsPage = () => {
-  const { data: categoryWithProducts, isLoading, isFetching } = useCategoryWithProducts()
-
+  const { data, isLoading, isFetching } = useCategoryWithProducts()
+  const [searchTerm, setSearchTerm] = useState('')
+  const [productWithoutCategory, setProductWithoutCategory] = useState<Product[] | undefined>(
+    undefined
+  )
+  const [productsWithCategory, setProductsWithCategory] = useState<Category[] | undefined>(
+    undefined
+  )
+  const [categories, setCategories] = useState<Category[] | undefined>(undefined)
   const [view, setView] = useState<'tile' | 'table'>('tile')
 
   const handleViewChange = (view: 'tile' | 'table') => {
     setView(view)
   }
 
-  const [searchTerm, setSearchTerm] = useState('')
-
-  const filteredData = useMemo(() => {
+  useEffect(() => {
     const term = searchTerm.trim().toLowerCase()
-    if (!term) return categoryWithProducts?.productsWithoutCategory
-    return categoryWithProducts?.productsWithoutCategory?.filter(item =>
+    if (!term) {
+      setProductWithoutCategory(data?.productsWithoutCategory)
+      setProductsWithCategory(data?.categoriesWithProducts)
+      return
+    }
+
+    const products = data?.productsWithoutCategory?.filter(item =>
       item.name.toLowerCase().includes(term)
     )
-  }, [categoryWithProducts, searchTerm])
+    const categoriesProducts =
+      data?.categoriesWithProducts
+        ?.map(category => ({
+          ...category,
+          products: category.products?.filter(product => product.name.toLowerCase().includes(term))
+        }))
+        .filter(category => category.products && category.products.length > 0) || []
+
+    setProductWithoutCategory(products)
+    setProductsWithCategory(categoriesProducts)
+  }, [data, searchTerm])
+
+  const handleCategoryClick = (category: Category | null) => {
+    if (category) {
+      const categories = data?.categoriesWithProducts?.filter(item => item.id === category?.id)
+      setProductsWithCategory(categories)
+    } else {
+      setProductsWithCategory(data?.categoriesWithProducts)
+    }
+  }
 
   if (isLoading) {
     return <Loader />
@@ -52,7 +83,38 @@ export const ProductsPage = () => {
 
         <AlertProductLowStock />
 
-        {filteredData && filteredData?.length > 0 && (
+        {data?.categoriesWithProducts && data?.categoriesWithProducts.length > 0 && (
+          <div className='flex gap-1'>
+            <button
+              className='border'
+              onClick={() => handleCategoryClick(null)}
+            >
+              <p className='text-sm text-gray-500'>Все</p>
+            </button>
+
+            {/* TODO: Добавить категорию без категории */}
+            {/* {data.productsWithoutCategory && data.productsWithoutCategory?.length > 0 && (
+              <button
+                className='border'
+                onClick={() => handleCategoryClick(null)}
+              >
+                <p className='text-sm text-gray-500'>Без категории</p>
+              </button>
+            )} */}
+
+            {data?.categoriesWithProducts.map(category => (
+              <button
+                className='border'
+                onClick={() => handleCategoryClick(category)}
+              >
+                <p className='text-sm text-gray-500'>{category.name}</p>
+                <p className='text-sm text-gray-500'>{category.products?.length}</p>
+              </button>
+            ))}
+          </div>
+        )}
+        {/* 
+        {productWithoutCategory && productWithoutCategory?.length > 0 && (
           <div className='mt-8 ml-auto flex w-max rounded-lg bg-gray-100 p-0.5 dark:bg-neutral-800'>
             <div className='flex gap-x-0.5 md:gap-x-1'>
               <button
@@ -92,24 +154,50 @@ export const ProductsPage = () => {
               </button>
             </div>
           </div>
-        )}
+        )} */}
 
         {view === 'tile' && (
           <div className='mt-4 flex flex-col gap-4'>
-            {filteredData && filteredData?.length > 0 ? (
-              filteredData.map(card => (
-                <ProductsCard
-                  key={card.id}
-                  data={card}
-                />
-              ))
-            ) : (
-              <Empty title='Товары не найдены' />
+            {productsWithCategory && productsWithCategory.length > 0 && (
+              <>
+                {productsWithCategory.map(category => (
+                  <>
+                    <div className='flex items-center gap-x-2'>
+                      <p className='text-sm text-gray-500'>{category.name}</p>
+                      <p className='text-sm text-gray-500'>{category.products?.length}</p>
+                    </div>
+                    {category?.products?.map(product => (
+                      <ProductsCard
+                        key={product.id}
+                        data={product}
+                      />
+                    ))}
+                  </>
+                ))}
+              </>
+            )}
+
+            {productWithoutCategory && productWithoutCategory.length > 0 && (
+              <>
+                <p className='text-sm text-gray-500'>Товары без категории</p>
+
+                {productWithoutCategory.map(card => (
+                  <ProductsCard
+                    key={card.id}
+                    data={card}
+                  />
+                ))}
+              </>
             )}
           </div>
         )}
 
-        {view === 'table' && filteredData && <ProductsTable data={filteredData} />}
+        {productWithoutCategory &&
+          productWithoutCategory.length === 0 &&
+          productsWithCategory &&
+          productsWithCategory.length === 0 && <Empty title='Товары не найдены' />}
+
+        {/* {view === 'table' && filteredData && <ProductsTable data={filteredData} />} */}
 
         {/* Кнопка создания нового товара */}
         <div className='mt-8'>

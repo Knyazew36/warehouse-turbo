@@ -54,6 +54,51 @@ export class CategoriesService {
     return categories
   }
 
+  async findOne(id: number) {
+    const category = await this.prisma.productCategory.findUnique({
+      where: { id },
+      include: {
+        products: {
+          where: { active: true }
+        }
+      }
+    })
+
+    if (!category) {
+      throw new NotFoundException(`Category #${id} not found`)
+    }
+
+    return category
+  }
+
+  async update(id: number, dto: UpdateCategoryDto) {
+    await this.findOne(id)
+    return this.prisma.productCategory.update({
+      where: { id },
+      data: dto
+    })
+  }
+
+  async remove(id: number) {
+    const category = await this.findOne(id)
+
+    // Проверяем, есть ли продукты в этой категории
+    // const productsInCategory = await this.prisma.product.count({
+    //   where: { categoryId: id }
+    // })
+
+    // if (productsInCategory > 0) {
+    //   throw new NotFoundException(
+    //     `Cannot delete category with ${productsInCategory} products. Please move or delete products first.`
+    //   )
+    // }
+
+    return this.prisma.productCategory.delete({ where: { id } })
+  }
+
+  /**
+   * Получить все категории с продуктами
+   */
   async findAllWithProducts(onlyActive = true, organizationId?: number) {
     const whereClause: any = {}
 
@@ -89,63 +134,11 @@ export class CategoriesService {
 
     // Формируем результат
     const result = {
-      categories: categories.map(category => ({
-        id: category.id,
-        name: category.name,
-        description: category.description,
-        color: category.color,
-        icon: category.icon,
-        active: category.active,
-        createdAt: category.createdAt,
-        updatedAt: category.updatedAt,
-        products: category.products
-      })),
+      categoriesWithProducts: categories,
       productsWithoutCategory: productsWithoutCategory
     }
 
     return result
-  }
-
-  async findOne(id: number) {
-    const category = await this.prisma.productCategory.findUnique({
-      where: { id },
-      include: {
-        products: {
-          where: { active: true }
-        }
-      }
-    })
-
-    if (!category) {
-      throw new NotFoundException(`Category #${id} not found`)
-    }
-
-    return category
-  }
-
-  async update(id: number, dto: UpdateCategoryDto) {
-    await this.findOne(id)
-    return this.prisma.productCategory.update({
-      where: { id },
-      data: dto
-    })
-  }
-
-  async remove(id: number) {
-    const category = await this.findOne(id)
-
-    // Проверяем, есть ли продукты в этой категории
-    const productsInCategory = await this.prisma.product.count({
-      where: { categoryId: id }
-    })
-
-    if (productsInCategory > 0) {
-      throw new NotFoundException(
-        `Cannot delete category with ${productsInCategory} products. Please move or delete products first.`
-      )
-    }
-
-    return this.prisma.productCategory.delete({ where: { id } })
   }
 
   /**
