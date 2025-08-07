@@ -102,7 +102,13 @@ export const useAddUserToOrganization = () => {
   const queryClient = useQueryClient()
 
   return useMutation({
-    mutationFn: async ({ organizationId, data }: { organizationId: number; data: IAddUserToOrganization }) => {
+    mutationFn: async ({
+      organizationId,
+      data
+    }: {
+      organizationId: number
+      data: IAddUserToOrganization
+    }) => {
       const res = await $api.post(`${apiDomain}/organizations/${organizationId}/users`, data)
       return res.data.data
     },
@@ -157,10 +163,13 @@ export const useUpdateUserRole = () => {
       role: Role
       isOwner?: boolean
     }) => {
-      const res = await $api.patch(`${apiDomain}/organizations/${organizationId}/users/${userId}/role`, {
-        role,
-        isOwner
-      })
+      const res = await $api.patch(
+        `${apiDomain}/organizations/${organizationId}/users/${userId}/role`,
+        {
+          role,
+          isOwner
+        }
+      )
       return res.data.data
     },
     onSuccess: (_, { organizationId }) => {
@@ -194,6 +203,7 @@ export const useAvailableOrganizations = () => {
           invitedOrganizations: IOrganization[]
         }>
       > = await $api.get(`${apiDomain}/organizations/available`)
+      console.info('res', res.data.data)
       return {
         data: res.data.data,
         user: res.data.user
@@ -248,7 +258,9 @@ export const useJoinOrganization = () => {
 
 export const getOrganizationById = async ({ id }: { id: number }) => {
   try {
-    const response: AxiosResponse<BaseResponse<any>> = await $api.get(`${apiDomain}/organizations/${id}`)
+    const response: AxiosResponse<BaseResponse<any>> = await $api.get(
+      `${apiDomain}/organizations/${id}`
+    )
     console.info('asdf', response.data.data)
     return response.data.data
   } catch (error: any) {

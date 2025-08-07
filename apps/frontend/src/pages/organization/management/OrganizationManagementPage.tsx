@@ -49,11 +49,7 @@ const OrganizationManagementPage: React.FC = () => {
     setOrganizationLoading(false)
   }, [setOrganizationLoading])
 
-  const [formData, setFormData] = useState<ICreateOrganization>({
-    name: '',
-    description: ''
-  })
-
+  console.info('availableData', availableData)
   // Извлекаем данные из ответа API
   const myOrganizations = availableData?.myOrganizations || []
   const invitedOrganizations = availableData?.invitedOrganizations || []
@@ -91,7 +87,7 @@ const OrganizationManagementPage: React.FC = () => {
   if (isLoading || isPending || isJoining || isFetching) {
     return <Loader />
   }
-
+  console.info('allOrganizations', allOrganizations)
   return (
     <Page
       className='!p-0'
@@ -102,20 +98,24 @@ const OrganizationManagementPage: React.FC = () => {
           id='content'
           className='pb-23 sm:pb-16'
         >
-          <div className='py-10 lg:py-20 w-full max-w-[85rem] px-4 sm:px-6 lg:px-8 mx-auto'>
-            <div className='w-full max-w-sm mx-auto'>
+          <div className='mx-auto w-full max-w-[85rem] px-4 py-10 sm:px-6 lg:px-8 lg:py-20'>
+            <div className='mx-auto w-full max-w-sm'>
               <div className='space-y-10'>
                 {/* Guest Checkout Details */}
                 <div className='space-y-6'>
                   {allOrganizations.length > 0 && (
                     <div className='text-center'>
-                      <h2 className='font-medium text-xl text-gray-800 dark:text-neutral-200'>Мои склады</h2>
+                      <h2 className='text-xl font-medium text-gray-800 dark:text-neutral-200'>
+                        Мои склады
+                      </h2>
                     </div>
                   )}
 
                   {allOrganizations.length === 0 && (
                     <div className='text-center'>
-                      <h2 className='font-medium text-xl text-gray-800 dark:text-neutral-200'>У вас нет складов</h2>
+                      <h2 className='text-xl font-medium text-gray-800 dark:text-neutral-200'>
+                        У вас нет складов
+                      </h2>
                       <p className='mt-1 text-sm text-gray-500 dark:text-neutral-500'>
                         Создайте свой первый склад для управления.
                       </p>
@@ -124,7 +124,9 @@ const OrganizationManagementPage: React.FC = () => {
 
                   {invitedOrganizations?.length > 0 && (
                     <>
-                      <p className='mt-1 text-sm text-gray-500 dark:text-neutral-500 text-center'>Приглашения</p>
+                      <p className='mt-1 text-center text-sm text-gray-500 dark:text-neutral-500'>
+                        Приглашения
+                      </p>
                       {invitedOrganizations.map(organization => (
                         <OrganizationItemInvite
                           role={availableUser?.role as Role}
@@ -138,7 +140,7 @@ const OrganizationManagementPage: React.FC = () => {
 
                   {myOrganizations?.length > 0 && (
                     <>
-                      <p className='mt-1 text-sm text-gray-500 dark:text-neutral-500 text-center'>
+                      <p className='mt-1 text-center text-sm text-gray-500 dark:text-neutral-500'>
                         Выбери склад для просмотра и управления или создай новый
                       </p>
                       <div className='flex flex-col gap-2'>
@@ -152,7 +154,7 @@ const OrganizationManagementPage: React.FC = () => {
                           />
                         ))}
                       </div>
-                      <div className='w-28 h-px mx-auto bg-gray-300 dark:bg-neutral-700' />
+                      <div className='mx-auto h-px w-28 bg-gray-300 dark:bg-neutral-700' />
                     </>
                   )}
                 </div>
@@ -161,7 +163,7 @@ const OrganizationManagementPage: React.FC = () => {
                   <Link
                     onClick={() => hapticFeedback.impactOccurred('light')}
                     to='/organization-create'
-                    className='py-3 transition-transform duration-150 ease-in-out active:scale-95 select-none px-4 w-full inline-flex justify-center items-center gap-x-2 sm:text-sm font-medium rounded-lg border border-transparent bg-indigo-600 text-white hover:bg-indigo-700 disabled:opacity-50 disabled:pointer-events-none focus:outline-hidden focus:bg-indigo-700'
+                    className='inline-flex w-full items-center justify-center gap-x-2 rounded-lg border border-transparent bg-indigo-600 px-4 py-3 font-medium text-white transition-transform duration-150 ease-in-out select-none hover:bg-indigo-700 focus:bg-indigo-700 focus:outline-hidden active:scale-95 disabled:pointer-events-none disabled:opacity-50 sm:text-sm'
                   >
                     Создать новый склад
                   </Link>
@@ -169,10 +171,11 @@ const OrganizationManagementPage: React.FC = () => {
 
                 {allOrganizations.length === 0 && (
                   <>
-                    <div className='w-28 h-px mx-auto bg-gray-300 dark:bg-neutral-700 mt-8' />
-                    <p className='mt-1 text-sm text-gray-500 dark:text-neutral-500 text-center'>
-                      Если вы только что авторизовались, и вы ожидаете приглашения в склад, то необходимо дождаться
-                      уведомления в боте об успешной авторизации и обновить страницу.
+                    <div className='mx-auto mt-8 h-px w-28 bg-gray-300 dark:bg-neutral-700' />
+                    <p className='mt-1 text-center text-sm text-gray-500 dark:text-neutral-500'>
+                      Если вы только что авторизовались, и вы ожидаете приглашения в склад, то
+                      необходимо дождаться уведомления в боте об успешной авторизации и обновить
+                      страницу.
                     </p>
 
                     <button
@@ -180,7 +183,7 @@ const OrganizationManagementPage: React.FC = () => {
                         hapticFeedback.impactOccurred('light')
                         window.location.reload()
                       }}
-                      className='py-3 px-4 w-full inline-flex justify-center items-center gap-x-2 sm:text-sm font-medium rounded-lg border border-transparent bg-yellow-600 text-white hover:bg-yellow-700 disabled:opacity-50 disabled:pointer-events-none focus:outline-hidden focus:bg-yellow-700'
+                      className='inline-flex w-full items-center justify-center gap-x-2 rounded-lg border border-transparent bg-yellow-600 px-4 py-3 font-medium text-white hover:bg-yellow-700 focus:bg-yellow-700 focus:outline-hidden disabled:pointer-events-none disabled:opacity-50 sm:text-sm'
                     >
                       Обновить
                     </button>

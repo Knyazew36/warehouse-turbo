@@ -46,7 +46,7 @@ export class OrganizationController {
   @Get('available')
   @ApiOperation({ summary: 'Получить доступные организации для пользователя' })
   async getAvailableOrganizations(@User() user: UserType) {
-    return await this.organizationService.getAvailableOrganizations(user.id)
+    await this.organizationService.getAvailableOrganizations(user.id)
   }
 
   @Post(':id/join')
