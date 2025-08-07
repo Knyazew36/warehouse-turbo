@@ -128,7 +128,7 @@ const ProductsCardChange: FC<IProductsCard> = ({
       </div>
 
       <div className='text-center'>
-        <span className='block text-sm text-gray-500 dark:text-neutral-500'>остаток на складе</span>
+        <span className='block text-sm text-gray-500 dark:text-neutral-500'>в наличии</span>
 
         <h3 className='text-3xl font-semibold text-gray-800 sm:text-4xl lg:text-5xl dark:text-neutral-200'>{`${formatNumber(
           +data.quantity

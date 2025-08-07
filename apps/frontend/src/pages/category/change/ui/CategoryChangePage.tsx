@@ -43,6 +43,7 @@ const CategoryChangePage = () => {
     if (!id) return
     const fetchData = async () => {
       const category = await getCategoryById(id)
+
       setData(category)
       // Заполняем форму данными существующей категории
       reset({

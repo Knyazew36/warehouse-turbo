@@ -1,17 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { ISelectOption } from '@/shared/ui/select/model/select.type'
-import {
-  Dialog,
-  DialogClose,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger
-} from '@/components/ui/dialog'
 
-import Select, { GroupBase } from 'react-select'
-import Divide from '@/shared/ui/divide/ui/Divide'
 import { Controller, useForm } from 'react-hook-form'
 import { useCreateCategory } from '../../api/category.api'
 import { hapticFeedback } from '@telegram-apps/sdk-react'

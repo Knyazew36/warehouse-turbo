@@ -9,6 +9,9 @@ import LoaderSection from '@/shared/loader/ui/LoaderSection'
 import { useForm, Controller } from 'react-hook-form'
 import InputDefault from '@/shared/ui/input-default/ui/InputDefault'
 import { ChangeEvent } from 'react'
+import CategorySelectModal from '@/entitites/category/ui/category-select-modal/CategorySelectModal'
+import { ISelectOption } from '@/shared/ui/select/model/select.type'
+import { useCategorySelectOptions } from '@/entitites/category/api/category.api'
 
 export interface IProductsCard {
   data: Product
@@ -19,11 +22,15 @@ type FormValues = {
   unit: string
   minThreshold: number
   active: boolean
+  category: ISelectOption
 }
 
 const ProductCardChangeForm: FC<IProductsCard> = ({ data }) => {
   const { mutate: updateProduct, isPending } = useUpdateProduct()
   const [isDeleting, setIsDeleting] = useState(false)
+  const { data: categories } = useCategorySelectOptions(true)
+
+  console.info('data', data)
 
   const {
     control,
@@ -36,7 +43,8 @@ const ProductCardChangeForm: FC<IProductsCard> = ({ data }) => {
       name: data.name,
       unit: data.unit ?? '',
       minThreshold: +data.minThreshold || 0,
-      active: data.active
+      active: data.active,
+      category: data.category ? { value: data.category.id, label: data.category.name } : undefined
     },
     mode: 'onChange'
   })
@@ -64,12 +72,12 @@ const ProductCardChangeForm: FC<IProductsCard> = ({ data }) => {
     <form
       onSubmit={handleSubmit(onSubmit)}
       className={clsx(
-        'flex flex-col gap-y-3 relative overflow-hidden lg:gap-y-5 p-4 md:p-5 bg-white border border-gray-200 shadow-2xs rounded-xl dark:bg-neutral-900 dark:border-neutral-800',
+        'relative flex flex-col gap-y-3 overflow-hidden rounded-xl border border-gray-200 bg-white p-4 shadow-2xs md:p-5 lg:gap-y-5 dark:border-neutral-800 dark:bg-neutral-900',
         !data.active && 'dark:bg-neutral-900/30'
       )}
     >
       {(isDeleting || isPending) && <LoaderSection />}
-      <div className='flex justify-between items-center'>
+      <div className='flex items-center justify-between'>
         <div>
           <ProductDelete
             productId={data.id}
@@ -78,7 +86,9 @@ const ProductCardChangeForm: FC<IProductsCard> = ({ data }) => {
         </div>
 
         <div className='flex gap-x-2'>
-          <label className='sm:mt-2.5 inline-block text-sm text-gray-500 dark:text-neutral-500'>Активен?</label>
+          <label className='inline-block text-sm text-gray-500 sm:mt-2.5 dark:text-neutral-500'>
+            Активен?
+          </label>
           <Controller
             control={control}
             name='active'
@@ -93,10 +103,14 @@ const ProductCardChangeForm: FC<IProductsCard> = ({ data }) => {
         </div>
       </div>
 
-      <div className={clsx('flex flex-col gap-y-3', !data.active && 'opacity-30 pointer-events-none')}>
-        <div className='grid sm:grid-cols-12 gap-y-1.5 sm:gap-y-0 sm:gap-x-5'>
+      <div
+        className={clsx('flex flex-col gap-y-3', !data.active && 'pointer-events-none opacity-30')}
+      >
+        <div className='grid gap-y-1.5 sm:grid-cols-12 sm:gap-x-5 sm:gap-y-0'>
           <div className='sm:col-span-3'>
-            <label className='sm:mt-2.5 inline-block text-sm text-gray-500 dark:text-neutral-500'>Название</label>
+            <label className='inline-block text-sm text-gray-500 sm:mt-2.5 dark:text-neutral-500'>
+              Название
+            </label>
           </div>
           {/* End Col */}
           <div className='sm:col-span-9'>
@@ -115,9 +129,22 @@ const ProductCardChangeForm: FC<IProductsCard> = ({ data }) => {
           </div>
           {/* End Col */}
         </div>
-        <div className='grid sm:grid-cols-12 gap-y-1.5 sm:gap-y-0 sm:gap-x-5'>
+
+        <Controller
+          control={control}
+          name='category'
+          render={({ field }) => (
+            <CategorySelectModal
+              data={categories || []}
+              value={field.value}
+              onChange={field.onChange}
+            />
+          )}
+        />
+
+        <div className='grid gap-y-1.5 sm:grid-cols-12 sm:gap-x-5 sm:gap-y-0'>
           <div className='sm:col-span-3'>
-            <label className='sm:mt-2.5 inline-block text-sm text-gray-500 dark:text-neutral-500'>
+            <label className='inline-block text-sm text-gray-500 sm:mt-2.5 dark:text-neutral-500'>
               Единица измерения
             </label>
           </div>
@@ -139,9 +166,9 @@ const ProductCardChangeForm: FC<IProductsCard> = ({ data }) => {
           {/* End Col */}
         </div>
 
-        <div className='grid sm:grid-cols-12 gap-y-1.5 sm:gap-y-0 sm:gap-x-5'>
+        <div className='grid gap-y-1.5 sm:grid-cols-12 sm:gap-x-5 sm:gap-y-0'>
           <div className='sm:col-span-3'>
-            <label className='sm:mt-2.5 inline-block text-sm text-gray-500 dark:text-neutral-500'>
+            <label className='inline-block text-sm text-gray-500 sm:mt-2.5 dark:text-neutral-500'>
               Минимальный остаток на складе
             </label>
           </div>
@@ -162,17 +189,19 @@ const ProductCardChangeForm: FC<IProductsCard> = ({ data }) => {
                 />
               )}
             />
-            {errors.minThreshold && <p className='mt-1 text-xs text-red-500'>{errors.minThreshold.message}</p>}
+            {errors.minThreshold && (
+              <p className='mt-1 text-xs text-red-500'>{errors.minThreshold.message}</p>
+            )}
           </div>
           {/* End Col */}
         </div>
       </div>
-      <div className='flex justify-end mt-4'>
+      <div className='mt-4 flex justify-end'>
         <button
           type='submit'
           onClick={handleSubmit(onSubmit)}
           disabled={isPending || isDeleting || !isDirty || !isValid}
-          className='py-2 h-10 w-30  justify-center  px-3 inline-flex items-center gap-x-2 text-sm font-medium rounded-lg border border-transparent bg-green-600 text-white hover:bg-green-700 focus:outline-hidden focus:bg-green-700 disabled:opacity-50 disabled:pointer-events-none'
+          className='inline-flex h-10 w-30 items-center justify-center gap-x-2 rounded-lg border border-transparent bg-green-600 px-3 py-2 text-sm font-medium text-white hover:bg-green-700 focus:bg-green-700 focus:outline-hidden disabled:pointer-events-none disabled:opacity-50'
         >
           Сохранить
         </button>
