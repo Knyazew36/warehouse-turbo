@@ -9,8 +9,8 @@ set -e
     cd apps/server && ./deploy-dev.sh
     cd ../frontend && ./deploy-dev.sh
     cd ../..
-    pm2 restart 13
-    pm2 restart 14
+    pm2 restart 3
+    pm2 restart 2
 
  
 }
