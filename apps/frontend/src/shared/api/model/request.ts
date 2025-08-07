@@ -18,7 +18,7 @@ import { getOrganizationIdFromStore } from '../middleware/organization.middlewar
 
 const initDataRaw =
   import.meta.env.VITE_IS_LOCAL === 'true'
-    ? 'user=%7B%22id%22%3A239676985%2C%22first_name%22%3A%22%D0%A1%D0%B5%D1%80%D0%B3%D0%B5%D0%B9%22%2C%22last_name%22%3A%22%D0%9A%D0%BD%D1%8F%D0%B7%D0%B5%D0%B2%22%2C%22username%22%3A%22Knyaz_sv%22%2C%22language_code%22%3A%22ru%22%2C%22is_premium%22%3Atrue%2C%22allows_write_to_pm%22%3Atrue%2C%22photo_url%22%3A%22https%3A%5C%2F%5C%2Ft.me%5C%2Fi%5C%2Fuserpic%5C%2F320%5C%2FdVwpqY8rwKcDgyKCeVKKd95SfUDZ89Fhpw-zbGDB6Rg.svg%22%7D&chat_instance=-840460746764897797&chat_type=private&auth_date=1754499644&signature=qtPvh0crqnGjuxJu9r3EHTXU_G938YVAA4nw7e1lx2pfrMsbRAyoHlReO6OhHPg8McLgLoscO59q2cDgZuC_BA&hash=1f14608d4b4ee87db2f7dbf8bd93f162c2494c42ffa6be6a6e008a16e186b486'
+    ? 'user=%7B%22id%22%3A239676985%2C%22first_name%22%3A%22%D0%A1%D0%B5%D1%80%D0%B3%D0%B5%D0%B9%22%2C%22last_name%22%3A%22%D0%9A%D0%BD%D1%8F%D0%B7%D0%B5%D0%B2%22%2C%22username%22%3A%22Knyaz_sv%22%2C%22language_code%22%3A%22ru%22%2C%22is_premium%22%3Atrue%2C%22allows_write_to_pm%22%3Atrue%2C%22photo_url%22%3A%22https%3A%5C%2F%5C%2Ft.me%5C%2Fi%5C%2Fuserpic%5C%2F320%5C%2FdVwpqY8rwKcDgyKCeVKKd95SfUDZ89Fhpw-zbGDB6Rg.svg%22%7D&chat_instance=7502372238548063129&chat_type=sender&auth_date=1754586661&signature=VV4RsFYYSNd1PuFlVBr6p6aNZLLSMR6jx4k3rHqBc7GcxoIu7zXCkLen80Zp8dTu3gR-nS77klhE_A4sjthKAw&hash=a700354363334c71f86f3e62bee88491cab97414d20ed3de0954938e0ed530a7'
     : isTMA()
       ? retrieveRawInitData()
       : ''
@@ -98,7 +98,31 @@ $api.interceptors.response.use(
     return response
   },
   (error: AxiosError<ErrorResponse>) => {
+    // Обработка ошибок аутентификации
     if (error.response?.status === 401) {
+      const errorMessage = error.response?.data?.message || 'Authentication failed'
+
+      // Специальная обработка для ошибок Telegram аутентификации
+      if (
+        errorMessage.includes('InitData validation failed') ||
+        errorMessage.includes('Invalid authorization header') ||
+        errorMessage.includes('InitData parse failed')
+      ) {
+        const errorData: ErrorEventEmitter = {
+          action: 'bottom-sheet',
+          message: 'Ошибка аутентификации',
+          description: 'Пожалуйста, перезапустите приложение и попробуйте снова',
+          variant: 'error'
+        }
+        eventEmitter.emit('request-error', errorData)
+
+        // Также выполняем logout
+        const logoutData: ErrorEventEmitter = { action: 'logout' }
+        eventEmitter.emit('request-error', logoutData)
+        return
+      }
+
+      // Обычная обработка 401 ошибки
       const errorData: ErrorEventEmitter = { action: 'logout' }
       eventEmitter.emit('request-error', errorData)
     }
@@ -116,20 +140,23 @@ $api.interceptors.response.use(
       return
     }
 
-    toast(error?.response?.data?.message || error?.message, {
-      style: { backgroundColor: '#FB2C36', color: '#fff' },
-      description: import.meta.env.DEV
-        ? React.createElement(
-            'pre',
-            { className: 'mt-2 w-[320px] rounded-md bg-neutral-950 p-4' },
-            React.createElement(
-              'code',
-              { className: 'text-white' },
-              JSON.stringify(error.response?.data?.message ?? {}, null, 2)
+    // Показываем toast только для не-401 ошибок
+    if (error.response?.status !== 401) {
+      toast(error?.response?.data?.message || error?.message, {
+        style: { backgroundColor: '#FB2C36', color: '#fff' },
+        description: import.meta.env.DEV
+          ? React.createElement(
+              'pre',
+              { className: 'mt-2 w-[320px] rounded-md bg-neutral-950 p-4' },
+              React.createElement(
+                'code',
+                { className: 'text-white' },
+                JSON.stringify(error.response?.data?.message ?? {}, null, 2)
+              )
             )
-          )
-        : error?.response?.data?.message || error?.message
-    })
+          : error?.response?.data?.message || error?.message
+      })
+    }
 
     throw error
   }

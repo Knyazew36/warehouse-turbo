@@ -5,6 +5,7 @@ import { AllExceptionsFilter } from './common/fitlers/exception.filter'
 import { ValidationPipe } from '@nestjs/common'
 import { config } from 'dotenv'
 import * as path from 'path'
+import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger'
 
 // Загружаем правильный .env файл в зависимости от NODE_ENV
 const envFile = process.env.NODE_ENV === 'production' ? '.env.production' : '.env.development'
@@ -43,14 +44,14 @@ async function bootstrap() {
   app.useLogger(winstonLogger)
   // app.use(cookieParser());
   //swagger
-  // const config = new DocumentBuilder()
-  // .setTitle('Bitrix24')
-  // .setDescription('The cats API description')
-  // .setVersion('1.0')
-  // .addTag('bitrix')
-  // .build();
-  // const documentFactory = () => SwaggerModule.createDocument(app, config);
-  // SwaggerModule.setup('api', app, documentFactory);
+  const config = new DocumentBuilder()
+    .setTitle('Warehouse')
+    .setDescription('Warehouse API description')
+    .setVersion('1.0')
+    .addTag('warehouse')
+    .build()
+  const documentFactory = () => SwaggerModule.createDocument(app, config)
+  SwaggerModule.setup('api/swagger', app, documentFactory)
 
   // app.useGlobalInterceptors(new ResponseInterceptor());
   // app.useGlobalInterceptors(new DbStatusInterceptor(app.get('PrismaService')));

@@ -26,7 +26,6 @@ export const ProductsPage = () => {
     undefined
   )
   const [selectedCategory, setSelectedCategory] = useState<Category | null>(null)
-  const [categories, setCategories] = useState<Category[] | undefined>(undefined)
   const [view, setView] = useState<'tile' | 'table'>('tile')
 
   const handleViewChange = (view: 'tile' | 'table') => {
@@ -64,6 +63,7 @@ export const ProductsPage = () => {
       setSelectedCategory(category)
       setProductsWithCategory(categories)
     } else {
+      setSelectedCategory(null)
       setProductsWithCategory(data?.categoriesWithProducts)
     }
   }
@@ -71,6 +71,8 @@ export const ProductsPage = () => {
   if (isLoading) {
     return <Loader />
   }
+
+  console.info('selectedCategory', selectedCategory)
 
   return (
     <Page
@@ -80,57 +82,9 @@ export const ProductsPage = () => {
       <PageHeader title='Остаток' />
 
       <div className='mx-auto py-10 pt-0 sm:px-6 lg:px-8 lg:py-14'>
-        <InputDefault
-          value={searchTerm}
-          onChange={setSearchTerm}
-        />
-
-        <AlertProductLowStock />
-        {/* 
-        {data?.categoriesWithProducts && data?.categoriesWithProducts.length > 0 && (
-          <div className='flex gap-1'>
-            {data?.categoriesWithProducts.map(category => (
-              <button
-                className='border'
-                onClick={() => handleCategoryClick(category)}
-              >
-                <p className='text-sm text-gray-500'>{category.name}</p>
-                <p className='text-sm text-gray-500'>{category.products?.length}</p>
-              </button>
-            ))}
-          </div>
-        )} */}
-
-        {data?.categoriesWithProducts && data?.categoriesWithProducts.length > 0 && (
-          <nav className='scrollbar-hide relative mt-4 flex gap-1 overflow-x-auto py-1'>
-            <button
-              type='button'
-              onClick={() => handleCategoryClick(null)}
-              className={clsx(
-                'hs-tab-active:after:bg-gray-800 hs-tab-active:text-gray-800 dark:hs-tab-active:text-neutral-200 dark:hs-tab-active:after:bg-neutral-400 active relative mb-2 inline-flex items-center justify-center gap-x-2 rounded-lg px-2.5 py-1.5 text-sm text-gray-500 after:pointer-events-none after:absolute after:inset-x-0 after:-bottom-2 after:z-10 after:h-0.5 hover:bg-gray-100 hover:text-gray-800 focus:bg-gray-100 focus:outline-hidden disabled:pointer-events-none disabled:opacity-50 dark:text-neutral-500 dark:hover:bg-neutral-700 dark:hover:text-neutral-300 dark:focus:bg-neutral-700',
-                (!selectedCategory || selectedCategory === null) && 'bg-blue-700 dark:text-white'
-              )}
-            >
-              Все
-            </button>
-            {data.categoriesWithProducts.map(item => (
-              <button
-                type='button'
-                className={clsx(
-                  'hs-tab-active:after:bg-gray-800 hs-tab-active:text-gray-800 dark:hs-tab-active:text-neutral-200 dark:hs-tab-active:after:bg-neutral-400 relative mb-2 inline-flex items-center justify-center gap-x-2 rounded-lg px-2.5 py-1.5 text-sm text-nowrap text-gray-500 after:pointer-events-none after:absolute after:inset-x-0 after:-bottom-2 after:z-10 after:h-0.5 hover:bg-gray-100 hover:text-gray-800 focus:bg-gray-100 focus:outline-hidden disabled:pointer-events-none disabled:opacity-50 dark:text-neutral-500 dark:hover:bg-neutral-700 dark:hover:text-neutral-300 dark:focus:bg-neutral-700',
-                  item.id === selectedCategory?.id && 'bg-blue-700 dark:text-white'
-                )}
-                onClick={() => handleCategoryClick(item)}
-              >
-                {item.name}
-              </button>
-            ))}
-          </nav>
-        )}
-
-        {/* 
-        {productWithoutCategory && productWithoutCategory?.length > 0 && (
-          <div className='mt-8 ml-auto flex w-max rounded-lg bg-gray-100 p-0.5 dark:bg-neutral-800'>
+        {((productWithoutCategory && productWithoutCategory.length > 0) ||
+          (productsWithCategory && productsWithCategory.length > 0)) && (
+          <div className='ml-auto flex w-max rounded-lg bg-gray-100 p-0.5 dark:bg-neutral-800'>
             <div className='flex gap-x-0.5 md:gap-x-1'>
               <button
                 type='button'
@@ -169,7 +123,42 @@ export const ProductsPage = () => {
               </button>
             </div>
           </div>
-        )} */}
+        )}
+        <div className='mt-4'>
+          <InputDefault
+            value={searchTerm}
+            onChange={setSearchTerm}
+          />
+        </div>
+
+        {/* <AlertProductLowStock /> */}
+
+        {data?.categoriesWithProducts && data?.categoriesWithProducts.length > 0 && (
+          <nav className='scrollbar-hide relative mt-4 flex gap-1 overflow-x-auto py-1'>
+            <button
+              type='button'
+              onClick={() => handleCategoryClick(null)}
+              className={clsx(
+                'hs-tab-active:after:bg-gray-800 hs-tab-active:text-gray-800 dark:hs-tab-active:text-neutral-200 dark:hs-tab-active:after:bg-neutral-400 active relative mb-2 inline-flex items-center justify-center gap-x-2 rounded-lg px-2.5 py-1.5 text-sm text-gray-500 after:pointer-events-none after:absolute after:inset-x-0 after:-bottom-2 after:z-10 after:h-0.5 hover:bg-gray-100 hover:text-gray-800 focus:bg-gray-100 focus:outline-hidden disabled:pointer-events-none disabled:opacity-50 dark:text-neutral-500 dark:hover:bg-neutral-700 dark:hover:text-neutral-300 dark:focus:bg-neutral-700',
+                (!selectedCategory || selectedCategory === null) && 'bg-blue-700 dark:text-white'
+              )}
+            >
+              Все
+            </button>
+            {data.categoriesWithProducts.map(item => (
+              <button
+                type='button'
+                className={clsx(
+                  'hs-tab-active:after:bg-gray-800 hs-tab-active:text-gray-800 dark:hs-tab-active:text-neutral-200 dark:hs-tab-active:after:bg-neutral-400 relative mb-2 inline-flex items-center justify-center gap-x-2 rounded-lg px-2.5 py-1.5 text-sm text-nowrap text-gray-500 after:pointer-events-none after:absolute after:inset-x-0 after:-bottom-2 after:z-10 after:h-0.5 hover:bg-gray-100 hover:text-gray-800 focus:bg-gray-100 focus:outline-hidden disabled:pointer-events-none disabled:opacity-50 dark:text-neutral-500 dark:hover:bg-neutral-700 dark:hover:text-neutral-300 dark:focus:bg-neutral-700',
+                  item.id === selectedCategory?.id && 'bg-blue-700 dark:text-white'
+                )}
+                onClick={() => handleCategoryClick(item)}
+              >
+                {item.name}
+              </button>
+            ))}
+          </nav>
+        )}
 
         {view === 'tile' && (
           <div className='mt-4 flex flex-col gap-4'>
@@ -177,9 +166,11 @@ export const ProductsPage = () => {
               <>
                 {productsWithCategory.map(category => (
                   <>
-                    <div className='flex items-center gap-x-2'>
-                      <p className='text-sm text-gray-500'>{category.name}</p>
-                      <p className='text-sm text-gray-500'>{category.products?.length}</p>
+                    <div className='flex items-center gap-2 border-t border-neutral-700 pt-2'>
+                      <p className='text-sm text-gray-500 dark:text-neutral-500'>
+                        {category.name}:
+                      </p>
+                      <p className='text-sm text-neutral-500'>{category.products?.length}</p>
                     </div>
                     {category?.products?.map(product => (
                       <ProductsCard
@@ -196,7 +187,12 @@ export const ProductsPage = () => {
               productWithoutCategory.length > 0 &&
               selectedCategory === null && (
                 <>
-                  <p className='text-sm text-gray-500'>Товары без категории</p>
+                  <div className='flex items-center gap-2 border-t border-neutral-700 pt-2'>
+                    <p className='text-sm text-gray-500 dark:text-neutral-500'>
+                      Товары без категории:
+                    </p>
+                    <p className='text-sm text-neutral-500'>{productWithoutCategory?.length}</p>
+                  </div>
 
                   {productWithoutCategory.map(card => (
                     <ProductsCard
@@ -214,7 +210,12 @@ export const ProductsPage = () => {
           productsWithCategory &&
           productsWithCategory.length === 0 && <Empty title='Товары не найдены' />}
 
-        {/* {view === 'table' && filteredData && <ProductsTable data={filteredData} />} */}
+        {view === 'table' && (
+          <ProductsTable
+            productWithoutCategory={productWithoutCategory}
+            productsWithCategory={productsWithCategory}
+          />
+        )}
 
         {/* Кнопка создания нового товара */}
         <div className='mt-8'>

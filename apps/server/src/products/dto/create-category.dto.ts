@@ -1,7 +1,8 @@
-import { IsString, IsOptional, IsBoolean, Matches } from 'class-validator'
+import { IsString, IsOptional, IsBoolean, Matches, IsNotEmpty } from 'class-validator'
 
 export class CreateCategoryDto {
   @IsString()
+  @IsNotEmpty({ message: 'Название категории обязательно' })
   name: string
 
   @IsOptional()
