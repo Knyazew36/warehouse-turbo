@@ -2,7 +2,8 @@
 import { hapticFeedback } from '@telegram-apps/sdk-react'
 import React, { useState } from 'react'
 import { useNumberFormat } from '@react-input/number-format'
-export interface InputNumberProps extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 'onChange' | 'value'> {
+export interface InputNumberProps
+  extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 'onChange' | 'value'> {
   /** Значение поля */
   value?: number | null
   /** Коллбек изменения значения */
@@ -97,20 +98,20 @@ const InputNumber: React.FC<InputNumberProps> = ({
     }
   }
   return (
-    <div className='flex flex-col gap-1 w-full'>
+    <div className='flex w-full flex-col gap-1'>
       {label && (
-        <label className='sm:mt-2.5 inline-block text-sm bg-transparent text-gray-500 dark:text-neutral-500'>
+        <label className='inline-block bg-transparent text-sm text-gray-500 sm:mt-2.5 dark:text-neutral-500'>
           {label}
         </label>
       )}
 
       {/* Input Number */}
-      <div className='py-2 px-3 bg-white border w-full border-gray-200 rounded-lg dark:bg-neutral-900 dark:border-neutral-700'>
-        <div className='w-full flex justify-between items-center gap-x-3'>
+      <div className='w-full rounded-lg border border-gray-200 bg-white px-3 py-2 dark:border-neutral-700 dark:bg-neutral-900'>
+        <div className='flex w-full items-center justify-between gap-x-3'>
           <input
             {...inputProps}
             ref={inputRef}
-            className='w-full p-0 bg-transparent border-0 text-gray-800 focus:ring-0 [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none dark:text-white'
+            className='w-full border-0 bg-transparent p-0 text-gray-800 focus:ring-0 dark:text-white [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none'
             style={{ MozAppearance: 'textfield' }}
             type='number'
             value={value === undefined || value === null ? '' : value}
@@ -119,17 +120,24 @@ const InputNumber: React.FC<InputNumberProps> = ({
             inputMode='decimal'
             placeholder='0'
             onFocus={handleFocus}
+            onKeyDown={e => {
+              // Вызываем переданный извне onKeyDown, если он есть
+              inputProps?.onKeyDown?.(e)
+              if (!e.defaultPrevented && e.key === 'Enter') {
+                e.currentTarget.blur()
+              }
+            }}
           />
-          <div className='flex justify-end items-center gap-x-1.5'>
+          <div className='flex items-center justify-end gap-x-1.5'>
             <button
               type='button'
-              className='size-6 inline-flex justify-center items-center gap-x-2 text-sm font-medium rounded-full border border-gray-200 bg-white text-gray-800 shadow-2xs hover:bg-gray-50 focus:outline-hidden focus:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-white dark:hover:bg-neutral-800 dark:focus:bg-neutral-800'
+              className='inline-flex size-6 items-center justify-center gap-x-2 rounded-full border border-gray-200 bg-white text-sm font-medium text-gray-800 shadow-2xs hover:bg-gray-50 focus:bg-gray-50 focus:outline-hidden disabled:pointer-events-none disabled:opacity-50 dark:border-neutral-700 dark:bg-neutral-900 dark:text-white dark:hover:bg-neutral-800 dark:focus:bg-neutral-800'
               tabIndex={-1}
               onClick={handleDecrement}
               disabled={disabled || (min !== undefined && (value ?? 0) <= min)}
             >
               <svg
-                className='shrink-0 size-3.5'
+                className='size-3.5 shrink-0'
                 xmlns='http://www.w3.org/2000/svg'
                 width={24}
                 height={24}
@@ -145,13 +153,13 @@ const InputNumber: React.FC<InputNumberProps> = ({
             </button>
             <button
               type='button'
-              className='size-6 inline-flex justify-center items-center gap-x-2 text-sm font-medium rounded-full border border-gray-200 bg-white text-gray-800 shadow-2xs hover:bg-gray-50 focus:outline-hidden focus:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-white dark:hover:bg-neutral-800 dark:focus:bg-neutral-800'
+              className='inline-flex size-6 items-center justify-center gap-x-2 rounded-full border border-gray-200 bg-white text-sm font-medium text-gray-800 shadow-2xs hover:bg-gray-50 focus:bg-gray-50 focus:outline-hidden disabled:pointer-events-none disabled:opacity-50 dark:border-neutral-700 dark:bg-neutral-900 dark:text-white dark:hover:bg-neutral-800 dark:focus:bg-neutral-800'
               tabIndex={-1}
               onClick={handleIncrement}
               disabled={disabled || (max !== undefined && (value ?? 0) >= max)}
             >
               <svg
-                className='shrink-0 size-3.5'
+                className='size-3.5 shrink-0'
                 xmlns='http://www.w3.org/2000/svg'
                 width={24}
                 height={24}
