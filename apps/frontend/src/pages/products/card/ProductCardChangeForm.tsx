@@ -1,7 +1,7 @@
 import { Product } from '@/entitites/product/model/product.type'
 import InputNumber from '@/shared/input-number/InputNumber'
 import clsx from 'clsx'
-import { FC, useState } from 'react'
+import { FC, useEffect, useState } from 'react'
 import ProductDelete from '../delete/ProductDelete'
 import { useUpdateProduct } from '@/entitites/product/api/product.api'
 import Switch from '@/shared/ui/switch/ui/Switch'

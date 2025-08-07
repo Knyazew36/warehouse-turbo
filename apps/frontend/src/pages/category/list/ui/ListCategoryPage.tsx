@@ -6,7 +6,7 @@ import { useNavigate } from 'react-router-dom'
 import { useCategoryList, useDeleteCategory } from '@/entitites/category/api/category.api'
 
 const ListCategoryPage = () => {
-  const { data: categories } = useCategoryList(false)
+  const { data: categories, isFetching } = useCategoryList(false)
   const { mutateAsync: deleteCategory, isPending } = useDeleteCategory()
   const navigate = useNavigate()
   const [deletingId, setDeletingId] = useState<number | null>(null)
@@ -28,7 +28,10 @@ const ListCategoryPage = () => {
 
   return (
     <Page>
-      <PageHeader title='Мои категории' />
+      <PageHeader
+        title='Мои категории'
+        isLoading={isFetching}
+      />
 
       <div className='flex flex-col gap-2'>
         {categories?.map(category => (

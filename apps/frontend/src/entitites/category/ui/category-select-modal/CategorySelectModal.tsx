@@ -104,6 +104,8 @@ const CategorySelectModal = ({
       return itemValue === selectedValue
     })
 
+    hapticFeedback.selectionChanged()
+
     if (onChange && selectedOption) {
       onChange(selectedOption)
       onClose()
