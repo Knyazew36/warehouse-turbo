@@ -67,7 +67,7 @@ export class ProductsService {
 
     return this.prisma.product.findMany({
       where: whereClause,
-      orderBy: { name: 'desc' },
+      orderBy: { name: 'asc' },
       include: {
         productCategory: true
       }

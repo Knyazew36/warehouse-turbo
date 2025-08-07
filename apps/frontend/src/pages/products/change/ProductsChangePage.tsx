@@ -41,10 +41,14 @@ export const ProductsChangePage = () => {
       ? allProducts.filter(item => item.name.toLowerCase().includes(term))
       : allProducts
 
-    // Активные товары должны быть перед неактивными
+    // Сначала сортируем по активности, затем по названию для сохранения исходного порядка
     return filtered?.sort((a, b) => {
-      if (a.active === b.active) return 0
-      return a.active ? -1 : 1 // если a активен, он раньше
+      // Сначала по активности
+      if (a.active !== b.active) {
+        return a.active ? -1 : 1
+      }
+      // Затем по названию для сохранения исходного порядка
+      return a.name.localeCompare(b.name)
     })
   }, [categoryWithProducts, searchTerm])
 
