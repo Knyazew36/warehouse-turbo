@@ -21,7 +21,7 @@ type FormValues = {
   minThreshold: number | undefined
   unit: string
   quantity: number | undefined
-  category: ISelectOption
+  category: ISelectOption | undefined
 }
 
 const CreateProductPage = () => {
@@ -56,7 +56,7 @@ const CreateProductPage = () => {
         quantity: data.quantity || 0,
         minThreshold: data.minThreshold || 0,
         unit: `${data.unit.trim()[0].toLowerCase()}${data.unit.trim().slice(1)}` || 'ед',
-        categoryId: data.category.value ? +data.category.value : undefined
+        categoryId: data?.category?.value ? +data.category.value : undefined
       })
 
       open({
@@ -120,6 +120,7 @@ const CreateProductPage = () => {
           />
           <Controller
             control={control}
+            rules={{ required: false }}
             name='category'
             render={({ field }) => (
               <CategorySelectModal

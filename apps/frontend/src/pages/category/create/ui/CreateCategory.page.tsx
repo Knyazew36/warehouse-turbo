@@ -42,7 +42,8 @@ const CreateCategoryPage = () => {
       open({
         isOpen: true,
         description:
-          'Товар успешно создан. Вы можете добавить еще один товар или вернуться на главную страницу.'
+          'Категория успешно создана. Вы можете добавить еще или вернуться к списку категорий.',
+        buttonText: 'Хорошо'
       })
       hapticFeedback.notificationOccurred('success')
     } catch (e: any) {
