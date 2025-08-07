@@ -5,10 +5,9 @@ import { Request } from 'express'
 
 @Injectable()
 export class ResponseInterceptor implements NestInterceptor {
-  private readonly logger = new Logger(ResponseInterceptor.name)
-
   intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
     const request = context.switchToHttp().getRequest<Request>()
+    //@ts-ignore
     const user = request.user // Пользователь добавляется TelegramAuthGuard
 
     return next.handle().pipe(
