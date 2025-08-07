@@ -97,7 +97,13 @@ const CategorySelectModal = ({
 
   const handleSelectChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const selectedValue = event.target.value
-    const selectedOption = data.find(item => item.value === selectedValue)
+
+    // Ищем опцию по значению, учитывая что value может быть строкой или числом
+    const selectedOption = data.find(item => {
+      const itemValue = typeof item.value === 'number' ? item.value.toString() : item.value
+      return itemValue === selectedValue
+    })
+
     if (onChange && selectedOption) {
       onChange(selectedOption)
       onClose()
@@ -232,14 +238,15 @@ const CategorySelectModal = ({
         <select
           ref={ref}
           onChange={handleSelectChange}
-          value={value?.value}
+          value={value?.value?.toString() || ''}
           className='block w-full rounded-lg border-gray-200 px-4 py-3 pe-9 text-sm focus:border-blue-500 focus:ring-blue-500 disabled:pointer-events-none disabled:opacity-50 dark:border-neutral-700 dark:bg-neutral-900 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600'
           // styles={customStyles}
         >
+          <option value=''>Выберите категорию...</option>
           {data.map(item => (
             <option
               key={item.value}
-              value={item.value}
+              value={item.value.toString()}
             >
               {item.label}
             </option>

@@ -9,6 +9,7 @@ import Empty from '@/shared/empty/ui/Empty'
 import ProductCardChangeForm from '../card/ProductCardChangeForm'
 import InfoMessage from '@/shared/ui/info/ui/Info'
 import { useCategoryWithProducts } from '@/entitites/category/api/category.api'
+import { Product } from '@/entitites/product/model/product.type'
 
 export const ProductsChangePage = () => {
   const [searchTerm, setSearchTerm] = useState('')
@@ -23,11 +24,22 @@ export const ProductsChangePage = () => {
 
   const filteredData = useMemo(() => {
     const term = searchTerm.trim().toLowerCase()
+
+    // Собираем все товары из всех категорий и товары без категории
+    const allProducts: Product[] = [
+      ...(categoryWithProducts?.categoriesWithProducts?.flatMap(
+        category =>
+          category.products?.map(product => ({
+            ...product,
+            category: category.name // Используем название категории как строку
+          })) || []
+      ) || []),
+      ...(categoryWithProducts?.productsWithoutCategory || [])
+    ]
+
     const filtered = term
-      ? categoryWithProducts?.productsWithoutCategory?.filter(item =>
-          item.name.toLowerCase().includes(term)
-        )
-      : categoryWithProducts?.productsWithoutCategory
+      ? allProducts.filter(item => item.name.toLowerCase().includes(term))
+      : allProducts
 
     // Активные товары должны быть перед неактивными
     return filtered?.sort((a, b) => {

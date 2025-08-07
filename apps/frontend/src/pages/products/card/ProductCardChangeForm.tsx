@@ -30,13 +30,14 @@ const ProductCardChangeForm: FC<IProductsCard> = ({ data }) => {
   const [isDeleting, setIsDeleting] = useState(false)
   const { data: categories } = useCategorySelectOptions(true)
 
-  console.info('data', data)
+  // Находим категорию по названию для инициализации формы
+  const currentCategory = categories?.find(cat => cat.label === data.category)
 
   const {
     control,
     handleSubmit,
     reset,
-    formState: { errors, isDirty, isValid },
+    formState: { errors },
     watch
   } = useForm<FormValues>({
     defaultValues: {
@@ -44,12 +45,13 @@ const ProductCardChangeForm: FC<IProductsCard> = ({ data }) => {
       unit: data.unit ?? '',
       minThreshold: +data.minThreshold || 0,
       active: data.active,
-      category: data.category ? { value: data.category.id, label: data.category.name } : undefined
+      category: currentCategory || undefined
     },
     mode: 'onChange'
   })
 
   const onSubmit = (formData: FormValues) => {
+    console.info('formData', formData)
     updateProduct(
       {
         id: data.id,
@@ -57,7 +59,8 @@ const ProductCardChangeForm: FC<IProductsCard> = ({ data }) => {
           name: formData.name,
           unit: formData.unit,
           minThreshold: +formData.minThreshold || 0,
-          active: formData.active
+          active: formData.active,
+          categoryId: formData.category?.value ? +formData.category.value : undefined
         }
       },
       {
@@ -200,7 +203,7 @@ const ProductCardChangeForm: FC<IProductsCard> = ({ data }) => {
         <button
           type='submit'
           onClick={handleSubmit(onSubmit)}
-          disabled={isPending || isDeleting || !isDirty || !isValid}
+          disabled={isPending || isDeleting}
           className='inline-flex h-10 w-30 items-center justify-center gap-x-2 rounded-lg border border-transparent bg-green-600 px-3 py-2 text-sm font-medium text-white hover:bg-green-700 focus:bg-green-700 focus:outline-hidden disabled:pointer-events-none disabled:opacity-50'
         >
           Сохранить
