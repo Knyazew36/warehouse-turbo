@@ -1,31 +1,48 @@
-import { Injectable, NestInterceptor, ExecutionContext, CallHandler } from '@nestjs/common'
+import { CallHandler, ExecutionContext, Injectable, NestInterceptor } from '@nestjs/common'
 import { Observable } from 'rxjs'
 import { map } from 'rxjs/operators'
-import { Request } from 'express'
+import { Reflector } from '@nestjs/core'
+import { EXCLUDE_USER_INFO } from 'src/common/decorators/excludeUserInfo.decorator'
 
 @Injectable()
 export class ResponseInterceptor implements NestInterceptor {
+  constructor(private reflector: Reflector) {}
+
   intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
-    const request = context.switchToHttp().getRequest<Request>()
-    //@ts-ignore
+    // Проверяем, является ли это контекстом Telegraf
+    if ((context.getType() as string) === 'telegraf') {
+      return next.handle() // не оборачиваем ответ для Telegram-бота
+    }
+
+    const request = context.switchToHttp().getRequest()
     const user = request.user // Пользователь добавляется TelegramAuthGuard
+
+    // Проверяем, нужно ли исключить информацию о пользователе
+    const excludeUserInfo = this.reflector.getAllAndOverride<boolean>(EXCLUDE_USER_INFO, [
+      context.getHandler(),
+      context.getClass()
+    ])
 
     return next.handle().pipe(
       map(data => {
-        // Добавляем информацию о пользователе в ответ, если она есть
-        if (user) {
-          return {
-            ...data,
-            user: {
-              id: user.id,
-              telegramId: user.telegramId,
-              role: user.role,
-              allowedPhone: user.allowedPhone?.allowed || false,
-              username: user.data?.username
-            }
+        const response: any = {
+          status: 'success',
+          data,
+          timestamp: new Date().toISOString()
+        }
+
+        // Добавляем информацию о пользователе, если он аутентифицирован и не исключен
+        if (user && !excludeUserInfo) {
+          response.user = {
+            id: user.id,
+            telegramId: user.telegramId,
+            allowedPhone: !!user.allowedPhone,
+            role: user.role || null,
+            username: user.username
           }
         }
-        return data
+
+        return response
       })
     )
   }
