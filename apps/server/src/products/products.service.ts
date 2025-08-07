@@ -143,7 +143,8 @@ export class ProductsService {
       }
     })
 
-    return products.filter(product => product.quantity < product.minThreshold)
+    // Приводим Prisma Decimal к числу для корректного сравнения
+    return products.filter(product => Number(product.quantity) < Number(product.minThreshold))
   }
 
   /**

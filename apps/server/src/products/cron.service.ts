@@ -20,7 +20,7 @@ export class CronService {
    * Проверяет остатки на складе и отправляет уведомления
    * Запускается каждый час для проверки времени отправки
    */
-  @Cron(CronExpression.EVERY_HOUR)
+  @Cron(CronExpression.EVERY_MINUTE)
   async checkLowStockAndNotify() {
     this.logger.log('🔍 Запуск проверки остатков на складе')
 
@@ -110,9 +110,16 @@ export class CronService {
    */
   private shouldSendNotificationNow(notificationTime: string): boolean {
     const now = new Date()
-    const currentTime = `${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}`
+    const [hoursStr, minutesStr] = String(notificationTime || '').split(':')
+    const targetHours = Number(hoursStr)
+    const targetMinutes = Number(minutesStr ?? '0')
 
-    return currentTime === notificationTime
+    if (Number.isNaN(targetHours) || Number.isNaN(targetMinutes)) {
+      // Если формат некорректный — не отправляем
+      return false
+    }
+
+    return now.getHours() === targetHours && now.getMinutes() === targetMinutes
   }
 
   /**
@@ -126,7 +133,8 @@ export class CronService {
       }
     })
 
-    return products.filter(product => product.quantity < product.minThreshold)
+    // Prisma Decimal нужно приводить к числу для корректного сравнения
+    return products.filter(product => Number(product.quantity) < Number(product.minThreshold))
   }
 
   /**
@@ -161,17 +169,18 @@ export class CronService {
     // Формируем текст уведомления
     const productList = lowStockProducts
       .map(product => {
-        const formatNumber = (value: number) => {
-          if (Number.isInteger(value)) {
-            return value.toString()
+        const toPlainNumberString = (raw: any) => {
+          const n = Number(raw)
+          if (Number.isNaN(n)) {
+            return String(raw)
           }
-          return Number(value.toFixed(2)).toString()
+          return Number.isInteger(n) ? String(n) : n.toFixed(2)
         }
-        return `• ${product.name}: ${formatNumber(product.quantity)} ${product.unit || 'ед'} (минимум: ${formatNumber(product.minThreshold)} ${product.unit || 'ед'})`
+        return `• ${product.name}: ${toPlainNumberString(product.quantity)} ${product.unit || 'ед'} (минимум: ${toPlainNumberString(product.minThreshold)} ${product.unit || 'ед'})`
       })
       .join('\n')
 
-    const message = `⚠️ **${organization.name}**\n\nНа складе заканчиваются следующие товары:\n\n${productList}`
+    const message = `⚠️ <b>${organization.name}</b>\n\nНа складе заканчиваются следующие товары:\n\n${productList}`
 
     // Получаем URL веб-приложения
     const webappUrl =
@@ -182,7 +191,7 @@ export class CronService {
     for (const user of users) {
       try {
         await this.notificationService.sendMessage(user.telegramId, message, {
-          parse_mode: 'Markdown',
+          parse_mode: 'HTML',
           reply_markup: {
             inline_keyboard: [[{ text: '🚀 Открыть приложение', web_app: { url: webappUrl } }]]
           }
