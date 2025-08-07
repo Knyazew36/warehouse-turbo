@@ -28,7 +28,7 @@ type FormValues = {
 const ProductCardChangeForm: FC<IProductsCard> = ({ data }) => {
   const { mutate: updateProduct, isPending } = useUpdateProduct()
   const [isDeleting, setIsDeleting] = useState(false)
-  const { data: categories } = useCategorySelectOptions(true)
+  const { data: categories, isFetching } = useCategorySelectOptions(true)
 
   // Находим категорию по названию для инициализации формы
   const currentCategory = categories?.find(cat => cat.label === data.category)
@@ -38,7 +38,8 @@ const ProductCardChangeForm: FC<IProductsCard> = ({ data }) => {
     handleSubmit,
     reset,
     formState: { errors },
-    watch
+    watch,
+    setValue
   } = useForm<FormValues>({
     defaultValues: {
       name: data.name,
@@ -49,6 +50,16 @@ const ProductCardChangeForm: FC<IProductsCard> = ({ data }) => {
     },
     mode: 'onChange'
   })
+
+  // Обновляем значение категории когда данные загрузятся
+  useEffect(() => {
+    if (categories && data.category) {
+      const foundCategory = categories.find(cat => cat.label === data.category)
+      if (foundCategory) {
+        setValue('category', foundCategory)
+      }
+    }
+  }, [categories, data.category, setValue])
 
   const onSubmit = (formData: FormValues) => {
     console.info('formData', formData)
@@ -141,6 +152,7 @@ const ProductCardChangeForm: FC<IProductsCard> = ({ data }) => {
               data={categories || []}
               value={field.value}
               onChange={field.onChange}
+              isLoading={isFetching}
             />
           )}
         />
