@@ -14,26 +14,53 @@ import { useAuthStore } from '@/entitites/auth/model/auth.store'
 import MenuButton from '../menu-page/menu-button/MenuButton'
 import { Plus } from 'lucide-react'
 import { useCategoryWithProducts } from '@/entitites/category/api/category.api'
+import InputDefault from '@/shared/ui/input-default/ui/InputDefault'
+import { Product } from '@/entitites/product/model/product.type'
+import { Category } from '@/entitites/category/model/category.type'
+import clsx from 'clsx'
 
 const IncomingToWarehousePage = () => {
   const navigate = useNavigate()
-  const { data: categoryWithProducts, isLoading, refetch } = useCategoryWithProducts()
+  const { data, isLoading, refetch, isFetching } = useCategoryWithProducts()
 
   const { open } = useBottomSheetStore()
   const { isIT, isOwner, isAdmin, isOperator } = useAuthStore()
 
+  const [searchTerm, setSearchTerm] = useState('')
+  const [productWithoutCategory, setProductWithoutCategory] = useState<Product[] | undefined>(
+    undefined
+  )
+  const [productsWithCategory, setProductsWithCategory] = useState<Category[] | undefined>(
+    undefined
+  )
+  const [selectedCategory, setSelectedCategory] = useState<Category | null>(null)
+
   const [isButtonLoading, setIsButtonLoading] = useState(false)
 
-  const [searchTerm, setSearchTerm] = useState('')
   const [arrivals, setArrivals] = useState<{ [productId: number]: number }>({})
 
-  const filteredData = useMemo(() => {
+  useEffect(() => {
     const term = searchTerm.trim().toLowerCase()
-    if (!term) return categoryWithProducts?.productsWithoutCategory
-    return categoryWithProducts?.productsWithoutCategory?.filter(item =>
+    if (!term) {
+      setProductWithoutCategory(data?.productsWithoutCategory)
+      setProductsWithCategory(data?.categoriesWithProducts)
+      return
+    }
+
+    const products = data?.productsWithoutCategory?.filter(item =>
       item.name.toLowerCase().includes(term)
     )
-  }, [categoryWithProducts, searchTerm])
+    const categoriesProducts =
+      data?.categoriesWithProducts
+        ?.map(category => ({
+          ...category,
+          products: category.products?.filter(product => product.name.toLowerCase().includes(term))
+        }))
+        .filter(category => category.products && category.products.length > 0) || []
+
+    setProductWithoutCategory(products)
+    setProductsWithCategory(categoriesProducts)
+  }, [data, searchTerm])
 
   const handleArrivalChange = (productId: number, value: number) => {
     const validatedValue = Math.max(0, value)
@@ -42,12 +69,21 @@ const IncomingToWarehousePage = () => {
 
   const handleCancel = () => {
     const reset: { [productId: number]: number } = {}
-    categoryWithProducts?.productsWithoutCategory?.forEach(product => {
-      reset[product.id] = 0
-    })
+
     setArrivals(reset)
   }
+  const handleCategoryClick = (category: Category | null) => {
+    hapticFeedback.impactOccurred('light')
 
+    if (category) {
+      const categories = data?.categoriesWithProducts?.filter(item => item.id === category?.id)
+      setSelectedCategory(category)
+      setProductsWithCategory(categories)
+    } else {
+      setSelectedCategory(null)
+      setProductsWithCategory(data?.categoriesWithProducts)
+    }
+  }
   const onSubmit = async () => {
     const payload = Object.entries(arrivals)
       .filter(([_, quantity]) => quantity > 0)
@@ -79,37 +115,104 @@ const IncomingToWarehousePage = () => {
   }
 
   return (
-    <Page back>
+    <Page
+      back
+      isLoading={isFetching}
+    >
       <PageHeader title='Создать поступление' />
 
-      <div className='flex flex-1 flex-col'>
-        <div className='space-y-3'>
-          <input
-            type='text'
+      <div className='mx-auto py-10 pt-0 sm:px-6 lg:px-8 lg:py-14'>
+        <div className='mt-4'>
+          <InputDefault
             value={searchTerm}
-            onChange={e => setSearchTerm(e.target.value)}
-            className='block w-full rounded-lg border-gray-200 px-4 py-2.5 focus:border-blue-500 focus:ring-blue-500 disabled:pointer-events-none disabled:opacity-50 sm:py-3 sm:text-sm dark:border-neutral-700 dark:bg-neutral-900 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600'
-            placeholder='Поиск товара...'
+            onChange={setSearchTerm}
           />
         </div>
-        <div className='mt-8 grid gap-4 sm:grid-cols-2 sm:gap-6 lg:grid-cols-3'>
-          {filteredData && filteredData?.length > 0 ? (
-            filteredData.map(card => (
-              <ProductsCardChange
-                inputNumberLabel={`Поступило ${card.unit ? card.unit : ''}:`}
-                value={arrivals[card.id] || 0}
-                onChange={value => handleArrivalChange(card.id, value || 0)}
-                withInputNumber
-                key={card.id}
-                data={card}
-                min={0}
-                max={undefined}
-              />
-            ))
-          ) : (
-            <Empty title='Товары не найдены' />
+
+        {data?.categoriesWithProducts && data?.categoriesWithProducts.length > 0 && (
+          <nav className='scrollbar-hide relative mt-4 flex gap-1 overflow-x-auto py-1'>
+            <button
+              type='button'
+              onClick={() => handleCategoryClick(null)}
+              className={clsx(
+                'hs-tab-active:after:bg-gray-800 hs-tab-active:text-gray-800 dark:hs-tab-active:text-neutral-200 dark:hs-tab-active:after:bg-neutral-400 active relative mb-2 inline-flex items-center justify-center gap-x-2 rounded-lg px-2.5 py-1.5 text-sm text-gray-500 after:pointer-events-none after:absolute after:inset-x-0 after:-bottom-2 after:z-10 after:h-0.5 hover:bg-gray-100 hover:text-gray-800 focus:bg-gray-100 focus:outline-hidden disabled:pointer-events-none disabled:opacity-50 dark:text-neutral-500 dark:hover:bg-neutral-700 dark:hover:text-neutral-300 dark:focus:bg-neutral-700',
+                (!selectedCategory || selectedCategory === null) && 'bg-blue-700 dark:text-white'
+              )}
+            >
+              Все
+            </button>
+            {data.categoriesWithProducts.map(item => (
+              <button
+                type='button'
+                className={clsx(
+                  'hs-tab-active:after:bg-gray-800 hs-tab-active:text-gray-800 dark:hs-tab-active:text-neutral-200 dark:hs-tab-active:after:bg-neutral-400 relative mb-2 inline-flex items-center justify-center gap-x-2 rounded-lg px-2.5 py-1.5 text-sm text-nowrap text-gray-500 after:pointer-events-none after:absolute after:inset-x-0 after:-bottom-2 after:z-10 after:h-0.5 hover:bg-gray-100 hover:text-gray-800 focus:bg-gray-100 focus:outline-hidden disabled:pointer-events-none disabled:opacity-50 dark:text-neutral-500 dark:hover:bg-neutral-700 dark:hover:text-neutral-300 dark:focus:bg-neutral-700',
+                  item.id === selectedCategory?.id && 'bg-blue-700 dark:text-white'
+                )}
+                onClick={() => handleCategoryClick(item)}
+              >
+                {item.name}
+              </button>
+            ))}
+          </nav>
+        )}
+
+        <div className='mt-4 flex flex-col gap-4'>
+          {productsWithCategory && productsWithCategory.length > 0 && (
+            <>
+              {productsWithCategory.map(category => (
+                <>
+                  <div className='flex items-center gap-2 border-t border-neutral-700 pt-2'>
+                    <p className='text-sm text-gray-500 dark:text-neutral-500'>{category.name}:</p>
+                    <p className='text-sm text-neutral-500'>{category.products?.length}</p>
+                  </div>
+                  {category?.products?.map(product => (
+                    <ProductsCardChange
+                      inputNumberLabel={`Поступило ${product.unit ? product.unit : ''}:`}
+                      value={arrivals[product.id] || 0}
+                      onChange={value => handleArrivalChange(product.id, value || 0)}
+                      withInputNumber
+                      key={product.id}
+                      data={product}
+                      min={0}
+                      max={undefined}
+                    />
+                  ))}
+                </>
+              ))}
+            </>
           )}
+
+          {productWithoutCategory &&
+            productWithoutCategory.length > 0 &&
+            selectedCategory === null && (
+              <>
+                <div className='flex items-center gap-2 border-t border-neutral-700 pt-2'>
+                  <p className='text-sm text-gray-500 dark:text-neutral-500'>
+                    Товары без категории:
+                  </p>
+                  <p className='text-sm text-neutral-500'>{productWithoutCategory?.length}</p>
+                </div>
+
+                {productWithoutCategory.map(product => (
+                  <ProductsCardChange
+                    inputNumberLabel={`Поступило ${product.unit ? product.unit : ''}:`}
+                    value={arrivals[product.id] || 0}
+                    onChange={value => handleArrivalChange(product.id, value || 0)}
+                    withInputNumber
+                    key={product.id}
+                    data={product}
+                    min={0}
+                    max={undefined}
+                  />
+                ))}
+              </>
+            )}
         </div>
+
+        {productWithoutCategory &&
+          productWithoutCategory.length === 0 &&
+          productsWithCategory &&
+          productsWithCategory.length === 0 && <Empty title='Товары не найдены' />}
 
         <MenuButton
           to={'/create-product'}
@@ -121,15 +224,12 @@ const IncomingToWarehousePage = () => {
           icon={<Plus className='size-5 shrink-0' />}
         />
 
-        {filteredData && filteredData?.length > 0 && (
-          <ButtonAction
-            onSuccessClick={onSubmit}
-            onCancelClick={handleCancel}
-            disabledSuccess={Object.values(arrivals).every(value => value === 0)}
-            disabledCancel={Object.values(arrivals).every(value => value === 0)}
-            isLoading={isButtonLoading}
-          />
-        )}
+        <ButtonAction
+          isLoading={isButtonLoading}
+          onSuccessClick={onSubmit}
+          onCancelClick={handleCancel}
+          disabledSuccess={Object.values(arrivals).every(value => value === 0)}
+        />
       </div>
     </Page>
   )
