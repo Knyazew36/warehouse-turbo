@@ -214,6 +214,7 @@ export const ProductsPage = () => {
           <ProductsTable
             productWithoutCategory={productWithoutCategory}
             productsWithCategory={productsWithCategory}
+            selectedCategory={selectedCategory}
           />
         )}
 
