@@ -26,11 +26,9 @@ export class CronService {
 
     try {
       // Получаем все активные организации
-      this.logger.log('📋 Получение списка активных организаций...')
       const organizations = await this.prisma.organization.findMany({
         where: { active: true }
       })
-      this.logger.log(`✅ Найдено ${organizations.length} активных организаций`)
 
       let processedOrganizations = 0
       let totalNotificationsSent = 0
@@ -74,7 +72,7 @@ export class CronService {
 
       // Проверяем, нужно ли отправлять уведомление сейчас
       const shouldSend = this.shouldSendNotificationNow(
-        notificationSettings?.notificationTime || '09:00'
+        notificationSettings?.notificationTime || '17:18'
       )
       this.logger.log(
         `⏰ Проверка времени отправки: ${shouldSend ? 'отправляем' : 'не отправляем'}`
@@ -188,8 +186,8 @@ export class CronService {
       return false
     }
 
-    // const shouldSend = now.getHours() === targetHours && now.getMinutes() === targetMinutes
-    const shouldSend = true
+    const shouldSend = now.getHours() === targetHours && now.getMinutes() === targetMinutes
+    // const shouldSend = true
     this.logger.log(`⏰ Результат проверки времени: ${shouldSend ? 'отправляем' : 'не отправляем'}`)
     return shouldSend
   }
