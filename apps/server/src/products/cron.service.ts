@@ -1,5 +1,4 @@
 import { Injectable, Logger } from '@nestjs/common'
-import { Cron, CronExpression } from '@nestjs/schedule'
 import { PrismaService } from 'nestjs-prisma'
 import { NotificationService } from '../bot/notification.service'
 import { UserService } from '../user/user.service'
@@ -121,9 +120,7 @@ export class CronService {
 
       // Логируем пользователей для уведомлений
       usersToNotify.forEach(user => {
-        this.logger.log(
-          `👤 Пользователь для уведомления: ${user.telegramId} (роль: ${user.userOrganizations[0]?.role})`
-        )
+        this.logger.log(`👤 Пользователь для уведомления: ${user.telegramId} (роль: ${user})`)
       })
 
       // Формируем и отправляем уведомления
