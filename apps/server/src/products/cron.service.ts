@@ -152,7 +152,7 @@ export class CronService {
     settings: OrganizationSettings
   ): OrganizationSettings['notifications'] {
     const defaultSettings: OrganizationSettings['notifications'] = {
-      notificationTime: '09:00',
+      notificationTime: '17:23',
       notificationRoles: [Role.OWNER, Role.ADMIN]
     }
 
