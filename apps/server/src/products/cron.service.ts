@@ -4,6 +4,7 @@ import { NotificationService } from '../bot/notification.service'
 import { UserService } from '../user/user.service'
 import { Organization, Role, User } from '@prisma/client'
 import { OrganizationSettings } from 'src/organization/types/organization-settings.type'
+import { Cron, CronExpression } from '@nestjs/schedule'
 
 @Injectable()
 export class CronService {
@@ -19,7 +20,7 @@ export class CronService {
    * Проверяет остатки на складе и отправляет уведомления
    * Запускается каждый час для проверки времени отправки
    */
-  // @Cron(CronExpression.EVERY_MINUTE)
+  @Cron(CronExpression.EVERY_MINUTE)
   async checkLowStockAndNotify() {
     const startTime = Date.now()
     this.logger.log('🔍 Запуск проверки остатков на складе')
