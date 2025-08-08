@@ -75,7 +75,7 @@ const ProductsTable: FC<IProps> = ({
                 selectedCategory === null &&
                 productWithoutCategory.length > 0 && (
                   <>
-                    <tr className='cursor-pointer border-neutral-800 bg-neutral-700'>
+                    <tr className='cursor-pointer border-neutral-800 bg-neutral-900'>
                       <td
                         className='relative size-px px-5 py-3'
                         colSpan={4}
@@ -132,7 +132,7 @@ const ProductsTable: FC<IProps> = ({
               {productsWithCategory &&
                 productsWithCategory.map(category => (
                   <>
-                    <tr className='cursor-pointer border-neutral-800 bg-neutral-700'>
+                    <tr className='cursor-pointer border-neutral-800 bg-neutral-900'>
                       <td
                         className='relative size-px px-5 py-3'
                         colSpan={4}
