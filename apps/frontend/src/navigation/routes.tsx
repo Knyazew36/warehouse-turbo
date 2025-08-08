@@ -26,6 +26,7 @@ import { ProductsChangePage } from '@/pages/products/change/ProductsChangePage'
 import CreateCategoryPage from '@/pages/category/create/ui/CreateCategory.page'
 import ListCategoryPage from '@/pages/category/list/ui/ListCategoryPage'
 import CategoryChangePage from '@/pages/category/change/ui/CategoryChangePage'
+import TestPage from '@/pages/test/ui/TestPage'
 
 interface Route {
   path: string
@@ -81,6 +82,7 @@ export const routes: Route[] = [
   { path: '/theme-params', Component: ThemeParamsPage, title: 'Theme Params' },
   { path: '/launch-params', Component: LaunchParamsPage, title: 'Launch Params' },
   { path: '/info-page', Component: InfoPage, title: 'Info Page' },
+  { path: '/test', Component: TestPage, title: 'Test Page' },
   {
     path: '/ton-connect',
     Component: TONConnectPage,

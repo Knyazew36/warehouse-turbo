@@ -7,12 +7,22 @@ import { TelegramAuthGuard } from 'src/auth/guards/telegram-auth.guard'
 import { OrganizationId } from '../organization/decorators/organization-id.decorator'
 import { RolesGuard } from 'src/auth/guards/roles.guard'
 import { Roles } from 'src/auth/decorators/roles.decorator'
+import { CronService } from './cron.service'
 
 @ApiTags('Продукты')
 @UseGuards(TelegramAuthGuard, RolesGuard)
 @Controller('products')
 export class ProductsController {
-  constructor(private readonly productsService: ProductsService) {}
+  constructor(
+    private readonly productsService: ProductsService,
+    private readonly cronService: CronService
+  ) {}
+
+  @Get('cron')
+  @Roles('OWNER', 'ADMIN')
+  async cron() {
+    return await this.cronService.checkLowStockAndNotify()
+  }
 
   @Post()
   @Roles('OWNER', 'ADMIN')
