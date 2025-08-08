@@ -1,9 +1,11 @@
 import React, { useState } from 'react'
 import PageHeader from '@/shared/ui/page-header/ui/PageHeader'
 import { Page } from '@/components/Page'
-import { Pencil, Loader2 } from 'lucide-react'
+import { Pencil, Loader2, FilePlus2 } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 import { useCategoryList, useDeleteCategory } from '@/entitites/category/api/category.api'
+import MenuButton from '@/pages/menu-page/menu-button/MenuButton'
+import CategoryDeleteModal from '../../delete/CategoryDeleteModal'
 
 const ListCategoryPage = () => {
   const { data: categories, isFetching } = useCategoryList(false)
@@ -90,7 +92,7 @@ const ListCategoryPage = () => {
                 {/* End Button Icon */}
                 <div className='mx-1 h-5 w-px bg-gray-200 dark:bg-neutral-700' />
                 {/* Button Icon */}
-                <div className='hs-tooltip inline-block'>
+                {/* <div className='hs-tooltip inline-block'>
                   <button
                     onClick={e => {
                       e.stopPropagation()
@@ -140,13 +142,26 @@ const ListCategoryPage = () => {
                   >
                     Удалить
                   </span>
-                </div>
+                </div> */}
+
+                <CategoryDeleteModal categoryId={category.id} />
                 {/* End Button Icon */}
               </div>
             </div>
             {/* End More Dropdown */}
           </div>
         ))}
+      </div>
+
+      <div className='mt-8'>
+        <MenuButton
+          to={'/category/create'}
+          title=' Создать категорию'
+          color='neutral'
+          // isBlocked={!isIT && !isOwner && !isAdmin}
+          iconClassName='border-2 border-dotted border-neutral-700'
+          icon={<FilePlus2 className='size-5 shrink-0' />}
+        />
       </div>
     </Page>
   )
