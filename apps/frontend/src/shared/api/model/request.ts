@@ -140,6 +140,27 @@ $api.interceptors.response.use(
       return
     }
 
+    if (error.response?.data?.message === 'Category with this name already exists') {
+      const errorData: ErrorEventEmitter = {
+        action: 'bottom-sheet',
+        message: 'Категория уже существует',
+        variant: 'error'
+      }
+      eventEmitter.emit('request-error', errorData)
+      return
+    }
+    if (error.response?.data?.message === 'Category already exists in this organization') {
+      const errorData: ErrorEventEmitter = {
+        action: 'bottom-sheet',
+        message: 'Категория с таким названием уже существует',
+
+        description: 'Пожалуйста, выберите другое название',
+        variant: 'error'
+      }
+      eventEmitter.emit('request-error', errorData)
+      return
+    }
+
     // Показываем toast только для не-401 ошибок
     if (error.response?.status !== 401) {
       toast(error?.response?.data?.message || error?.message, {

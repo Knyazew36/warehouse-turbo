@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common'
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common'
 import { CreateCategoryDto } from './dto/create-category.dto'
 import { UpdateCategoryDto } from './dto/update-category.dto'
 import { PrismaService } from 'nestjs-prisma'
@@ -15,6 +15,17 @@ export class CategoriesService {
 
     if (!organization) {
       throw new NotFoundException(`Organization #${organizationId} not found`)
+    }
+
+    const existingCategory = await this.prisma.productCategory.findFirst({
+      where: {
+        name: dto.name,
+        organizationId: Number(organizationId)
+      }
+    })
+
+    if (existingCategory) {
+      throw new BadRequestException('Category with this name already exists')
     }
 
     return this.prisma.productCategory.create({
@@ -72,7 +83,23 @@ export class CategoriesService {
   }
 
   async update(id: number, dto: UpdateCategoryDto) {
-    await this.findOne(id)
+    const existingCategory = await this.findOne(id)
+
+    // Если изменяется название, проверяем уникальность в рамках организации
+    if (dto.name && dto.name !== existingCategory.name) {
+      const categoryWithSameName = await this.prisma.productCategory.findFirst({
+        where: {
+          name: dto.name,
+          organizationId: existingCategory.organizationId,
+          id: { not: id } // Исключаем текущую категорию из проверки
+        }
+      })
+
+      if (categoryWithSameName) {
+        throw new BadRequestException('Category already exists in this organization')
+      }
+    }
+
     return this.prisma.productCategory.update({
       where: { id },
       data: dto

@@ -122,7 +122,7 @@ const CategoryDeleteModal: React.FC<ProductDeleteProps> = ({ categoryId }) => {
                 isPending ? 'cursor-not-allowed bg-red-400' : 'bg-red-500 hover:bg-red-600'
               }`}
             >
-              {isPending ? 'Удаление…' : 'Удалить товар'}
+              Удалить
             </button>
           </DialogFooter>
         </div>
