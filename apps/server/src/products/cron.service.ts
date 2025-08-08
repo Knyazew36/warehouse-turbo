@@ -73,7 +73,7 @@ export class CronService {
 
       // Проверяем, нужно ли отправлять уведомление сейчас
       const shouldSend = this.shouldSendNotificationNow(
-        notificationSettings?.notificationTime || '17:18'
+        notificationSettings?.notificationTime || '09:00'
       )
       this.logger.log(
         `⏰ Проверка времени отправки: ${shouldSend ? 'отправляем' : 'не отправляем'}`
@@ -152,7 +152,7 @@ export class CronService {
     settings: OrganizationSettings
   ): OrganizationSettings['notifications'] {
     const defaultSettings: OrganizationSettings['notifications'] = {
-      notificationTime: '17:23',
+      notificationTime: '09:00',
       notificationRoles: [Role.OWNER, Role.ADMIN]
     }
 
