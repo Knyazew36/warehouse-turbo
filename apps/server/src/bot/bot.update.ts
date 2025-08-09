@@ -7,6 +7,8 @@ import { Role } from '@prisma/client'
 
 @Update()
 export class BotUpdate {
+  private waitingForNotificationText = new Map<string, boolean>()
+
   constructor(
     private readonly prisma: PrismaService,
     private readonly allowedPhoneService: AllowedPhoneService,
@@ -84,6 +86,44 @@ export class BotUpdate {
   @On('text')
   async onTextMessage(@Ctx() ctx: Context) {
     console.log('onTextMessage', ctx.message)
+
+    const telegramId = String(ctx.from.id)
+    const messageText = (ctx.message as any).text
+
+    // Проверяем, ожидаем ли мы текст для уведомления
+    if (this.waitingForNotificationText.has(telegramId)) {
+      if (messageText === '❌ Отменить отправку') {
+        this.clearNotificationState(telegramId)
+        await ctx.reply('❌ Отправка уведомления отменена.', {
+          reply_markup: { remove_keyboard: true }
+        })
+        return
+      }
+
+      // Отправляем уведомление с полученным текстом
+      try {
+        const result = await this.botService.sendUpdateNotification(messageText)
+
+        await ctx.reply(
+          `✅ Уведомление отправлено!\n\n📝 Текст: "${messageText}"\n\n📊 Статистика:\n• Всего пользователей: ${result.totalUsers}\n• Успешно отправлено: ${result.sentSuccessfully}\n• Ошибок: ${result.failed}`,
+          {
+            reply_markup: { remove_keyboard: true }
+          }
+        )
+
+        // Убираем состояние ожидания
+        this.clearNotificationState(telegramId)
+      } catch (error) {
+        console.error('Ошибка отправки уведомления:', error)
+        await ctx.reply('❌ Ошибка при отправке уведомления.', {
+          reply_markup: { remove_keyboard: true }
+        })
+        this.clearNotificationState(telegramId)
+      }
+      return
+    }
+
+    // Обработка других текстовых сообщений (если нужно)
     // await this.handleUnauthorizedMessage(ctx)
   }
 
@@ -251,17 +291,26 @@ export class BotUpdate {
       return
     }
 
-    try {
-      const messageText = (ctx.message as any).text || 'У нас вышло обновление!'
-      const result = await this.botService.sendUpdateNotification(messageText)
+    // Сохраняем состояние ожидания текста уведомления
+    const telegramId = String(ctx.from.id)
+    this.waitingForNotificationText.set(telegramId, true)
 
-      await ctx.reply(
-        `✅ Уведомление об обновлении отправлено!\n\n📊 Статистика:\n• Всего пользователей: ${result.totalUsers}\n• Успешно отправлено: ${result.sentSuccessfully}\n• Ошибок: ${result.failed}`
-      )
-    } catch (error) {
-      console.error('Ошибка отправки уведомления об обновлении:', error)
-      await ctx.reply('❌ Ошибка при отправке уведомления об обновлении.')
-    }
+    await ctx.reply(
+      '📝 Пожалуйста, напишите текст уведомления, которое нужно отправить всем пользователям.\n\nПримеры:\n• "У нас вышло обновление!"\n• "Плановые работы 15.01 с 2:00 до 4:00"\n• "Новая функция: экспорт отчетов в Excel"',
+      {
+        reply_markup: {
+          keyboard: [
+            [
+              {
+                text: '❌ Отменить отправку'
+              }
+            ]
+          ],
+          resize_keyboard: true,
+          one_time_keyboard: true
+        }
+      }
+    )
   }
 
   private async checkAuthorization(ctx: Context): Promise<boolean> {
@@ -295,5 +344,9 @@ export class BotUpdate {
 
     // Проверяем, есть ли у пользователя роль IT в любой организации
     return user.userOrganizations.some(uo => uo.role === Role.IT)
+  }
+
+  private clearNotificationState(telegramId: string) {
+    this.waitingForNotificationText.delete(telegramId)
   }
 }
