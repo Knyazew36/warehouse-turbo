@@ -15,6 +15,14 @@ export interface IOrganization {
   updatedAt: string
   active: boolean
   organizationId: number
+  settings?: {
+    notifications?: {
+      notificationTime?: string
+      notificationRoles?: Role[]
+      enabled?: boolean
+      daysOfWeek?: number[]
+    }
+  }
 }
 
 export interface IUserOrganization {
@@ -49,4 +57,11 @@ export interface IAddUserToOrganization {
   userId: number
   role: Role
   isOwner?: boolean
+}
+
+export interface INotificationSettings {
+  enabled: boolean
+  notificationTime: string
+  notificationRoles: Role[]
+  daysOfWeek: number[]
 }

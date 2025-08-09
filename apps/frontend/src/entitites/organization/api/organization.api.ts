@@ -8,6 +8,7 @@ import {
   ICreateOrganization,
   IUpdateOrganization,
   IAddUserToOrganization,
+  INotificationSettings,
   Role
 } from '../model/organization.type'
 import { Consumption } from '@/entitites/shift/model/shift.type'
@@ -267,4 +268,21 @@ export const getOrganizationById = async ({ id }: { id: number }) => {
     const message = error?.response?.data?.message || 'Ошибка удаления пользователя из организации'
     throw new Error(message)
   }
+}
+
+// Обновить настройки уведомлений организации
+export const useUpdateNotificationSettings = () => {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: async ({ id, data }: { id: number; data: INotificationSettings }) => {
+      const res = await $api.post(`${apiDomain}/organizations/${id}/notification-settings`, data)
+      return res.data.data
+    },
+    onSuccess: (_, { id }) => {
+      queryClient.invalidateQueries({ queryKey: ORGANIZATION_KEYS.detail(id) })
+      queryClient.invalidateQueries({ queryKey: ORGANIZATION_KEYS.lists() })
+      queryClient.invalidateQueries({ queryKey: ORGANIZATION_KEYS.my() })
+    }
+  })
 }

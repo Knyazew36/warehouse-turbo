@@ -4,6 +4,7 @@ import { Organization, UserOrganization, Role } from '@prisma/client'
 import { CreateOrganizationDto } from './dto/create-organization.dto'
 import { UpdateOrganizationDto } from './dto/update-organization.dto'
 import { AddUserToOrganizationDto } from './dto/add-user-to-organization.dto'
+import { UpdateNotificationSettingsDto } from '../products/dto/update-notification-settings.dto'
 
 @Injectable()
 export class OrganizationService {
@@ -542,5 +543,52 @@ export class OrganizationService {
     })
 
     return !!hasAccess
+  }
+
+  async updateNotificationSettings(
+    organizationId: number,
+    updateNotificationSettingsDto: UpdateNotificationSettingsDto
+  ): Promise<Organization> {
+    // Проверяем, существует ли организация
+    const organization = await this.findOne(organizationId)
+
+    // Получаем текущие настройки
+    const currentSettings = (organization.settings as any) || {}
+
+    // Обновляем настройки уведомлений
+    const updatedSettings = {
+      ...currentSettings,
+      notifications: {
+        ...currentSettings.notifications,
+        ...updateNotificationSettingsDto
+      }
+    }
+
+    // Обновляем организацию
+    return this.prisma.organization.update({
+      where: { id: organizationId },
+      data: {
+        settings: updatedSettings
+      },
+      include: {
+        userOrganizations: {
+          include: {
+            user: {
+              select: {
+                id: true,
+                telegramId: true,
+                data: true,
+                active: true
+              }
+            }
+          }
+        },
+        allowedPhones: {
+          include: {
+            allowedPhone: true
+          }
+        }
+      }
+    })
   }
 }

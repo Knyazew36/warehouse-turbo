@@ -21,6 +21,7 @@ import { Role } from '@prisma/client'
 import { User } from 'src/auth/decorators/get-user.decorator'
 import { User as UserType } from '@prisma/client'
 import { RolesGuard } from 'src/auth/guards/roles.guard'
+import { UpdateNotificationSettingsDto } from '../products/dto/update-notification-settings.dto'
 
 @ApiTags('Организации')
 @UseGuards(TelegramAuthGuard, RolesGuard)
@@ -202,5 +203,21 @@ export class OrganizationController {
   ) {
     const canJoin = await this.organizationService.canUserJoinOrganization(id, userId)
     return { data: { canJoin } }
+  }
+
+  @Post(':id/notification-settings')
+  @Roles(Role.ADMIN, Role.OWNER, Role.IT)
+  @ApiOperation({ summary: 'Обновить настройки уведомлений организации' })
+  @ApiParam({ name: 'id', type: Number })
+  @ApiBody({ type: UpdateNotificationSettingsDto })
+  async updateNotificationSettings(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() updateNotificationSettingsDto: UpdateNotificationSettingsDto
+  ) {
+    const organization = await this.organizationService.updateNotificationSettings(
+      id,
+      updateNotificationSettingsDto
+    )
+    return { data: organization }
   }
 }

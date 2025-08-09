@@ -376,7 +376,6 @@ const MenuPage: FC = () => {
         <MenuButton
           to='/settings'
           title='Настройки'
-          isDevelop={true}
           color='gray'
           icon={
             <svg
