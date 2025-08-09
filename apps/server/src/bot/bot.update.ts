@@ -2,12 +2,15 @@ import { Update, Start, Command, Action, Ctx, On } from 'nestjs-telegraf'
 import { Context } from 'telegraf'
 import { PrismaService } from 'nestjs-prisma'
 import { AllowedPhoneService } from 'src/allowed-phone/allowed-phone.service'
+import { BotService } from './bot.service'
+import { Role } from '@prisma/client'
 
 @Update()
 export class BotUpdate {
   constructor(
     private readonly prisma: PrismaService,
-    private readonly allowedPhoneService: AllowedPhoneService
+    private readonly allowedPhoneService: AllowedPhoneService,
+    private readonly botService: BotService
   ) {}
 
   @Start()
@@ -234,6 +237,33 @@ export class BotUpdate {
     }
   }
 
+  @Command('notify')
+  async onNotifyUpdate(@Ctx() ctx: Context) {
+    const isAuthorized = await this.checkAuthorization(ctx)
+    if (!isAuthorized) {
+      await ctx.reply('❌ У вас нет доступа к этой команде.')
+      return
+    }
+
+    const hasITRole = await this.checkITRole(ctx)
+    if (!hasITRole) {
+      await ctx.reply('❌ У вас нет прав для отправки уведомлений.')
+      return
+    }
+
+    try {
+      const messageText = (ctx.message as any).text || 'У нас вышло обновление!'
+      const result = await this.botService.sendUpdateNotification(messageText)
+
+      await ctx.reply(
+        `✅ Уведомление об обновлении отправлено!\n\n📊 Статистика:\n• Всего пользователей: ${result.totalUsers}\n• Успешно отправлено: ${result.sentSuccessfully}\n• Ошибок: ${result.failed}`
+      )
+    } catch (error) {
+      console.error('Ошибка отправки уведомления об обновлении:', error)
+      await ctx.reply('❌ Ошибка при отправке уведомления об обновлении.')
+    }
+  }
+
   private async checkAuthorization(ctx: Context): Promise<boolean> {
     const telegramId = String(ctx.from.id)
     const user = await this.prisma.user.findUnique({
@@ -245,5 +275,25 @@ export class BotUpdate {
 
     // Проверяем, что пользователь существует и привязан к разрешенному телефону
     return user && user.allowedPhone !== null
+  }
+
+  private async checkITRole(ctx: Context): Promise<boolean> {
+    const telegramId = String(ctx.from.id)
+
+    const user = await this.prisma.user.findUnique({
+      where: { telegramId },
+      include: {
+        userOrganizations: {
+          include: {
+            organization: true
+          }
+        }
+      }
+    })
+
+    if (!user) return false
+
+    // Проверяем, есть ли у пользователя роль IT в любой организации
+    return user.userOrganizations.some(uo => uo.role === Role.IT)
   }
 }
