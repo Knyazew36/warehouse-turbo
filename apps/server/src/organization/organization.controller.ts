@@ -1,20 +1,9 @@
-import {
-  Controller,
-  Get,
-  Post,
-  Body,
-  Patch,
-  Param,
-  Delete,
-  ParseIntPipe,
-  UseGuards
-} from '@nestjs/common'
+import { Controller, Get, Post, Body, Param, ParseIntPipe, UseGuards } from '@nestjs/common'
 import { ApiTags, ApiOperation, ApiBody, ApiParam } from '@nestjs/swagger'
 import { OrganizationService } from './organization.service'
 import { CreateOrganizationDto } from './dto/create-organization.dto'
 import { UpdateOrganizationDto } from './dto/update-organization.dto'
 import { AddUserToOrganizationDto } from './dto/add-user-to-organization.dto'
-import { AddAllowedPhoneDto } from './dto/add-allowed-phone.dto'
 import { TelegramAuthGuard } from 'src/auth/guards/telegram-auth.guard'
 import { Roles } from 'src/auth/decorators/roles.decorator'
 import { Role } from '@prisma/client'
@@ -37,12 +26,15 @@ export class OrganizationController {
     return { data: organization }
   }
 
-  @Get('my')
-  @ApiOperation({ summary: 'Получить мои организации' })
-  async getMyOrganizations(@User() user: UserType) {
-    const organizations = await this.organizationService.getUserOrganizations(user.id)
-    return { data: organizations }
-  }
+  // @Get('my')
+  // @ApiOperation({
+  //   summary: 'Получить мои организации',
+  //   description: 'Получает организации по id пользователя'
+  // })
+  // async getMyOrganizations(@User() user: UserType) {
+  //   const organizations = await this.organizationService.getUserOrganizations(user.id)
+  //   return { data: organizations }
+  // }
 
   @Get('available')
   @ApiOperation({ summary: 'Получить доступные организации для пользователя' })
@@ -115,14 +107,14 @@ export class OrganizationController {
     return { success: true }
   }
 
-  @Get(':id/users')
-  @Roles(Role.ADMIN, Role.OWNER, Role.IT)
-  @ApiOperation({ summary: 'Получить пользователей организации' })
-  @ApiParam({ name: 'id', type: Number })
-  async getOrganizationUsers(@Param('id', ParseIntPipe) id: number) {
-    const users = await this.organizationService.getOrganizationUsers(id)
-    return { data: users }
-  }
+  // @Get(':id/users')
+  // @Roles(Role.ADMIN, Role.OWNER, Role.IT)
+  // @ApiOperation({ summary: 'Получить пользователей организации' })
+  // @ApiParam({ name: 'id', type: Number })
+  // async getOrganizationUsers(@Param('id', ParseIntPipe) id: number) {
+  //   const users = await this.organizationService.getOrganizationUsers(id)
+  //   return { data: users }
+  // }
 
   @Post(':id/users/:userId/role')
   @Roles(Role.ADMIN, Role.OWNER, Role.IT)
@@ -151,59 +143,59 @@ export class OrganizationController {
 
   // Новые эндпоинты для работы с разрешенными телефонами
 
-  @Get(':id/allowed-phones')
-  @Roles(Role.ADMIN, Role.OWNER, Role.IT)
-  @ApiOperation({ summary: 'Получить разрешенные телефоны' })
-  @ApiParam({ name: 'id', type: Number })
-  async getAllowedPhones(@Param('id', ParseIntPipe) id: number) {
-    const phones = await this.organizationService.getAllowedPhones(id)
-    return { data: phones }
-  }
+  // @Get(':id/allowed-phones')
+  // @Roles(Role.ADMIN, Role.OWNER, Role.IT)
+  // @ApiOperation({ summary: 'Получить разрешенные телефоны' })
+  // @ApiParam({ name: 'id', type: Number })
+  // async getAllowedPhones(@Param('id', ParseIntPipe) id: number) {
+  //   const phones = await this.organizationService.getAllowedPhones(id)
+  //   return { data: phones }
+  // }
 
-  @Post(':id/allowed-phones')
-  @Roles(Role.ADMIN, Role.OWNER, Role.IT)
-  @ApiOperation({ summary: 'Добавить разрешенный телефон' })
-  @ApiParam({ name: 'id', type: Number })
-  @ApiBody({ type: AddAllowedPhoneDto })
-  async addAllowedPhone(
-    @Param('id', ParseIntPipe) id: number,
-    @Body() addAllowedPhoneDto: AddAllowedPhoneDto
-  ) {
-    const organization = await this.organizationService.addAllowedPhone(
-      id,
-      addAllowedPhoneDto.phone
-    )
-    return { data: organization }
-  }
+  // @Post(':id/allowed-phones')
+  // @Roles(Role.ADMIN, Role.OWNER, Role.IT)
+  // @ApiOperation({ summary: 'Добавить разрешенный телефон' })
+  // @ApiParam({ name: 'id', type: Number })
+  // @ApiBody({ type: AddAllowedPhoneDto })
+  // async addAllowedPhone(
+  //   @Param('id', ParseIntPipe) id: number,
+  //   @Body() addAllowedPhoneDto: AddAllowedPhoneDto
+  // ) {
+  //   const organization = await this.organizationService.addAllowedPhone(
+  //     id,
+  //     addAllowedPhoneDto.phone
+  //   )
+  //   return { data: organization }
+  // }
 
-  @Delete(':id/allowed-phones')
-  @Roles(Role.ADMIN, Role.OWNER, Role.IT)
-  @ApiOperation({ summary: 'Удалить разрешенный телефон' })
-  @ApiParam({ name: 'id', type: Number })
-  @ApiBody({ type: AddAllowedPhoneDto })
-  async removeAllowedPhone(
-    @Param('id', ParseIntPipe) id: number,
-    @Body() addAllowedPhoneDto: AddAllowedPhoneDto
-  ) {
-    const organization = await this.organizationService.removeAllowedPhone(
-      id,
-      addAllowedPhoneDto.phone
-    )
-    return { data: organization }
-  }
+  // @Delete(':id/allowed-phones')
+  // @Roles(Role.ADMIN, Role.OWNER, Role.IT)
+  // @ApiOperation({ summary: 'Удалить разрешенный телефон' })
+  // @ApiParam({ name: 'id', type: Number })
+  // @ApiBody({ type: AddAllowedPhoneDto })
+  // async removeAllowedPhone(
+  //   @Param('id', ParseIntPipe) id: number,
+  //   @Body() addAllowedPhoneDto: AddAllowedPhoneDto
+  // ) {
+  //   const organization = await this.organizationService.removeAllowedPhone(
+  //     id,
+  //     addAllowedPhoneDto.phone
+  //   )
+  //   return { data: organization }
+  // }
 
-  @Get(':id/can-join/:userId')
-  @Roles(Role.ADMIN, Role.OWNER, Role.IT)
-  @ApiOperation({ summary: 'Проверить может ли пользователь присоединиться' })
-  @ApiParam({ name: 'id', type: Number })
-  @ApiParam({ name: 'userId', type: Number })
-  async canUserJoinOrganization(
-    @Param('id', ParseIntPipe) id: number,
-    @Param('userId', ParseIntPipe) userId: number
-  ) {
-    const canJoin = await this.organizationService.canUserJoinOrganization(id, userId)
-    return { data: { canJoin } }
-  }
+  // @Get(':id/can-join/:userId')
+  // @Roles(Role.ADMIN, Role.OWNER, Role.IT)
+  // @ApiOperation({ summary: 'Проверить может ли пользователь присоединиться' })
+  // @ApiParam({ name: 'id', type: Number })
+  // @ApiParam({ name: 'userId', type: Number })
+  // async canUserJoinOrganization(
+  //   @Param('id', ParseIntPipe) id: number,
+  //   @Param('userId', ParseIntPipe) userId: number
+  // ) {
+  //   const canJoin = await this.organizationService.canUserJoinOrganization(id, userId)
+  //   return { data: { canJoin } }
+  // }
 
   @Post(':id/notification-settings')
   @Roles(Role.ADMIN, Role.OWNER, Role.IT)

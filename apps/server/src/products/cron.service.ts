@@ -1,10 +1,10 @@
 import { Injectable, Logger } from '@nestjs/common'
 import { PrismaService } from 'nestjs-prisma'
-import { NotificationService } from '../bot/notification.service'
 import { UserService } from '../user/user.service'
 import { Organization, Role, User } from '@prisma/client'
-import { OrganizationSettings } from 'src/organization/types/organization-settings.type'
 import { Cron, CronExpression } from '@nestjs/schedule'
+import { BotService } from '../bot/bot.service'
+import { OrganizationSettings } from 'src/organization/types/organization-settings.type'
 
 @Injectable()
 export class CronService {
@@ -12,7 +12,7 @@ export class CronService {
 
   constructor(
     private readonly prisma: PrismaService,
-    private readonly notificationService: NotificationService,
+    private readonly botService: BotService,
     private readonly userService: UserService
   ) {}
 
@@ -308,8 +308,7 @@ export class CronService {
 
     // Получаем URL веб-приложения
     const webappUrl =
-      this.notificationService.config.get<string>('WEBAPP_URL') ||
-      'https://5278831-ad07030.twc1.net'
+      this.botService.config.get<string>('WEBAPP_URL') || 'https://5278831-ad07030.twc1.net'
 
     this.logger.log(`🌐 URL веб-приложения: ${webappUrl}`)
 
@@ -321,7 +320,7 @@ export class CronService {
       try {
         this.logger.log(`📤 Отправка уведомления пользователю ${user.telegramId}`)
 
-        await this.notificationService.sendMessage(user.telegramId, message, {
+        await this.botService.sendMessage(user.telegramId, message, {
           parse_mode: 'HTML',
           reply_markup: {
             inline_keyboard: [[{ text: '🚀 Открыть приложение', web_app: { url: webappUrl } }]]

@@ -1,8 +1,8 @@
 import { create } from 'zustand'
 import { devtools } from 'zustand/middleware'
 import { IUserOrganization } from '../model/organization.type'
-import { useMyOrganizations } from '../api/organization.api'
-import { useEffect } from 'react'
+// import { useMyOrganizations } from '../api/organization.api'
+// import { useEffect } from 'react'
 
 interface OrganizationStore {
   currentOrganization: IUserOrganization | null
@@ -92,26 +92,26 @@ export const useInitializeCacheClear = () => {
 }
 
 // Хук для инициализации организации (можно использовать в компонентах)
-export const useOrganizationInit = () => {
-  const { data: organizations = [], isLoading } = useMyOrganizations()
-  const { currentOrganization, setCurrentOrganization, clearCache } = useOrganizationStore()
+// export const useOrganizationInit = () => {
+//   const { data: organizations = [], isLoading } = useMyOrganizations()
+//   const { currentOrganization, setCurrentOrganization, clearCache } = useOrganizationStore()
 
-  useEffect(() => {
-    // Если у пользователя есть организации и текущая организация не выбрана
-    if (organizations.length > 0 && !currentOrganization) {
-      // Очищаем кэш перед установкой первой организации
-      clearCache()
-      // Выбираем первую организацию по умолчанию
-      setCurrentOrganization(organizations[0])
-    } else if (organizations.length === 0 && currentOrganization) {
-      // Если у пользователя нет организаций, но есть выбранная организация, очищаем её
-      clearCache()
-      setCurrentOrganization(null)
-    }
-  }, [organizations, currentOrganization, setCurrentOrganization, clearCache])
+//   useEffect(() => {
+//     // Если у пользователя есть организации и текущая организация не выбрана
+//     if (organizations.length > 0 && !currentOrganization) {
+//       // Очищаем кэш перед установкой первой организации
+//       clearCache()
+//       // Выбираем первую организацию по умолчанию
+//       setCurrentOrganization(organizations[0])
+//     } else if (organizations.length === 0 && currentOrganization) {
+//       // Если у пользователя нет организаций, но есть выбранная организация, очищаем её
+//       clearCache()
+//       setCurrentOrganization(null)
+//     }
+//   }, [organizations, currentOrganization, setCurrentOrganization, clearCache])
 
-  return { isLoading }
-}
+//   return { isLoading }
+// }
 
 // Хук для удобного получения organizationId
 export const useOrganizationId = () => {

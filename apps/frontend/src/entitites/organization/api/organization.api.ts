@@ -11,7 +11,6 @@ import {
   INotificationSettings,
   Role
 } from '../model/organization.type'
-import { Consumption } from '@/entitites/shift/model/shift.type'
 import { BaseResponse } from '@/shared/api'
 
 const ORGANIZATION_KEYS = {
@@ -20,32 +19,33 @@ const ORGANIZATION_KEYS = {
   list: (filters: string) => [...ORGANIZATION_KEYS.lists(), { filters }] as const,
   details: () => [...ORGANIZATION_KEYS.all, 'detail'] as const,
   detail: (id: number) => [...ORGANIZATION_KEYS.details(), id] as const,
-  my: () => [...ORGANIZATION_KEYS.all, 'my'] as const,
-  users: (id: number) => [...ORGANIZATION_KEYS.all, 'users', id] as const
+  available: () => [...ORGANIZATION_KEYS.all, 'available'] as const
+  // my: () => [...ORGANIZATION_KEYS.all, 'my'] as const,
+  // users: (id: number) => [...ORGANIZATION_KEYS.all, 'users', id] as const
 }
 
 // Получить мои организации
-export const useMyOrganizations = () => {
-  return useQuery<IUserOrganization[]>({
-    queryKey: ORGANIZATION_KEYS.my(),
-    queryFn: async () => {
-      const res = await $api.get(`${apiDomain}/organizations/my`)
-      return res.data.data
-    }
-  })
-}
+// export const useMyOrganizations = () => {
+//   return useQuery<IUserOrganization[]>({
+//     queryKey: ORGANIZATION_KEYS.my(),
+//     queryFn: async () => {
+//       const res = await $api.get(`${apiDomain}/organizations/my`)
+//       return res.data.data
+//     }
+//   })
+// }
 
 // Получить пользователей организации
-export const useOrganizationUsers = (id: number) => {
-  return useQuery<IUserOrganization[]>({
-    queryKey: ORGANIZATION_KEYS.users(id),
-    queryFn: async () => {
-      const res = await $api.get(`${apiDomain}/organizations/${id}/users`)
-      return res.data.data
-    },
-    enabled: !!id
-  })
-}
+// export const useOrganizationUsers = (id: number) => {
+//   return useQuery<IUserOrganization[]>({
+//     queryKey: ORGANIZATION_KEYS.users(id),
+//     queryFn: async () => {
+//       const res = await $api.get(`${apiDomain}/organizations/${id}/users`)
+//       return res.data.data
+//     },
+//     enabled: !!id
+//   })
+// }
 
 // Создать организацию
 export const useCreateOrganization = () => {
@@ -58,7 +58,7 @@ export const useCreateOrganization = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ORGANIZATION_KEYS.lists() })
-      queryClient.invalidateQueries({ queryKey: ORGANIZATION_KEYS.my() })
+      // queryClient.invalidateQueries({ queryKey: ORGANIZATION_KEYS.my() })
     }
   })
 }
@@ -75,7 +75,7 @@ export const useUpdateOrganization = () => {
     onSuccess: (_, { id }) => {
       queryClient.invalidateQueries({ queryKey: ORGANIZATION_KEYS.detail(id) })
       queryClient.invalidateQueries({ queryKey: ORGANIZATION_KEYS.lists() })
-      queryClient.invalidateQueries({ queryKey: ORGANIZATION_KEYS.my() })
+      // queryClient.invalidateQueries({ queryKey: ORGANIZATION_KEYS.my() })
     }
   })
 }
@@ -93,7 +93,7 @@ export const useDeleteOrganization = () => {
       queryClient.invalidateQueries({ queryKey: ORGANIZATION_KEYS.lists() })
       // queryClient.invalidateQueries({ queryKey: ORGANIZATION_KEYS.my() })
       // Инвалидируем кэш для доступных организаций
-      queryClient.invalidateQueries({ queryKey: [...ORGANIZATION_KEYS.my(), 'available'] })
+      queryClient.invalidateQueries({ queryKey: ORGANIZATION_KEYS.available() })
     }
   })
 }
@@ -114,9 +114,9 @@ export const useAddUserToOrganization = () => {
       return res.data.data
     },
     onSuccess: (_, { organizationId }) => {
-      queryClient.invalidateQueries({
-        queryKey: ORGANIZATION_KEYS.users(organizationId)
-      })
+      // queryClient.invalidateQueries({
+      //   queryKey: ORGANIZATION_KEYS.users(organizationId)
+      // })
       queryClient.invalidateQueries({
         queryKey: ORGANIZATION_KEYS.detail(organizationId)
       })
@@ -133,9 +133,9 @@ export const useRemoveUserFromOrganization = () => {
       await $api.post(`${apiDomain}/organizations/${organizationId}/users/${userId}/remove`)
     },
     onSuccess: (_, { organizationId }) => {
-      queryClient.invalidateQueries({
-        queryKey: ORGANIZATION_KEYS.users(organizationId)
-      })
+      // queryClient.invalidateQueries({
+      //   queryKey: ORGANIZATION_KEYS.users(organizationId)
+      // })
       queryClient.invalidateQueries({
         queryKey: ['employees']
       })
@@ -143,7 +143,7 @@ export const useRemoveUserFromOrganization = () => {
         queryKey: ORGANIZATION_KEYS.detail(organizationId)
       })
       // Инвалидируем кэш для доступных организаций
-      queryClient.invalidateQueries({ queryKey: [...ORGANIZATION_KEYS.my(), 'available'] })
+      // queryClient.invalidateQueries({ queryKey: [...ORGANIZATION_KEYS.my(), 'available'] })
     }
   })
 }
@@ -174,9 +174,9 @@ export const useUpdateUserRole = () => {
       return res.data.data
     },
     onSuccess: (_, { organizationId }) => {
-      queryClient.invalidateQueries({
-        queryKey: ORGANIZATION_KEYS.users(organizationId)
-      })
+      // queryClient.invalidateQueries({
+      //   queryKey: ORGANIZATION_KEYS.users(organizationId)
+      // })
       queryClient.invalidateQueries({
         queryKey: ORGANIZATION_KEYS.detail(organizationId)
       })
@@ -196,7 +196,7 @@ export const useAvailableOrganizations = () => {
       invitedOrganizations: IOrganization[]
     }>['user']
   }>({
-    queryKey: [...ORGANIZATION_KEYS.my(), 'available'],
+    queryKey: ORGANIZATION_KEYS.available(),
     queryFn: async () => {
       const res: AxiosResponse<
         BaseResponse<{
@@ -223,9 +223,9 @@ export const useJoinOrganization = () => {
       return res.data.data
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ORGANIZATION_KEYS.my() })
+      // queryClient.invalidateQueries({ queryKey: ORGANIZATION_KEYS.my() })
       queryClient.invalidateQueries({
-        queryKey: [...ORGANIZATION_KEYS.my(), 'available']
+        queryKey: ORGANIZATION_KEYS.available()
       })
     }
   })
@@ -282,7 +282,7 @@ export const useUpdateNotificationSettings = () => {
     onSuccess: (_, { id }) => {
       queryClient.invalidateQueries({ queryKey: ORGANIZATION_KEYS.detail(id) })
       queryClient.invalidateQueries({ queryKey: ORGANIZATION_KEYS.lists() })
-      queryClient.invalidateQueries({ queryKey: ORGANIZATION_KEYS.my() })
+      // queryClient.invalidateQueries({ queryKey: ORGANIZATION_KEYS.my() })
     }
   })
 }
