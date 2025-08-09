@@ -13,7 +13,7 @@ import {
 } from '../model/organization.type'
 import { BaseResponse } from '@/shared/api'
 
-const ORGANIZATION_KEYS = {
+export const ORGANIZATION_KEYS = {
   all: ['organizations'] as const,
   lists: () => [...ORGANIZATION_KEYS.all, 'list'] as const,
   list: (filters: string) => [...ORGANIZATION_KEYS.lists(), { filters }] as const,
