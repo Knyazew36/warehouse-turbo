@@ -20,32 +20,7 @@ const ORGANIZATION_KEYS = {
   details: () => [...ORGANIZATION_KEYS.all, 'detail'] as const,
   detail: (id: number) => [...ORGANIZATION_KEYS.details(), id] as const,
   available: () => [...ORGANIZATION_KEYS.all, 'available'] as const
-  // my: () => [...ORGANIZATION_KEYS.all, 'my'] as const,
-  // users: (id: number) => [...ORGANIZATION_KEYS.all, 'users', id] as const
 }
-
-// Получить мои организации
-// export const useMyOrganizations = () => {
-//   return useQuery<IUserOrganization[]>({
-//     queryKey: ORGANIZATION_KEYS.my(),
-//     queryFn: async () => {
-//       const res = await $api.get(`${apiDomain}/organizations/my`)
-//       return res.data.data
-//     }
-//   })
-// }
-
-// Получить пользователей организации
-// export const useOrganizationUsers = (id: number) => {
-//   return useQuery<IUserOrganization[]>({
-//     queryKey: ORGANIZATION_KEYS.users(id),
-//     queryFn: async () => {
-//       const res = await $api.get(`${apiDomain}/organizations/${id}/users`)
-//       return res.data.data
-//     },
-//     enabled: !!id
-//   })
-// }
 
 // Создать организацию
 export const useCreateOrganization = () => {
@@ -133,9 +108,6 @@ export const useRemoveUserFromOrganization = () => {
       await $api.post(`${apiDomain}/organizations/${organizationId}/users/${userId}/remove`)
     },
     onSuccess: (_, { organizationId }) => {
-      // queryClient.invalidateQueries({
-      //   queryKey: ORGANIZATION_KEYS.users(organizationId)
-      // })
       queryClient.invalidateQueries({
         queryKey: ['employees']
       })
@@ -230,32 +202,6 @@ export const useJoinOrganization = () => {
     }
   })
 }
-
-// export const useRemoveUserFromOrganization = () => {
-//   return useMutation({
-//     mutationFn: async ({ organizationId, userId }: { organizationId: number; userId: number }) => {
-//       await $api.post(`${apiDomain}/organizations/${organizationId}/users/${userId}/remove`)
-//     }
-//   })
-// }
-
-// export const removeUserFromOrganization = async ({
-//   organizationId,
-//   userId
-// }: {
-//   organizationId: number
-//   userId: number
-// }) => {
-//   try {
-//     const response: AxiosResponse<BaseResponse<any>> = await $api.post(
-//       `${apiDomain}/organizations/${organizationId}/users/${userId}/remove`
-//     )
-//     return response.data.data
-//   } catch (error: any) {
-//     const message = error?.response?.data?.message || 'Ошибка удаления пользователя из организации'
-//     throw new Error(message)
-//   }
-// }
 
 export const getOrganizationById = async ({ id }: { id: number }) => {
   try {
