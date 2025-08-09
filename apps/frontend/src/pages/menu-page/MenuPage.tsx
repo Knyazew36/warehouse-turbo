@@ -6,10 +6,8 @@ import { hapticFeedback, initDataUser, openTelegramLink } from '@telegram-apps/s
 import AlertProductLowStock from '@/widgets/alert-product-low-stock/AlertProductLowStock'
 
 import { useAuthStore } from '@/entitites/auth/model/auth.store'
-import { Role } from '@/entitites/user/model/user.type'
 
 import MenuButton, { IMenuButton } from './menu-button/MenuButton'
-import { useNavigate } from 'react-router-dom'
 import { Info, MessageCircle, Package, Settings, UserPlus, WarehouseIcon } from 'lucide-react'
 import { useUserRole } from '@/entitites/user/api/user.api'
 

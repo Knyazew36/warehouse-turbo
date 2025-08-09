@@ -12,6 +12,7 @@ import {
   Role
 } from '../model/organization.type'
 import { BaseResponse } from '@/shared/api'
+import { USER_KEYS } from '@/entitites/user/api/user.api'
 
 export const ORGANIZATION_KEYS = {
   all: ['organizations'] as const,
@@ -109,13 +110,11 @@ export const useRemoveUserFromOrganization = () => {
     },
     onSuccess: (_, { organizationId }) => {
       queryClient.invalidateQueries({
-        queryKey: ['employees']
+        queryKey: USER_KEYS.employees()
       })
       queryClient.invalidateQueries({
         queryKey: ORGANIZATION_KEYS.detail(organizationId)
       })
-      // Инвалидируем кэш для доступных организаций
-      // queryClient.invalidateQueries({ queryKey: [...ORGANIZATION_KEYS.my(), 'available'] })
     }
   })
 }
@@ -228,7 +227,6 @@ export const useUpdateNotificationSettings = () => {
     onSuccess: (_, { id }) => {
       queryClient.invalidateQueries({ queryKey: ORGANIZATION_KEYS.detail(id) })
       queryClient.invalidateQueries({ queryKey: ORGANIZATION_KEYS.lists() })
-      // queryClient.invalidateQueries({ queryKey: ORGANIZATION_KEYS.my() })
     }
   })
 }
