@@ -1,10 +1,11 @@
-import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common'
+import { Injectable, NotFoundException, BadRequestException, UseGuards } from '@nestjs/common'
 import { PrismaService } from 'nestjs-prisma'
 import { Organization, UserOrganization, Role } from '@prisma/client'
 import { CreateOrganizationDto } from './dto/create-organization.dto'
 import { UpdateOrganizationDto } from './dto/update-organization.dto'
 import { AddUserToOrganizationDto } from './dto/add-user-to-organization.dto'
 import { UpdateNotificationSettingsDto } from '../products/dto/update-notification-settings.dto'
+import { OrganizationStats } from './types/request.types'
 
 @Injectable()
 export class OrganizationService {
@@ -58,6 +59,51 @@ export class OrganizationService {
       }
 
       return organization
+    })
+  }
+
+  async getStats(): Promise<OrganizationStats[]> {
+    const organizations = await this.prisma.organization.findMany({
+      include: {
+        userOrganizations: {
+          include: {
+            user: {
+              select: {
+                id: true,
+                telegramId: true,
+                data: true
+              }
+            }
+          }
+        },
+        products: {
+          where: {
+            active: true
+          }
+        }
+      }
+    })
+
+    return organizations.map(org => {
+      // Находим создателя (владельца) организации
+      const creator = org.userOrganizations.find(uo => uo.isOwner)?.user || null
+
+      // Подсчитываем количество активных продуктов
+      const productsCount = org.products.length
+
+      // Подсчитываем количество сотрудников
+      const employeesCount = org.userOrganizations.length
+
+      return {
+        id: org.id,
+        name: org.name,
+        active: org.active,
+        createdAt: org.createdAt,
+        updatedAt: org.updatedAt,
+        creator,
+        productsCount,
+        employeesCount
+      }
     })
   }
 

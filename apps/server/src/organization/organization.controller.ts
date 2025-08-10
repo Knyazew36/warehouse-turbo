@@ -18,6 +18,12 @@ import { UpdateNotificationSettingsDto } from '../products/dto/update-notificati
 export class OrganizationController {
   constructor(private readonly organizationService: OrganizationService) {}
 
+  @Get('stats')
+  @Roles(Role.IT)
+  async getStats() {
+    return await this.organizationService.getStats()
+  }
+
   @Post()
   @ApiOperation({ summary: 'Создать организацию' })
   @ApiBody({ type: CreateOrganizationDto })
@@ -41,6 +47,7 @@ export class OrganizationController {
   }
 
   @Get(':id')
+  @Roles(Role.ADMIN, Role.OWNER, Role.IT)
   @ApiOperation({ summary: 'Получить организацию по ID' })
   @ApiParam({ name: 'id', type: Number })
   async findOne(@Param('id', ParseIntPipe) id: number) {

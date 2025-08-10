@@ -65,3 +65,17 @@ export interface INotificationSettings {
   notificationRoles: Role[]
   daysOfWeek: number[]
 }
+export interface OrganizationStats {
+  id: number
+  name: string
+  active: boolean
+  createdAt: Date
+  updatedAt: Date
+  creator: {
+    id: number
+    telegramId: string
+    data: any
+  } | null
+  productsCount: number
+  employeesCount: number
+}

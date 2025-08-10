@@ -9,7 +9,8 @@ import {
   IUpdateOrganization,
   IAddUserToOrganization,
   INotificationSettings,
-  Role
+  Role,
+  OrganizationStats
 } from '../model/organization.type'
 import { BaseResponse } from '@/shared/api'
 import { USER_KEYS } from '@/entitites/user/api/user.api'
@@ -20,7 +21,24 @@ export const ORGANIZATION_KEYS = {
   list: (filters: string) => [...ORGANIZATION_KEYS.lists(), { filters }] as const,
   details: () => [...ORGANIZATION_KEYS.all, 'detail'] as const,
   detail: (id: number) => [...ORGANIZATION_KEYS.details(), id] as const,
-  available: () => [...ORGANIZATION_KEYS.all, 'available'] as const
+  available: () => [...ORGANIZATION_KEYS.all, 'available'] as const,
+  stats: () => ['stats'] as const,
+  organization: (id: number) => ['organization', id] as const
+}
+
+export const useOrganizationById = (id: number) => {
+  return useQuery<IOrganization>({
+    queryKey: ORGANIZATION_KEYS.organization(id),
+    queryFn: async () => {
+      const res: AxiosResponse<BaseResponse<IOrganization>> = await $api.get(
+        `${apiDomain}/organizations/${id}`
+      )
+      return res.data.data
+    },
+    retry: 3,
+    retryDelay: 5000,
+    enabled: Boolean(id)
+  })
 }
 
 // Создать организацию
@@ -219,14 +237,67 @@ export const getOrganizationById = async ({ id }: { id: number }) => {
 export const useUpdateNotificationSettings = () => {
   const queryClient = useQueryClient()
 
-  return useMutation({
+  return useMutation<
+    any,
+    Error,
+    { id: number; data: INotificationSettings },
+    { previousOrganization?: IOrganization; previousOrganizations?: any }
+  >({
     mutationFn: async ({ id, data }: { id: number; data: INotificationSettings }) => {
       const res = await $api.post(`${apiDomain}/organizations/${id}/notification-settings`, data)
       return res.data.data
     },
-    onSuccess: (_, { id }) => {
-      queryClient.invalidateQueries({ queryKey: ORGANIZATION_KEYS.detail(id) })
-      queryClient.invalidateQueries({ queryKey: ORGANIZATION_KEYS.lists() })
+    onMutate: async ({ id, data }) => {
+      // Отменяем исходящие запросы, чтобы они не перезаписали наш оптимистичный update
+      await queryClient.cancelQueries({ queryKey: ORGANIZATION_KEYS.detail(id) })
+
+      // Сохраняем предыдущее значение для возможного отката
+      const previousOrganization = queryClient.getQueryData<IOrganization>(
+        ORGANIZATION_KEYS.detail(id)
+      )
+
+      // Оптимистично обновляем данные организации
+      if (previousOrganization) {
+        queryClient.setQueryData<IOrganization>(ORGANIZATION_KEYS.detail(id), {
+          ...previousOrganization,
+          settings: {
+            ...previousOrganization.settings,
+            notifications: data
+          }
+        })
+      }
+
+      // Возвращаем контекст с предыдущими значениями для возможного отката
+      return { previousOrganization }
+    },
+    onError: (err, variables, context) => {
+      // В случае ошибки откатываем изменения
+      if (context?.previousOrganization && variables) {
+        queryClient.setQueryData(
+          ORGANIZATION_KEYS.detail(variables.id),
+          context.previousOrganization
+        )
+      }
+    },
+    onSettled: (_, variables) => {
+      // В любом случае инвалидируем кэш для получения актуальных данных
+      if (variables && 'id' in variables) {
+        queryClient.invalidateQueries({
+          queryKey: ORGANIZATION_KEYS.detail(variables.id as number)
+        })
+      }
     }
+  })
+}
+
+export const useOrganizationStats = () => {
+  return useQuery<OrganizationStats[]>({
+    queryKey: ORGANIZATION_KEYS.stats(),
+    queryFn: async () => {
+      const res = await $api.get(`${apiDomain}/organizations/stats`)
+      return res.data.data
+    },
+    retry: 3,
+    retryDelay: 5000
   })
 }
