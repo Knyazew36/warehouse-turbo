@@ -8,6 +8,7 @@ import { OrganizationId } from '../organization/decorators/organization-id.decor
 import { RolesGuard } from 'src/auth/guards/roles.guard'
 import { Roles } from 'src/auth/decorators/roles.decorator'
 import { CronService } from './cron.service'
+import { Role } from '@prisma/client'
 
 @ApiTags('Продукты')
 @UseGuards(TelegramAuthGuard, RolesGuard)
@@ -19,17 +20,15 @@ export class ProductsController {
   ) {}
 
   // @Get('cron')
-  // @Roles('OWNER', 'ADMIN')
+  // @Roles(Role.IT, Role.OWNER, Role.ADMIN)
   // async cron() {
   //   return await this.cronService.checkLowStockAndNotify()
   // }
 
   @Post()
-  @Roles('OWNER', 'ADMIN')
-  //
+  @Roles(Role.IT, Role.OWNER, Role.ADMIN)
   @ApiOperation({ summary: 'Создать новый продукт' })
   @ApiBody({ type: CreateProductDto })
-  //
   async create(@Body() dto: CreateProductDto, @OrganizationId() organizationId?: number) {
     await this.productsService.create(dto, organizationId)
   }
@@ -50,7 +49,7 @@ export class ProductsController {
   }
 
   @Post('update/:id')
-  @Roles('OWNER', 'ADMIN')
+  @Roles(Role.IT, Role.OWNER, Role.ADMIN)
   @ApiOperation({ summary: 'Обновить продукт' })
   @ApiParam({ name: 'id', type: Number })
   @ApiBody({ type: UpdateProductDto })
@@ -59,7 +58,7 @@ export class ProductsController {
   }
 
   @Post('delete/:id')
-  @Roles('OWNER', 'ADMIN')
+  @Roles(Role.IT, Role.OWNER, Role.ADMIN)
   @ApiOperation({ summary: 'Удалить продукт' })
   @ApiParam({ name: 'id', type: Number })
   remove(@Param('id', ParseIntPipe) id: number) {

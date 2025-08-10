@@ -23,19 +23,19 @@ export class UserController {
   constructor(private readonly usersService: UserService) {}
 
   @Get()
-  @Roles('ADMIN', 'OWNER', 'IT')
+  @Roles(Role.IT, Role.OWNER, Role.ADMIN)
   findAll(@Query() query: GetUsersDto, @OrganizationId() organizationId?: number) {
     return this.usersService.findAll(query, organizationId)
   }
 
   @Get('employees')
-  @Roles('ADMIN', 'OWNER')
+  @Roles(Role.IT, Role.OWNER, Role.ADMIN)
   getEmployees(@OrganizationId() organizationId?: number) {
     return this.usersService.getEmployees(organizationId)
   }
 
   @Get('role/:role')
-  @Roles('ADMIN', 'OWNER', 'IT')
+  @Roles(Role.IT, Role.OWNER, Role.ADMIN)
   getUsersByRole(@Param('role') role: Role, @OrganizationId() organizationId?: number) {
     return this.usersService.getUsersByRole(role, organizationId)
   }
@@ -49,19 +49,19 @@ export class UserController {
   }
 
   @Get(':id')
-  @Roles('ADMIN', 'OWNER', 'IT')
+  @Roles(Role.IT, Role.OWNER, Role.ADMIN)
   findOne(@Param('id') id: string) {
     return this.usersService.findOne(+id)
   }
 
   @Post('/update/:id')
-  @Roles('ADMIN', 'OWNER', 'IT')
+  @Roles(Role.IT, Role.OWNER, Role.ADMIN)
   update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
     return this.usersService.update(+id, updateUserDto)
   }
 
   @Post('/remove/:id')
-  @Roles('ADMIN', 'OWNER', 'IT')
+  @Roles(Role.IT, Role.OWNER, Role.ADMIN)
   remove(@Param('id') id: string) {
     return this.usersService.remove(+id)
   }

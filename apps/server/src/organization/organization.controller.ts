@@ -47,7 +47,7 @@ export class OrganizationController {
   }
 
   @Get(':id')
-  @Roles(Role.ADMIN, Role.OWNER, Role.IT)
+  @Roles(Role.IT, Role.OWNER, Role.ADMIN)
   @ApiOperation({ summary: 'Получить организацию по ID' })
   @ApiParam({ name: 'id', type: Number })
   async findOne(@Param('id', ParseIntPipe) id: number) {
@@ -55,7 +55,7 @@ export class OrganizationController {
   }
 
   @Post(':id/update')
-  @Roles(Role.ADMIN, Role.OWNER, Role.IT)
+  @Roles(Role.IT, Role.OWNER, Role.ADMIN)
   @ApiOperation({ summary: 'Обновить организацию' })
   @ApiParam({ name: 'id', type: Number })
   @ApiBody({ type: UpdateOrganizationDto })
@@ -67,7 +67,7 @@ export class OrganizationController {
   }
 
   @Post('delete/:id')
-  @Roles(Role.ADMIN, Role.OWNER, Role.IT)
+  @Roles(Role.IT, Role.OWNER, Role.ADMIN)
   @ApiOperation({ summary: 'Удалить организацию' })
   @ApiParam({ name: 'id', type: Number })
   async remove(@Param('id', ParseIntPipe) id: number) {
@@ -75,7 +75,7 @@ export class OrganizationController {
   }
 
   @Post(':id/users')
-  @Roles(Role.ADMIN, Role.OWNER, Role.IT)
+  @Roles(Role.IT, Role.OWNER, Role.ADMIN)
   @ApiOperation({ summary: 'Добавить пользователя в организацию' })
   @ApiParam({ name: 'id', type: Number })
   @ApiBody({ type: AddUserToOrganizationDto })
@@ -87,7 +87,7 @@ export class OrganizationController {
   }
 
   @Post(':id/users/:userId/remove')
-  @Roles(Role.ADMIN, Role.OWNER, Role.IT)
+  @Roles(Role.IT, Role.OWNER, Role.ADMIN)
   @ApiOperation({ summary: 'Удалить пользователя из организации' })
   @ApiParam({ name: 'id', type: Number })
   @ApiParam({ name: 'userId', type: Number })
@@ -99,7 +99,7 @@ export class OrganizationController {
   }
 
   @Post(':id/users/:userId/role')
-  @Roles(Role.ADMIN, Role.OWNER, Role.IT)
+  @Roles(Role.IT, Role.OWNER, Role.ADMIN)
   @ApiOperation({ summary: 'Обновить роль пользователя' })
   @ApiParam({ name: 'id', type: Number })
   @ApiParam({ name: 'userId', type: Number })
@@ -124,7 +124,7 @@ export class OrganizationController {
   }
 
   @Post(':id/notification-settings')
-  @Roles(Role.ADMIN, Role.OWNER, Role.IT)
+  @Roles(Role.IT, Role.OWNER, Role.ADMIN)
   @ApiOperation({ summary: 'Обновить настройки уведомлений организации' })
   @ApiParam({ name: 'id', type: Number })
   @ApiBody({ type: UpdateNotificationSettingsDto })
