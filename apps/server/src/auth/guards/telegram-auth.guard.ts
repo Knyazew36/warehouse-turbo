@@ -8,10 +8,6 @@ import { RequestWithOrganization } from '../../organization/types/request.types'
 
 @Injectable()
 export class TelegramAuthGuard implements CanActivate {
-  private cachedBotToken: string | null = null
-  private cachedDevToken: string | null = null
-  private cachedProdToken: string | null = null
-
   constructor(
     private readonly config: ConfigService,
     private readonly prisma: PrismaService

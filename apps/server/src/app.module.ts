@@ -1,14 +1,14 @@
 import { MiddlewareConsumer, NestModule, Module } from '@nestjs/common'
 import { AppController } from './app.controller'
 import { AppService } from './app.service'
-import { ConfigModule, ConfigService } from '@nestjs/config'
+import { ConfigModule } from '@nestjs/config'
 import { BotModule } from './bot/bot.module'
 import { AuthModule } from './auth/auth.module'
 import { ProductsModule } from './products/products.module'
 import { PrismaModule, PrismaService } from 'nestjs-prisma'
 import { APP_INTERCEPTOR } from '@nestjs/core'
 
-import { ResponseInterceptor } from './auth/interceptors/response.interceptor'
+import { ResponseInterceptor } from './common/interseptors/response.interceptor'
 import { ShiftsModule } from './shifts/shifts.module'
 import { ReceiptsModule } from './receipts/receipts.module'
 import { ScheduleModule } from '@nestjs/schedule'
@@ -20,6 +20,7 @@ import * as winston from 'winston'
 import 'winston-daily-rotate-file'
 import { WinstonModule } from 'nest-winston'
 import { TelegrafModule, TelegrafModuleOptions } from 'nestjs-telegraf'
+import { AllowedPhoneModule } from './allowed-phone/allowed-phone.module'
 
 const dailyRotateFileTransport = new winston.transports.DailyRotateFile({
   filename: 'logs/application-%DATE%.log',
@@ -84,7 +85,8 @@ const dailyRotateFileTransport = new winston.transports.DailyRotateFile({
     ScheduleModule.forRoot(),
     TelegrafModule.forRoot({
       token: process.env.TG_BOT_TOKEN
-    })
+    }),
+    AllowedPhoneModule
     // TelegrafModule.forRootAsync({
     //   imports: [ConfigModule, PrismaModule],
     //   inject: [ConfigService, PrismaService],

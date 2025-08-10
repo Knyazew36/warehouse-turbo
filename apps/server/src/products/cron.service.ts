@@ -1,10 +1,10 @@
 import { Injectable, Logger } from '@nestjs/common'
 import { PrismaService } from 'nestjs-prisma'
-import { NotificationService } from '../bot/notification.service'
 import { UserService } from '../user/user.service'
 import { Organization, Role, User } from '@prisma/client'
-import { OrganizationSettings } from 'src/organization/types/organization-settings.type'
 import { Cron, CronExpression } from '@nestjs/schedule'
+import { BotService } from '../bot/bot.service'
+import { OrganizationSettings } from 'src/organization/types/organization-settings.type'
 
 @Injectable()
 export class CronService {
@@ -12,7 +12,7 @@ export class CronService {
 
   constructor(
     private readonly prisma: PrismaService,
-    private readonly notificationService: NotificationService,
+    private readonly botService: BotService,
     private readonly userService: UserService
   ) {}
 
@@ -23,7 +23,6 @@ export class CronService {
   @Cron(CronExpression.EVERY_MINUTE)
   async checkLowStockAndNotify() {
     const startTime = Date.now()
-    this.logger.log('🔍 Запуск проверки остатков на складе')
 
     try {
       // Получаем все активные организации
@@ -35,7 +34,6 @@ export class CronService {
       let totalNotificationsSent = 0
 
       for (const organization of organizations) {
-        this.logger.log(`🏢 Обработка организации: ${organization.name} (ID: ${organization.id})`)
         const result = await this.processOrganizationNotifications(organization)
         if (result) {
           processedOrganizations++
@@ -44,9 +42,6 @@ export class CronService {
       }
 
       const executionTime = Date.now() - startTime
-      this.logger.log(
-        `✅ Проверка завершена за ${executionTime}ms. Обработано организаций: ${processedOrganizations}, отправлено уведомлений: ${totalNotificationsSent}`
-      )
     } catch (error) {
       this.logger.error('❌ Ошибка при проверке остатков на складе:', error)
     }
@@ -59,7 +54,6 @@ export class CronService {
     organization: Organization
   ): Promise<{ notificationsSent: number } | null> {
     const startTime = Date.now()
-    this.logger.log(`🏢 Начало обработки организации ${organization.name} (ID: ${organization.id})`)
 
     try {
       // Получаем настройки уведомлений из организации
@@ -68,13 +62,11 @@ export class CronService {
         organization.settings as unknown as OrganizationSettings
       )
       this.logger.log(
-        `📅 Настройки уведомлений: время ${notificationSettings.notificationTime}, роли ${notificationSettings.notificationRoles.join(', ')}`
+        `📅 Настройки уведомлений: время ${notificationSettings.notificationTime}, роли ${notificationSettings.notificationRoles.join(', ')}, включено: ${notificationSettings.enabled}, дни недели: ${notificationSettings.daysOfWeek.join(', ')}`
       )
 
       // Проверяем, нужно ли отправлять уведомление сейчас
-      const shouldSend = this.shouldSendNotificationNow(
-        notificationSettings?.notificationTime || '09:00'
-      )
+      const shouldSend = this.shouldSendNotificationNow(notificationSettings)
       this.logger.log(
         `⏰ Проверка времени отправки: ${shouldSend ? 'отправляем' : 'не отправляем'}`
       )
@@ -86,15 +78,12 @@ export class CronService {
         return null
       }
 
-      // Получаем товары с низким остатком для организации
+      let notificationsSent = 0
+
+      // Проверяем товары с низким остатком
       this.logger.log(`📦 Поиск товаров с низким остатком для организации ${organization.name}`)
       const lowStockProducts = await this.getLowStockProducts(organization.id)
       this.logger.log(`📦 Найдено ${lowStockProducts.length} товаров с низким остатком`)
-
-      if (lowStockProducts.length === 0) {
-        this.logger.log(`✅ Организация ${organization.name}: нет товаров с низким остатком`)
-        return null
-      }
 
       // Логируем детали товаров с низким остатком
       lowStockProducts.forEach(product => {
@@ -124,7 +113,7 @@ export class CronService {
 
       // Формируем и отправляем уведомления
       this.logger.log(`📤 Отправка уведомлений для организации ${organization.name}`)
-      const notificationsSent = await this.sendNotifications(
+      notificationsSent = await this.sendNotifications(
         organization,
         lowStockProducts,
         usersToNotify
@@ -153,7 +142,9 @@ export class CronService {
   ): OrganizationSettings['notifications'] {
     const defaultSettings: OrganizationSettings['notifications'] = {
       notificationTime: '09:00',
-      notificationRoles: [Role.OWNER, Role.ADMIN]
+      notificationRoles: [Role.OWNER, Role.ADMIN],
+      enabled: true,
+      daysOfWeek: [1, 2, 3, 4, 5] // понедельник - пятница
     }
 
     if (!settings || !settings.notifications) {
@@ -165,16 +156,39 @@ export class CronService {
     return {
       notificationTime: settings.notifications.notificationTime || defaultSettings.notificationTime,
       notificationRoles:
-        settings.notifications.notificationRoles || defaultSettings.notificationRoles
+        settings.notifications.notificationRoles || defaultSettings.notificationRoles,
+      enabled:
+        settings.notifications.enabled !== undefined
+          ? settings.notifications.enabled
+          : defaultSettings.enabled,
+      daysOfWeek: settings.notifications.daysOfWeek || defaultSettings.daysOfWeek
     }
   }
 
   /**
    * Проверяет, нужно ли отправлять уведомление сейчас
    */
-  private shouldSendNotificationNow(notificationTime: string): boolean {
+  private shouldSendNotificationNow(
+    notificationSettings: OrganizationSettings['notifications']
+  ): boolean {
+    // Проверяем, включены ли уведомления
+    if (!notificationSettings.enabled) {
+      this.logger.log('🔕 Уведомления отключены для организации')
+      return false
+    }
+
     const now = new Date()
-    const [hoursStr, minutesStr] = String(notificationTime || '').split(':')
+    const currentDayOfWeek = now.getDay() // 0 - воскресенье, 1 - понедельник, и т.д.
+
+    // Проверяем, является ли текущий день разрешенным
+    if (!notificationSettings.daysOfWeek.includes(currentDayOfWeek)) {
+      this.logger.log(
+        `📅 Пропуск отправки - текущий день недели (${currentDayOfWeek}) не входит в разрешенные дни: ${notificationSettings.daysOfWeek.join(', ')}`
+      )
+      return false
+    }
+
+    const [hoursStr, minutesStr] = String(notificationSettings.notificationTime || '').split(':')
     const targetHours = Number(hoursStr)
     const targetMinutes = Number(minutesStr ?? '0')
 
@@ -183,12 +197,13 @@ export class CronService {
     )
 
     if (Number.isNaN(targetHours) || Number.isNaN(targetMinutes)) {
-      this.logger.warn(`⚠️ Некорректный формат времени уведомлений: ${notificationTime}`)
+      this.logger.warn(
+        `⚠️ Некорректный формат времени уведомлений: ${notificationSettings.notificationTime}`
+      )
       return false
     }
 
     const shouldSend = now.getHours() === targetHours && now.getMinutes() === targetMinutes
-    // const shouldSend = true
     this.logger.log(`⏰ Результат проверки времени: ${shouldSend ? 'отправляем' : 'не отправляем'}`)
     return shouldSend
   }
@@ -269,26 +284,31 @@ export class CronService {
     this.logger.log(`📤 Начало отправки уведомлений для организации ${organization.name}`)
 
     // Формируем текст уведомления
-    const productList = lowStockProducts
-      .map(product => {
-        const toPlainNumberString = (raw: any) => {
-          const n = Number(raw)
-          if (Number.isNaN(n)) {
-            return String(raw)
-          }
-          return Number.isInteger(n) ? String(n) : n.toFixed(2)
-        }
-        return `• ${product.name}: ${toPlainNumberString(product.quantity)} ${product.unit || 'ед'} (минимум: ${toPlainNumberString(product.minThreshold)} ${product.unit || 'ед'})`
-      })
-      .join('\n')
+    let message = `⚠️ <b>${organization.name}</b>\n\n`
 
-    const message = `⚠️ <b>${organization.name}</b>\n\nНа складе заканчиваются следующие товары:\n\n${productList}`
+    // Добавляем информацию о товарах с низким остатком
+    if (lowStockProducts.length > 0) {
+      const productList = lowStockProducts
+        .map(product => {
+          const toPlainNumberString = (raw: any) => {
+            const n = Number(raw)
+            if (Number.isNaN(n)) {
+              return String(raw)
+            }
+            return Number.isInteger(n) ? String(n) : n.toFixed(2)
+          }
+          return `• ${product.name}: ${toPlainNumberString(product.quantity)} ${product.unit || 'ед'} (минимум: ${toPlainNumberString(product.minThreshold)} ${product.unit || 'ед'})`
+        })
+        .join('\n')
+
+      message += `На складе заканчиваются следующие товары:\n\n${productList}\n\n`
+    }
+
     this.logger.log(`📝 Сформирован текст уведомления длиной ${message.length} символов`)
 
     // Получаем URL веб-приложения
     const webappUrl =
-      this.notificationService.config.get<string>('WEBAPP_URL') ||
-      'https://5278831-ad07030.twc1.net'
+      this.botService.config.get<string>('WEBAPP_URL') || 'https://5278831-ad07030.twc1.net'
 
     this.logger.log(`🌐 URL веб-приложения: ${webappUrl}`)
 
@@ -300,7 +320,7 @@ export class CronService {
       try {
         this.logger.log(`📤 Отправка уведомления пользователю ${user.telegramId}`)
 
-        await this.notificationService.sendMessage(user.telegramId, message, {
+        await this.botService.sendMessage(user.telegramId, message, {
           parse_mode: 'HTML',
           reply_markup: {
             inline_keyboard: [[{ text: '🚀 Открыть приложение', web_app: { url: webappUrl } }]]

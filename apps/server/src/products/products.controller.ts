@@ -18,11 +18,11 @@ export class ProductsController {
     private readonly cronService: CronService
   ) {}
 
-  @Get('cron')
-  @Roles('OWNER', 'ADMIN')
-  async cron() {
-    return await this.cronService.checkLowStockAndNotify()
-  }
+  // @Get('cron')
+  // @Roles('OWNER', 'ADMIN')
+  // async cron() {
+  //   return await this.cronService.checkLowStockAndNotify()
+  // }
 
   @Post()
   @Roles('OWNER', 'ADMIN')

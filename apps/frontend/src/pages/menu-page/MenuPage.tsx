@@ -6,10 +6,8 @@ import { hapticFeedback, initDataUser, openTelegramLink } from '@telegram-apps/s
 import AlertProductLowStock from '@/widgets/alert-product-low-stock/AlertProductLowStock'
 
 import { useAuthStore } from '@/entitites/auth/model/auth.store'
-import { Role } from '@/entitites/user/model/user.type'
 
 import MenuButton, { IMenuButton } from './menu-button/MenuButton'
-import { useNavigate } from 'react-router-dom'
 import { Info, MessageCircle, Package, Settings, UserPlus, WarehouseIcon } from 'lucide-react'
 import { useUserRole } from '@/entitites/user/api/user.api'
 
@@ -265,79 +263,9 @@ const MenuPage: FC = () => {
           />
         ))}
 
-        {isIT && (
-          <Link
-            to={'/'}
-            className='group flex flex-col rounded-xl border border-gray-200 bg-white p-4 focus:outline-hidden dark:border-neutral-700 dark:bg-neutral-900'
-            onClick={() => hapticFeedback.impactOccurred('rigid')}
-          >
-            <div className='mb-4 flex h-full flex-col items-center justify-center'>
-              <span className='mx-auto flex size-12 items-center justify-center rounded-2xl bg-yellow-50 text-white xl:size-16 dark:bg-yellow-800/30'>
-                <svg
-                  className='size-5 shrink-0 text-yellow-600 xl:h-6 xl:w-6 dark:text-yellow-500'
-                  xmlns='http://www.w3.org/2000/svg'
-                  width='24'
-                  height='24'
-                  viewBox='0 0 24 24'
-                  fill='none'
-                  stroke='currentColor'
-                  strokeWidth='2'
-                  strokeLinecap='round'
-                  strokeLinejoin='round'
-                >
-                  <path d='M16 3h5v5' />
-                  <path d='M8 3H3v5' />
-                  <path d='M12 22v-8.3a4 4 0 0 0-1.172-2.872L3 3' />
-                  <path d='m15 9 6-6' />
-                </svg>
-              </span>
-            </div>
-            <div className='mt-auto text-center'>
-              <p className='truncate text-xs font-medium text-gray-800 group-hover:text-pink-600 group-focus:text-pink-600 xl:text-sm dark:text-neutral-200 dark:group-hover:text-neutral-400 dark:group-focus:text-neutral-400'>
-                /auth
-              </p>
-            </div>
-          </Link>
-        )}
-
-        {isIT ||
-          (import.meta.env.DEV && (
-            <Link
-              to={'/test'}
-              className='group flex flex-col rounded-xl border border-gray-200 bg-white p-4 focus:outline-hidden dark:border-neutral-700 dark:bg-neutral-900'
-              onClick={() => hapticFeedback.impactOccurred('rigid')}
-            >
-              <div className='mb-4 flex h-full flex-col items-center justify-center'>
-                <span className='mx-auto flex size-12 items-center justify-center rounded-2xl bg-yellow-50 text-white xl:size-16 dark:bg-yellow-800/30'>
-                  <svg
-                    className='size-5 shrink-0 text-yellow-600 xl:h-6 xl:w-6 dark:text-yellow-500'
-                    xmlns='http://www.w3.org/2000/svg'
-                    width='24'
-                    height='24'
-                    viewBox='0 0 24 24'
-                    fill='none'
-                    stroke='currentColor'
-                    strokeWidth='2'
-                    strokeLinecap='round'
-                    strokeLinejoin='round'
-                  >
-                    <path d='M16 3h5v5' />
-                    <path d='M8 3H3v5' />
-                    <path d='M12 22v-8.3a4 4 0 0 0-1.172-2.872L3 3' />
-                    <path d='m15 9 6-6' />
-                  </svg>
-                </span>
-              </div>
-              <div className='mt-auto text-center'>
-                <p className='truncate text-xs font-medium text-gray-800 group-hover:text-pink-600 group-focus:text-pink-600 xl:text-sm dark:text-neutral-200 dark:group-hover:text-neutral-400 dark:group-focus:text-neutral-400'>
-                  test
-                </p>
-              </div>
-            </Link>
-          ))}
-
         {/* End Card */}
       </div>
+
       <Divide />
 
       <div className='mt-8 grid grid-cols-3 gap-2 sm:grid-cols-4 md:grid-cols-5 lg:gap-4 xl:grid-cols-6'>
@@ -401,6 +329,111 @@ const MenuPage: FC = () => {
           }
         />
       </div>
+
+      {(isIT || import.meta.env.DEV) && (
+        <>
+          <Divide />
+          <div className='mt-8 grid grid-cols-3 gap-2 sm:grid-cols-4 md:grid-cols-5 lg:gap-4 xl:grid-cols-6'>
+            <Link
+              to={'/'}
+              className='group flex flex-col rounded-xl border border-gray-200 bg-white p-4 focus:outline-hidden dark:border-neutral-700 dark:bg-neutral-900'
+              onClick={() => hapticFeedback.impactOccurred('rigid')}
+            >
+              <div className='mb-4 flex h-full flex-col items-center justify-center'>
+                <span className='mx-auto flex size-12 items-center justify-center rounded-2xl bg-yellow-50 text-white xl:size-16 dark:bg-yellow-800/30'>
+                  <svg
+                    className='size-5 shrink-0 text-yellow-600 xl:h-6 xl:w-6 dark:text-yellow-500'
+                    xmlns='http://www.w3.org/2000/svg'
+                    width='24'
+                    height='24'
+                    viewBox='0 0 24 24'
+                    fill='none'
+                    stroke='currentColor'
+                    strokeWidth='2'
+                    strokeLinecap='round'
+                    strokeLinejoin='round'
+                  >
+                    <path d='M16 3h5v5' />
+                    <path d='M8 3H3v5' />
+                    <path d='M12 22v-8.3a4 4 0 0 0-1.172-2.872L3 3' />
+                    <path d='m15 9 6-6' />
+                  </svg>
+                </span>
+              </div>
+              <div className='mt-auto text-center'>
+                <p className='truncate text-xs font-medium text-gray-800 group-hover:text-pink-600 group-focus:text-pink-600 xl:text-sm dark:text-neutral-200 dark:group-hover:text-neutral-400 dark:group-focus:text-neutral-400'>
+                  /auth
+                </p>
+              </div>
+            </Link>
+
+            <Link
+              to={'/test'}
+              className='group flex flex-col rounded-xl border border-gray-200 bg-white p-4 focus:outline-hidden dark:border-neutral-700 dark:bg-neutral-900'
+              onClick={() => hapticFeedback.impactOccurred('rigid')}
+            >
+              <div className='mb-4 flex h-full flex-col items-center justify-center'>
+                <span className='mx-auto flex size-12 items-center justify-center rounded-2xl bg-yellow-50 text-white xl:size-16 dark:bg-yellow-800/30'>
+                  <svg
+                    className='size-5 shrink-0 text-yellow-600 xl:h-6 xl:w-6 dark:text-yellow-500'
+                    xmlns='http://www.w3.org/2000/svg'
+                    width='24'
+                    height='24'
+                    viewBox='0 0 24 24'
+                    fill='none'
+                    stroke='currentColor'
+                    strokeWidth='2'
+                    strokeLinecap='round'
+                    strokeLinejoin='round'
+                  >
+                    <path d='M16 3h5v5' />
+                    <path d='M8 3H3v5' />
+                    <path d='M12 22v-8.3a4 4 0 0 0-1.172-2.872L3 3' />
+                    <path d='m15 9 6-6' />
+                  </svg>
+                </span>
+              </div>
+              <div className='mt-auto text-center'>
+                <p className='truncate text-xs font-medium text-gray-800 group-hover:text-pink-600 group-focus:text-pink-600 xl:text-sm dark:text-neutral-200 dark:group-hover:text-neutral-400 dark:group-focus:text-neutral-400'>
+                  test
+                </p>
+              </div>
+            </Link>
+            <Link
+              to={'/admin'}
+              className='group flex flex-col rounded-xl border border-gray-200 bg-white p-4 focus:outline-hidden dark:border-neutral-700 dark:bg-neutral-900'
+              onClick={() => hapticFeedback.impactOccurred('rigid')}
+            >
+              <div className='mb-4 flex h-full flex-col items-center justify-center'>
+                <span className='mx-auto flex size-12 items-center justify-center rounded-2xl bg-yellow-50 text-white xl:size-16 dark:bg-yellow-800/30'>
+                  <svg
+                    className='size-5 shrink-0 text-yellow-600 xl:h-6 xl:w-6 dark:text-yellow-500'
+                    xmlns='http://www.w3.org/2000/svg'
+                    width='24'
+                    height='24'
+                    viewBox='0 0 24 24'
+                    fill='none'
+                    stroke='currentColor'
+                    strokeWidth='2'
+                    strokeLinecap='round'
+                    strokeLinejoin='round'
+                  >
+                    <path d='M16 3h5v5' />
+                    <path d='M8 3H3v5' />
+                    <path d='M12 22v-8.3a4 4 0 0 0-1.172-2.872L3 3' />
+                    <path d='m15 9 6-6' />
+                  </svg>
+                </span>
+              </div>
+              <div className='mt-auto text-center'>
+                <p className='truncate text-xs font-medium text-gray-800 group-hover:text-pink-600 group-focus:text-pink-600 xl:text-sm dark:text-neutral-200 dark:group-hover:text-neutral-400 dark:group-focus:text-neutral-400'>
+                  Admin
+                </p>
+              </div>
+            </Link>
+          </div>
+        </>
+      )}
       {/* End Grid */}
     </Page>
   )

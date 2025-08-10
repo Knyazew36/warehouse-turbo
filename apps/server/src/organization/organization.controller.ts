@@ -1,26 +1,16 @@
-import {
-  Controller,
-  Get,
-  Post,
-  Body,
-  Patch,
-  Param,
-  Delete,
-  ParseIntPipe,
-  UseGuards
-} from '@nestjs/common'
+import { Controller, Get, Post, Body, Param, ParseIntPipe, UseGuards } from '@nestjs/common'
 import { ApiTags, ApiOperation, ApiBody, ApiParam } from '@nestjs/swagger'
 import { OrganizationService } from './organization.service'
 import { CreateOrganizationDto } from './dto/create-organization.dto'
 import { UpdateOrganizationDto } from './dto/update-organization.dto'
 import { AddUserToOrganizationDto } from './dto/add-user-to-organization.dto'
-import { AddAllowedPhoneDto } from './dto/add-allowed-phone.dto'
 import { TelegramAuthGuard } from 'src/auth/guards/telegram-auth.guard'
 import { Roles } from 'src/auth/decorators/roles.decorator'
 import { Role } from '@prisma/client'
 import { User } from 'src/auth/decorators/get-user.decorator'
 import { User as UserType } from '@prisma/client'
 import { RolesGuard } from 'src/auth/guards/roles.guard'
+import { UpdateNotificationSettingsDto } from '../products/dto/update-notification-settings.dto'
 
 @ApiTags('Организации')
 @UseGuards(TelegramAuthGuard, RolesGuard)
@@ -28,19 +18,17 @@ import { RolesGuard } from 'src/auth/guards/roles.guard'
 export class OrganizationController {
   constructor(private readonly organizationService: OrganizationService) {}
 
+  @Get('stats')
+  @Roles(Role.IT)
+  async getStats() {
+    return await this.organizationService.getStats()
+  }
+
   @Post()
   @ApiOperation({ summary: 'Создать организацию' })
   @ApiBody({ type: CreateOrganizationDto })
   async create(@Body() createOrganizationDto: CreateOrganizationDto, @User() user: UserType) {
-    const organization = await this.organizationService.create(createOrganizationDto, user.id)
-    return { data: organization }
-  }
-
-  @Get('my')
-  @ApiOperation({ summary: 'Получить мои организации' })
-  async getMyOrganizations(@User() user: UserType) {
-    const organizations = await this.organizationService.getUserOrganizations(user.id)
-    return { data: organizations }
+    return await this.organizationService.create(createOrganizationDto, user.id)
   }
 
   @Get('available')
@@ -55,11 +43,11 @@ export class OrganizationController {
   })
   @ApiParam({ name: 'id', type: Number })
   async joinOrganization(@Param('id', ParseIntPipe) id: number, @User() user: UserType) {
-    const userOrg = await this.organizationService.joinOrganization(id, user.id)
-    return { data: userOrg }
+    return await this.organizationService.joinOrganization(id, user.id)
   }
 
   @Get(':id')
+  @Roles(Role.ADMIN, Role.OWNER, Role.IT)
   @ApiOperation({ summary: 'Получить организацию по ID' })
   @ApiParam({ name: 'id', type: Number })
   async findOne(@Param('id', ParseIntPipe) id: number) {
@@ -75,8 +63,7 @@ export class OrganizationController {
     @Param('id', ParseIntPipe) id: number,
     @Body() updateOrganizationDto: UpdateOrganizationDto
   ) {
-    const organization = await this.organizationService.update(id, updateOrganizationDto)
-    return { data: organization }
+    return await this.organizationService.update(id, updateOrganizationDto)
   }
 
   @Post('delete/:id')
@@ -84,8 +71,7 @@ export class OrganizationController {
   @ApiOperation({ summary: 'Удалить организацию' })
   @ApiParam({ name: 'id', type: Number })
   async remove(@Param('id', ParseIntPipe) id: number) {
-    const organization = await this.organizationService.remove(id)
-    return { data: organization }
+    return await this.organizationService.remove(id)
   }
 
   @Post(':id/users')
@@ -97,8 +83,7 @@ export class OrganizationController {
     @Param('id', ParseIntPipe) id: number,
     @Body() addUserDto: AddUserToOrganizationDto
   ) {
-    const userOrg = await this.organizationService.addUserToOrganization(id, addUserDto)
-    return { data: userOrg }
+    return await this.organizationService.addUserToOrganization(id, addUserDto)
   }
 
   @Post(':id/users/:userId/remove')
@@ -110,17 +95,7 @@ export class OrganizationController {
     @Param('id', ParseIntPipe) id: number,
     @Param('userId', ParseIntPipe) userId: number
   ) {
-    await this.organizationService.removeUserFromOrganization(id, userId)
-    return { success: true }
-  }
-
-  @Get(':id/users')
-  @Roles(Role.ADMIN, Role.OWNER, Role.IT)
-  @ApiOperation({ summary: 'Получить пользователей организации' })
-  @ApiParam({ name: 'id', type: Number })
-  async getOrganizationUsers(@Param('id', ParseIntPipe) id: number) {
-    const users = await this.organizationService.getOrganizationUsers(id)
-    return { data: users }
+    return await this.organizationService.removeUserFromOrganization(id, userId)
   }
 
   @Post(':id/users/:userId/role')
@@ -148,59 +123,18 @@ export class OrganizationController {
     return { data: userOrg }
   }
 
-  // Новые эндпоинты для работы с разрешенными телефонами
-
-  @Get(':id/allowed-phones')
+  @Post(':id/notification-settings')
   @Roles(Role.ADMIN, Role.OWNER, Role.IT)
-  @ApiOperation({ summary: 'Получить разрешенные телефоны' })
+  @ApiOperation({ summary: 'Обновить настройки уведомлений организации' })
   @ApiParam({ name: 'id', type: Number })
-  async getAllowedPhones(@Param('id', ParseIntPipe) id: number) {
-    const phones = await this.organizationService.getAllowedPhones(id)
-    return { data: phones }
-  }
-
-  @Post(':id/allowed-phones')
-  @Roles(Role.ADMIN, Role.OWNER, Role.IT)
-  @ApiOperation({ summary: 'Добавить разрешенный телефон' })
-  @ApiParam({ name: 'id', type: Number })
-  @ApiBody({ type: AddAllowedPhoneDto })
-  async addAllowedPhone(
+  @ApiBody({ type: UpdateNotificationSettingsDto })
+  async updateNotificationSettings(
     @Param('id', ParseIntPipe) id: number,
-    @Body() addAllowedPhoneDto: AddAllowedPhoneDto
+    @Body() updateNotificationSettingsDto: UpdateNotificationSettingsDto
   ) {
-    const organization = await this.organizationService.addAllowedPhone(
+    return await this.organizationService.updateNotificationSettings(
       id,
-      addAllowedPhoneDto.phone
+      updateNotificationSettingsDto
     )
-    return { data: organization }
-  }
-
-  @Delete(':id/allowed-phones')
-  @Roles(Role.ADMIN, Role.OWNER, Role.IT)
-  @ApiOperation({ summary: 'Удалить разрешенный телефон' })
-  @ApiParam({ name: 'id', type: Number })
-  @ApiBody({ type: AddAllowedPhoneDto })
-  async removeAllowedPhone(
-    @Param('id', ParseIntPipe) id: number,
-    @Body() addAllowedPhoneDto: AddAllowedPhoneDto
-  ) {
-    const organization = await this.organizationService.removeAllowedPhone(
-      id,
-      addAllowedPhoneDto.phone
-    )
-    return { data: organization }
-  }
-
-  @Get(':id/can-join/:userId')
-  @Roles(Role.ADMIN, Role.OWNER, Role.IT)
-  @ApiOperation({ summary: 'Проверить может ли пользователь присоединиться' })
-  @ApiParam({ name: 'id', type: Number })
-  @ApiParam({ name: 'userId', type: Number })
-  async canUserJoinOrganization(
-    @Param('id', ParseIntPipe) id: number,
-    @Param('userId', ParseIntPipe) userId: number
-  ) {
-    const canJoin = await this.organizationService.canUserJoinOrganization(id, userId)
-    return { data: { canJoin } }
   }
 }

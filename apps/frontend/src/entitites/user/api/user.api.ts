@@ -12,9 +12,15 @@ interface GetUserDto {
   onlyEmployees?: boolean
 }
 
+export const USER_KEYS = {
+  user: (dto: GetUserDto) => ['user', { dto }] as const,
+  employees: () => ['employees'] as const,
+  userRole: (id: string) => ['user-role', id] as const
+}
+
 export const useUsers = (dto: GetUserDto) => {
   return useQuery<IUser[]>({
-    queryKey: ['user', dto],
+    queryKey: USER_KEYS.user(dto),
     queryFn: async () => {
       const params = dto ? { ...dto } : undefined
       const res = await $api.get(`${apiDomain}/user`, { params })
@@ -33,7 +39,8 @@ export const useUpdateUser = () => {
       return res.data.data as IUser
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['user', 'employees'] })
+      queryClient.invalidateQueries({ queryKey: USER_KEYS.user({}) })
+      queryClient.invalidateQueries({ queryKey: USER_KEYS.employees() })
       hapticFeedback.notificationOccurred('success')
     },
     onError: () => {
@@ -45,13 +52,24 @@ export const useUpdateUser = () => {
 export const useUpdateUserRole = () => {
   const queryClient = useQueryClient()
   return useMutation({
-    mutationFn: async ({ organizationId, userId, role }: { organizationId: number; userId: number; role: Role }) => {
-      const res = await $api.post(`${apiDomain}/organizations/${organizationId}/users/${userId}/role`, { role })
+    mutationFn: async ({
+      organizationId,
+      userId,
+      role
+    }: {
+      organizationId: number
+      userId: number
+      role: Role
+    }) => {
+      const res = await $api.post(
+        `${apiDomain}/organizations/${organizationId}/users/${userId}/role`,
+        { role }
+      )
       return res.data.data
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['employees'] })
-      queryClient.invalidateQueries({ queryKey: ['user'] })
+      queryClient.invalidateQueries({ queryKey: USER_KEYS.employees() })
+      queryClient.invalidateQueries({ queryKey: USER_KEYS.user({}) })
       hapticFeedback.notificationOccurred('success')
     },
     onError: () => {
@@ -67,8 +85,8 @@ export const useUserDelete = () => {
       await $api.post(`${apiDomain}/user/remove/${id}`)
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['employees'] })
-      queryClient.invalidateQueries({ queryKey: ['user'] })
+      queryClient.invalidateQueries({ queryKey: USER_KEYS.employees() })
+      queryClient.invalidateQueries({ queryKey: USER_KEYS.user({}) })
       hapticFeedback.notificationOccurred('success')
     },
     onError: () => {
@@ -79,7 +97,7 @@ export const useUserDelete = () => {
 
 export const useUsersEmployees = () => {
   return useQuery<{ data: IUser[]; user: BaseResponse<IUser>['user'] }>({
-    queryKey: ['employees'],
+    queryKey: USER_KEYS.employees(),
     queryFn: async () => {
       const res = await $api.get(`${apiDomain}/user/employees`)
       return {
@@ -95,7 +113,7 @@ export const useUserRole = ({ id }: { id: string }) => {
   const { setRole } = useAuthStore()
 
   return useQuery<Role>({
-    queryKey: ['user-role', id],
+    queryKey: USER_KEYS.userRole(id),
     queryFn: async () => {
       try {
         const res = await $api.get(`${apiDomain}/user/${id}/role`)

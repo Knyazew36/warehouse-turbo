@@ -27,6 +27,7 @@ import CreateCategoryPage from '@/pages/category/create/ui/CreateCategory.page'
 import ListCategoryPage from '@/pages/category/list/ui/ListCategoryPage'
 import CategoryChangePage from '@/pages/category/change/ui/CategoryChangePage'
 import TestPage from '@/pages/test/ui/TestPage'
+import AdminPage from '@/pages/admin/ui/AdminPage'
 
 interface Route {
   path: string
@@ -105,5 +106,10 @@ export const routes: Route[] = [
         />
       </svg>
     )
+  },
+  {
+    path: '/admin',
+    Component: AdminPage,
+    title: 'Admin'
   }
 ]
