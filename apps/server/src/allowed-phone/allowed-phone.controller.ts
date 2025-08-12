@@ -6,6 +6,7 @@ import { TelegramAuthGuard } from 'src/auth/guards/telegram-auth.guard'
 import { RolesGuard } from 'src/auth/guards/roles.guard'
 import { Roles } from 'src/auth/decorators/roles.decorator'
 import { AddPhoneDto } from './dto/add-phone.dto'
+import { Role } from '@prisma/client'
 
 @Controller('allowed-phones')
 export class AllowedPhoneController {
@@ -15,7 +16,7 @@ export class AllowedPhoneController {
    */
   @Post('add')
   @UseGuards(TelegramAuthGuard, RolesGuard)
-  @Roles('ADMIN', 'OWNER', 'IT')
+  @Roles(Role.IT, Role.OWNER, Role.ADMIN)
   async addPhoneToOrganization(
     @Body() dto: AddPhoneDto,
     @OrganizationId() organizationId?: number
@@ -41,7 +42,7 @@ export class AllowedPhoneController {
    */
   @Post('list')
   @UseGuards(TelegramAuthGuard)
-  @Roles('ADMIN', 'OWNER', 'IT')
+  @Roles(Role.IT, Role.OWNER, Role.ADMIN)
   async getAllPhonesForOrganization(@OrganizationId() organizationId?: number) {
     if (!organizationId) {
       throw new Error('Organization ID is required')
@@ -54,7 +55,7 @@ export class AllowedPhoneController {
    */
   @Post('delete/:id')
   @UseGuards(TelegramAuthGuard, RolesGuard)
-  @Roles('ADMIN', 'OWNER', 'IT')
+  @Roles(Role.IT, Role.OWNER, Role.ADMIN)
   async removePhoneFromOrganization(
     @Param('id') id: number,
     @OrganizationId() organizationId?: number

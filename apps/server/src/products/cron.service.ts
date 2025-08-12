@@ -83,6 +83,10 @@ export class CronService {
       // Проверяем товары с низким остатком
       this.logger.log(`📦 Поиск товаров с низким остатком для организации ${organization.name}`)
       const lowStockProducts = await this.getLowStockProducts(organization.id)
+      if (lowStockProducts.length === 0) {
+        this.logger.log(`📦 Нет товаров с низким остатком для организации ${organization.name}`)
+        return null
+      }
       this.logger.log(`📦 Найдено ${lowStockProducts.length} товаров с низким остатком`)
 
       // Логируем детали товаров с низким остатком

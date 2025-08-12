@@ -15,7 +15,7 @@ import { ScheduleModule } from '@nestjs/schedule'
 import { LoggerMiddleware } from './common/middlewares/logger.middleware'
 import { UserModule } from './user/user.module'
 import { OrganizationModule } from './organization/organization.module'
-import { OrganizationContextMiddleware } from './organization/middleware/organization-context.middleware'
+// import { OrganizationContextMiddleware } from './organization/middleware/organization-context.middleware'
 import * as winston from 'winston'
 import 'winston-daily-rotate-file'
 import { WinstonModule } from 'nest-winston'
@@ -87,36 +87,6 @@ const dailyRotateFileTransport = new winston.transports.DailyRotateFile({
       token: process.env.TG_BOT_TOKEN
     }),
     AllowedPhoneModule
-    // TelegrafModule.forRootAsync({
-    //   imports: [ConfigModule, PrismaModule],
-    //   inject: [ConfigService, PrismaService],
-    //   useFactory: (cfg: ConfigService): TelegrafModuleOptions => {
-    //     // Определяем токен в зависимости от окружения
-    //     const nodeEnv = cfg.get<string>('NODE_ENV') || 'development';
-    //     const isDev = nodeEnv === 'development';
-
-    //     console.log('🐝 [BotModule] nodeEnv=', nodeEnv);
-
-    //     const devToken = cfg.get<string>('TG_BOT_TOKEN_DEV');
-    //     const prodToken = cfg.get<string>('TG_BOT_TOKEN');
-
-    //     const token = isDev ? devToken : prodToken;
-    //     console.log('🐝 [BotModule] token=', isDev);
-    //     if (!token) {
-    //       throw new Error(
-    //         `Bot token not found for ${isDev ? 'development' : 'production'} environment`,
-    //       );
-    //     }
-
-    //     console.log(
-    //       `🐝 [BotModule] Environment: ${nodeEnv}, Using ${isDev ? 'DEV' : 'PROD'} bot token`,
-    //     );
-
-    //     return {
-    //       token,
-    //     };
-    //   },
-    // }),
   ],
   controllers: [AppController],
   providers: [
@@ -126,17 +96,12 @@ const dailyRotateFileTransport = new winston.transports.DailyRotateFile({
       provide: APP_INTERCEPTOR,
       useClass: ResponseInterceptor
     }
-
-    // { provide: APP_GUARD, useClass: TelegramAuthGuard },
-    // { provide: APP_GUARD, useClass: RolesGuard },
   ]
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
-    consumer
-      .apply(LoggerMiddleware)
-      .forRoutes('*')
-      .apply(OrganizationContextMiddleware)
-      .forRoutes('*')
+    consumer.apply(LoggerMiddleware).forRoutes('*')
+    // .apply(OrganizationContextMiddleware)
+    // .forRoutes('*')
   }
 }
