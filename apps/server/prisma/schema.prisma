@@ -26,7 +26,7 @@ model User {
   createdAt    DateTime      @default(now())
   updatedAt    DateTime      @updatedAt
   active       Boolean       @default(true)
-  phone        String?
+  phone        String?       @unique
 
   // Связи с организациями
   userOrganizations UserOrganization[]
