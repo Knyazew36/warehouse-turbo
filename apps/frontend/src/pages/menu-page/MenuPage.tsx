@@ -46,8 +46,6 @@ const MenuPage: FC = () => {
     return <Loader />
   }
 
-  console.info(isAdmin, isOwner, isIT, isOperator, role)
-
   const menuButtons: IMenuButton[] = [
     {
       to: '/settings-warehouse',

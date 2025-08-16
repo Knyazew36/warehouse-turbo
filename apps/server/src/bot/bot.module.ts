@@ -5,7 +5,6 @@ import { ProductsModule } from 'src/products/products.module'
 
 import { AuthModule } from '../auth/auth.module'
 import { BotUpdate } from './bot.update'
-import { AllowedPhoneService } from 'src/allowed-phone/allowed-phone.service'
 import { BotService } from './bot.service'
 
 @Module({
@@ -14,9 +13,9 @@ import { BotService } from './bot.service'
     PrismaModule, // экспортирует PrismaService
     ProductsModule, // нужен для ProductsService в BotUpdate
 
-    forwardRef(() => AuthModule) // для AllowedPhoneService
+    forwardRef(() => AuthModule)
   ],
-  providers: [PrismaService, BotUpdate, AllowedPhoneService, BotService],
+  providers: [PrismaService, BotUpdate, BotService],
   exports: [BotUpdate]
 })
 export class BotModule {}

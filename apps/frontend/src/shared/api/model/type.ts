@@ -8,8 +8,8 @@ export interface BaseResponse<T> {
   path?: string
   user?: {
     id: number
-    telegramId: string
-    allowedPhone: boolean
+    telegramId?: string
+    allowedPhone?: boolean
     role: string | null
   }
 }
@@ -31,8 +31,8 @@ export interface PaginationResponse<T> {
   path?: string
   user?: {
     id: number
-    telegramId: string
-    allowedPhone: boolean
+    telegramId?: string
+    allowedPhone?: boolean
     role: string | null
   }
 }

@@ -1,13 +1,20 @@
-import { IsNumber, IsEnum, IsOptional } from 'class-validator';
-import { Role } from '@prisma/client';
+import { IsNumber, IsEnum, IsOptional, IsString, Matches } from 'class-validator'
+import { Role } from '@prisma/client'
 
 export class AddUserToOrganizationDto {
+  @IsOptional()
   @IsNumber()
-  userId: number;
-
-  @IsEnum(Role)
-  role: Role;
+  userId?: number
 
   @IsOptional()
-  isOwner?: boolean;
+  @IsString()
+  @Matches(/^\+7\d{10}$/, { message: 'Phone number must be in format +7XXXXXXXXXX' })
+  phone?: string
+
+  @IsEnum(Role)
+  @IsOptional()
+  role: Role
+
+  // @IsOptional()
+  // isOwner?: boolean
 }

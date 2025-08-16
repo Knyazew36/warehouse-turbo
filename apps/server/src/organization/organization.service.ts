@@ -35,28 +35,7 @@ export class OrganizationService {
         }
       })
 
-      // Если есть разрешенные телефоны, добавляем их
-      if (createOrganizationDto.allowedPhones && createOrganizationDto.allowedPhones.length > 0) {
-        for (const phone of createOrganizationDto.allowedPhones) {
-          // Создаем или находим существующий телефон
-          const allowedPhone = await prisma.allowedPhone.upsert({
-            where: { phone },
-            update: {},
-            create: {
-              phone,
-              comment: ''
-            }
-          })
-
-          // Создаем связь с организацией
-          await prisma.allowedPhoneOrganization.create({
-            data: {
-              allowedPhoneId: allowedPhone.id,
-              organizationId: organization.id
-            }
-          })
-        }
-      }
+      // Убрана логика allowedPhones. При создании организации телефоны больше не добавляем
 
       return organization
     })
@@ -122,11 +101,6 @@ export class OrganizationService {
               }
             }
           }
-        },
-        allowedPhones: {
-          include: {
-            allowedPhone: true
-          }
         }
       }
     })
@@ -141,12 +115,9 @@ export class OrganizationService {
   async update(id: number, updateOrganizationDto: UpdateOrganizationDto): Promise<Organization> {
     const organization = await this.findOne(id)
 
-    // Извлекаем allowedPhones из DTO, так как это поле больше не существует в модели
-    const { allowedPhones, ...updateData } = updateOrganizationDto
-
     return this.prisma.organization.update({
       where: { id },
-      data: updateData
+      data: updateOrganizationDto
     })
   }
 
@@ -169,22 +140,42 @@ export class OrganizationService {
     organizationId: number,
     addUserDto: AddUserToOrganizationDto
   ): Promise<UserOrganization> {
-    const organization = await this.findOne(organizationId)
+    // const organization = await this.findOne(organizationId)
 
-    // Проверяем, существует ли пользователь
-    const user = await this.prisma.user.findUnique({
-      where: { id: addUserDto.userId }
-    })
+    // Находим/создаём пользователя: по ID или по телефону
+    let userIdToUse: number | null = null
 
-    if (!user) {
-      throw new NotFoundException(`Пользователь с ID ${addUserDto.userId} не найден`)
+    if (addUserDto.userId) {
+      const userById = await this.prisma.user.findUnique({ where: { id: addUserDto.userId } })
+      if (!userById) {
+        throw new NotFoundException(`Пользователь с ID ${addUserDto.userId} не найден`)
+      }
+      userIdToUse = userById.id
+    } else if (addUserDto.phone) {
+      // Ищем по телефону, если нет — создаём "пустого" пользователя с телефоном
+      const existingByPhone = await this.prisma.user.findUnique({
+        where: { phone: addUserDto.phone }
+      })
+
+      if (existingByPhone) {
+        userIdToUse = existingByPhone.id
+      } else {
+        const created = await this.prisma.user.create({
+          data: {
+            phone: addUserDto.phone
+          }
+        })
+        userIdToUse = created.id
+      }
+    } else {
+      throw new BadRequestException('Необходимо передать userId или phone')
     }
 
     // Проверяем, не добавлен ли уже пользователь в эту организацию
     const existingUserOrg = await this.prisma.userOrganization.findUnique({
       where: {
         userId_organizationId: {
-          userId: addUserDto.userId,
+          userId: userIdToUse,
           organizationId: organizationId
         }
       }
@@ -196,16 +187,17 @@ export class OrganizationService {
 
     return this.prisma.userOrganization.create({
       data: {
-        userId: addUserDto.userId,
+        userId: userIdToUse,
         organizationId: organizationId,
-        role: addUserDto.role,
-        isOwner: addUserDto.isOwner || false
+        role: addUserDto.role || Role.OPERATOR
+        // isOwner: addUserDto.isOwner || false
       },
       include: {
         user: {
           select: {
             id: true,
             telegramId: true,
+            phone: true,
             data: true,
             active: true
           }
@@ -233,10 +225,9 @@ export class OrganizationService {
       throw new BadRequestException('Нельзя удалить владельца организации')
     }
 
-    // Получаем пользователя с его allowedPhone
+    // Получаем пользователя
     const user = await this.prisma.user.findUnique({
-      where: { id: userId },
-      include: { allowedPhone: true }
+      where: { id: userId }
     })
 
     // Удаляем связь пользователя с организацией
@@ -249,15 +240,7 @@ export class OrganizationService {
       }
     })
 
-    // Если у пользователя есть allowedPhone, удаляем связь с организацией
-    if (user?.allowedPhone) {
-      await this.prisma.allowedPhoneOrganization.deleteMany({
-        where: {
-          allowedPhoneId: user.allowedPhone.id,
-          organizationId: organizationId
-        }
-      })
-    }
+    // Ранее удалялась связь allowedPhoneOrganization. Теперь не требуется.
   }
 
   async updateUserRole(
@@ -310,12 +293,9 @@ export class OrganizationService {
     // Получаем организации пользователя
     const myOrganizations = await this.getUserOrganizations(userId)
 
-    // Получаем пользователя с его разрешенным телефоном
+    // Получаем пользователя
     const user = await this.prisma.user.findUnique({
-      where: { id: userId },
-      include: {
-        allowedPhone: true
-      }
+      where: { id: userId }
     })
 
     if (!user) {
@@ -325,36 +305,8 @@ export class OrganizationService {
     // Получаем ID организаций, где пользователь уже состоит
     const userOrganizationIds = myOrganizations.map(org => org.organizationId)
 
-    // Получаем организации, где есть разрешенные телефоны пользователя, но он еще не состоит
-    // Если у пользователя нет разрешенного телефона, возвращаем пустой массив приглашений
-    let invitedOrganizations: Organization[] = []
-
-    if (user.allowedPhone) {
-      invitedOrganizations = await this.prisma.organization.findMany({
-        where: {
-          active: true,
-
-          allowedPhones: {
-            some: {
-              allowedPhone: {
-                phone: user.allowedPhone.phone
-              }
-            }
-          },
-          id: {
-            notIn: userOrganizationIds
-          }
-        },
-        include: {
-          allowedPhones: {
-            include: {
-              allowedPhone: true
-            }
-          }
-        },
-        orderBy: { createdAt: 'desc' }
-      })
-    }
+    // Больше нет механизма приглашений по телефонам — возвращаем пустой список приглашений
+    const invitedOrganizations: Organization[] = []
 
     return {
       myOrganizations,
@@ -366,36 +318,16 @@ export class OrganizationService {
     // Проверяем, существует ли организация
     const organization = await this.findOne(organizationId)
 
-    // Получаем пользователя с его разрешенным телефоном
+    // Получаем пользователя
     const user = await this.prisma.user.findUnique({
-      where: { id: userId },
-      include: {
-        allowedPhone: true
-      }
+      where: { id: userId }
     })
 
     if (!user) {
       throw new NotFoundException('Пользователь не найден')
     }
 
-    // Проверяем, есть ли у пользователя разрешенный телефон для этой организации
-    let hasAccess = false
-
-    if (user.allowedPhone) {
-      hasAccess =
-        (await this.prisma.allowedPhoneOrganization.findFirst({
-          where: {
-            allowedPhone: {
-              phone: user.allowedPhone.phone
-            },
-            organizationId
-          }
-        })) !== null
-    }
-
-    if (!user.allowedPhone || !hasAccess) {
-      throw new BadRequestException('У вас нет разрешения для присоединения к этой организации')
-    }
+    // Ранее доступ проверялся через таблицы AllowedPhone*. Теперь пользователь может присоединиться напрямую из UI.
 
     // Проверяем, не состоит ли уже пользователь в этой организации
     const existingUserOrg = await this.prisma.userOrganization.findUnique({
@@ -461,11 +393,6 @@ export class OrganizationService {
                 active: true
               }
             }
-          }
-        },
-        allowedPhones: {
-          include: {
-            allowedPhone: true
           }
         }
       }

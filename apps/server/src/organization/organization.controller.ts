@@ -11,6 +11,7 @@ import { User } from 'src/auth/decorators/get-user.decorator'
 import { User as UserType } from '@prisma/client'
 import { RolesGuard } from 'src/auth/guards/roles.guard'
 import { UpdateNotificationSettingsDto } from '../products/dto/update-notification-settings.dto'
+import { OrganizationId } from './decorators/organization-id.decorator'
 
 @ApiTags('Организации')
 @UseGuards(TelegramAuthGuard, RolesGuard)
@@ -74,16 +75,16 @@ export class OrganizationController {
     return await this.organizationService.remove(id)
   }
 
-  @Post(':id/users')
+  @Post('users/add')
   @Roles(Role.IT, Role.OWNER, Role.ADMIN)
   @ApiOperation({ summary: 'Добавить пользователя в организацию' })
   @ApiParam({ name: 'id', type: Number })
   @ApiBody({ type: AddUserToOrganizationDto })
   async addUserToOrganization(
-    @Param('id', ParseIntPipe) id: number,
-    @Body() addUserDto: AddUserToOrganizationDto
+    @Body() addUserDto: AddUserToOrganizationDto,
+    @OrganizationId() organizationId: number
   ) {
-    return await this.organizationService.addUserToOrganization(id, addUserDto)
+    return await this.organizationService.addUserToOrganization(organizationId, addUserDto)
   }
 
   @Post(':id/users/:userId/remove')

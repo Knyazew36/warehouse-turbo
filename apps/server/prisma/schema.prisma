@@ -7,66 +7,51 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-enum Role {
-  IT
-  OWNER
-  GUEST
-  OPERATOR
-  ADMIN
-  BLOCKED
-}
-
 model User {
-  id         Int    @id @default(autoincrement())
-  telegramId String @unique
+  id         Int     @id @default(autoincrement())
+  telegramId String? @unique
+  data       Json?
 
-  data         Json?
-  receipts     Receipt[]
-  shiftReports ShiftReport[] // факт подтверждения смены
-  createdAt    DateTime      @default(now())
-  updatedAt    DateTime      @updatedAt
-  active       Boolean       @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  active    Boolean  @default(true)
 
-  // Связи с организациями
+  phone String? @unique
+
+  receipts          Receipt[]
+  shiftReports      ShiftReport[]
   userOrganizations UserOrganization[]
-
-  // Связь с разрешенным телефоном
-  allowedPhone AllowedPhone?
 
   @@index([telegramId])
   @@index([active])
+  @@index([phone])
 }
 
 model Organization {
-  id          Int      @id @default(autoincrement())
-  name        String
-  description String?
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-  active      Boolean  @default(true)
-  settings    Json?
-
-  // Связи
-  userOrganizations UserOrganization[]
+  id                Int                @id @default(autoincrement())
+  name              String
+  description       String?
+  createdAt         DateTime           @default(now())
+  updatedAt         DateTime           @updatedAt
+  active            Boolean            @default(true)
+  settings          Json?
   products          Product[]
+  productCategories ProductCategory[]
   receipts          Receipt[]
   shiftReports      ShiftReport[]
-  allowedPhones     AllowedPhoneOrganization[]
-  productCategories ProductCategory[]
+  userOrganizations UserOrganization[]
 }
 
 model UserOrganization {
-  id             Int      @id @default(autoincrement())
+  id             Int          @id @default(autoincrement())
   userId         Int
   organizationId Int
-  role           Role // Роль пользователя в конкретной организации
-  isOwner        Boolean  @default(false) // Владелец организации
-  createdAt      DateTime @default(now())
-  updatedAt      DateTime @updatedAt
-
-  // Связи
-  user         User         @relation(fields: [userId], references: [id], onDelete: Cascade)
-  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  role           Role
+  isOwner        Boolean      @default(false)
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  user           User         @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([userId, organizationId])
   @@index([userId])
@@ -75,118 +60,77 @@ model UserOrganization {
 }
 
 model Product {
-  id           Int       @id @default(autoincrement())
-  name         String
-  quantity     Decimal
-  minThreshold Decimal
-  unit         String?   @default("ед")
-  // category     String?
-  createdAt    DateTime  @default(now())
-  updatedAt    DateTime  @updatedAt
-  receipts     Receipt[]
-  active       Boolean   @default(true)
-
-  // Связь с организацией
-  organizationId Int
-  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
-
-  // Связь с категорией
+  id              Int              @id @default(autoincrement())
+  name            String
+  quantity        Decimal
+  minThreshold    Decimal
+  unit            String?          @default("ед")
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
+  active          Boolean          @default(true)
+  organizationId  Int
   categoryId      Int?
-  productCategory ProductCategory? @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+  productCategory ProductCategory? @relation(fields: [categoryId], references: [id])
+  organization    Organization     @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  receipts        Receipt[]
 
-  @@unique([organizationId, name]) // Уникальное имя в рамках организации
+  @@unique([organizationId, name])
   @@index([organizationId])
   @@index([categoryId])
 }
 
 model Receipt {
-  id         Int      @id @default(autoincrement())
-  operator   User?    @relation(fields: [operatorId], references: [id], onDelete: SetNull)
-  operatorId Int?
-  receipts   Json // [{ productId: number, quantity: number }]
-  createdAt  DateTime @default(now())
-  Product    Product? @relation(fields: [productId], references: [id])
-  productId  Int?
-
-  // Связь с организацией
+  id             Int          @id @default(autoincrement())
+  operatorId     Int?
+  receipts       Json
+  createdAt      DateTime     @default(now())
+  productId      Int?
   organizationId Int
+  operatorData   Json?
+  operator       User?        @relation(fields: [operatorId], references: [id])
   organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
-
-  // Данные оператора для сохранения информации после удаления пользователя
-  operatorData Json?
+  Product        Product?     @relation(fields: [productId], references: [id])
 
   @@index([organizationId])
 }
 
 model ShiftReport {
-  id           Int      @id @default(autoincrement())
-  userId       Int
-  consumptions Json // [ { productId: number, consumed: number }, … ]
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
-
-  operator       User?        @relation(fields: [operatorId], references: [id], onDelete: SetNull)
+  id             Int          @id @default(autoincrement())
+  userId         Int
+  consumptions   Json
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
   operatorId     Int?
-  // Связь с организацией
   organizationId Int
+  operatorData   Json?
+  operator       User?        @relation(fields: [operatorId], references: [id])
   organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
 
-  // Данные пользователя для сохранения информации после удаления пользователя
-  operatorData Json?
-
-  @@index([organizationId])
-}
-
-model AllowedPhone {
-  id        Int      @id @default(autoincrement())
-  phone     String   @unique // В формате +79991234567
-  comment   String?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  // Связь с пользователем
-  userId Int?  @unique
-  user   User? @relation(fields: [userId], references: [id], onDelete: SetNull)
-
-  // Связь many-to-many с организациями
-  organizations AllowedPhoneOrganization[]
-
-  @@index([phone])
-  @@index([userId])
-}
-
-model AllowedPhoneOrganization {
-  id             Int      @id @default(autoincrement())
-  allowedPhoneId Int
-  organizationId Int
-  createdAt      DateTime @default(now())
-
-  // Связи
-  allowedPhone AllowedPhone @relation(fields: [allowedPhoneId], references: [id], onDelete: Cascade)
-  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
-
-  @@unique([allowedPhoneId, organizationId])
-  @@index([allowedPhoneId])
   @@index([organizationId])
 }
 
 model ProductCategory {
-  id          Int      @id @default(autoincrement())
-  name        String
-  description String?
-  color       String? // Цвет для UI (hex код)
-  icon        String? // Иконка для UI
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-  active      Boolean  @default(true)
-
-  // Связь с организацией
+  id             Int          @id @default(autoincrement())
+  name           String
+  description    String?
+  color          String?
+  icon           String?
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+  active         Boolean      @default(true)
   organizationId Int
+  products       Product[]
   organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
 
-  // Связь с продуктами
-  products Product[]
-
-  @@unique([organizationId, name]) // Уникальное имя категории в рамках организации
+  @@unique([organizationId, name])
   @@index([organizationId])
+}
+
+enum Role {
+  IT
+  OWNER
+  GUEST
+  OPERATOR
+  ADMIN
+  BLOCKED
 }

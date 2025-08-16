@@ -18,7 +18,7 @@ import { getOrganizationIdFromStore } from '../middleware/organization.middlewar
 
 const initDataRaw =
   import.meta.env.VITE_IS_LOCAL === 'true'
-    ? 'user=%7B%22id%22%3A239676985%2C%22first_name%22%3A%22%D0%A1%D0%B5%D1%80%D0%B3%D0%B5%D0%B9%22%2C%22last_name%22%3A%22%D0%9A%D0%BD%D1%8F%D0%B7%D0%B5%D0%B2%22%2C%22username%22%3A%22Knyaz_sv%22%2C%22language_code%22%3A%22ru%22%2C%22is_premium%22%3Atrue%2C%22allows_write_to_pm%22%3Atrue%2C%22photo_url%22%3A%22https%3A%5C%2F%5C%2Ft.me%5C%2Fi%5C%2Fuserpic%5C%2F320%5C%2FdVwpqY8rwKcDgyKCeVKKd95SfUDZ89Fhpw-zbGDB6Rg.svg%22%7D&chat_instance=6883731396038540970&chat_type=channel&auth_date=1754815447&signature=oozM1DF_FGrwf5RHzwn52on3aNEVqCj95njix7N1yagtJj2S9QoTA3vcPM9M4h8a1Kl3xG17OHQ2WFIpZDXvDg&hash=0248099485d19a834ba04526b22d88b711790a9e032e5640e7929836a3250928'
+    ? 'user=%7B%22id%22%3A239676985%2C%22first_name%22%3A%22%D0%A1%D0%B5%D1%80%D0%B3%D0%B5%D0%B9%22%2C%22last_name%22%3A%22%D0%9A%D0%BD%D1%8F%D0%B7%D0%B5%D0%B2%22%2C%22username%22%3A%22Knyaz_sv%22%2C%22language_code%22%3A%22ru%22%2C%22is_premium%22%3Atrue%2C%22allows_write_to_pm%22%3Atrue%2C%22photo_url%22%3A%22https%3A%5C%2F%5C%2Ft.me%5C%2Fi%5C%2Fuserpic%5C%2F320%5C%2FdVwpqY8rwKcDgyKCeVKKd95SfUDZ89Fhpw-zbGDB6Rg.svg%22%7D&chat_instance=6883731396038540970&chat_type=channel&auth_date=1755329820&signature=bQ4XfVYHZ_nwKLSxBav1mzTc4jOyEB8ABh3Ha5BL72qc9HmHKqboFojDyKt4Ne6rvJr54nCRUsbxYBvE1O2ODA&hash=319a50a85b7d44f3c95694b373719b17c76d81ee7867555c08465d274887e065'
     : isTMA()
       ? retrieveRawInitData()
       : ''
@@ -84,7 +84,15 @@ $api.interceptors.response.use(
     }
 
     if (response.data?.user?.allowedPhone === false) {
-      if (import.meta.env.DEV) return response
+      if (import.meta.env.DEV) {
+        console.log(
+          `%c Нет телефона у текущего пользователя, модалка пропущена`,
+          'background: brown; color: white; padding: 4px; border-radius: 4px;'
+        )
+
+        return response
+      }
+
       const errorData: ErrorEventEmitter = {
         action: 'bottom-sheet',
         description:

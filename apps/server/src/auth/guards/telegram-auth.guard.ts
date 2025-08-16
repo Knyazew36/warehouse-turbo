@@ -80,7 +80,6 @@ export class TelegramAuthGuard implements CanActivate {
         data: initData?.user
       },
       include: {
-        allowedPhone: true,
         userOrganizations: organizationId
           ? {
               where: {
@@ -95,7 +94,7 @@ export class TelegramAuthGuard implements CanActivate {
     })
 
     // 6) Обрабатываем роль пользователя
-    let userWithRole = user
+    let userWithRole: any = user
 
     if (organizationId) {
       const userOrganization = user.userOrganizations?.[0]
@@ -105,8 +104,7 @@ export class TelegramAuthGuard implements CanActivate {
         userWithRole = {
           ...user,
           role: userOrganization.role,
-          //@ts-ignore
-          username: user.data.username
+          username: (user as any).data?.username
         } as any
       } else {
         throw new UnauthorizedException('User not found in organization')

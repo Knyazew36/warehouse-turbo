@@ -54,9 +54,9 @@ export interface IUpdateOrganization {
 }
 
 export interface IAddUserToOrganization {
-  userId: number
-  role: Role
-  isOwner?: boolean
+  userId?: number
+  phone: string
+  role?: Role
 }
 
 export interface INotificationSettings {

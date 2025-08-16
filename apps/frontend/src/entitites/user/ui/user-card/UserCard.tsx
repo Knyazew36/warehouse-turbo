@@ -48,41 +48,50 @@ const UserCard = ({ data, organizationId, currentUserId }: IProps) => {
           />
         </div>
       )}
-      {/* Header */}
-      <div className='grid grid-cols-3 gap-x-2 p-3 md:px-5 md:pt-5'>
-        <div>
-          <span className='hidden items-center gap-x-1.5 rounded-full bg-gray-100 px-2.5 py-1 text-xs font-medium text-gray-800 md:inline-flex dark:bg-neutral-700 dark:text-neutral-200'>
-            <span className='inline-block size-1.5 shrink-0 rounded-full bg-gray-800 dark:bg-neutral-200' />
-            Online
+
+      {data.data && (
+        <div className='grid grid-cols-3 gap-x-2 p-3 md:px-5 md:pt-5'>
+          <div>
+            <span className='hidden items-center gap-x-1.5 rounded-full bg-gray-100 px-2.5 py-1 text-xs font-medium text-gray-800 md:inline-flex dark:bg-neutral-700 dark:text-neutral-200'>
+              <span className='inline-block size-1.5 shrink-0 rounded-full bg-gray-800 dark:bg-neutral-200' />
+              Online
+            </span>
+          </div>
+          <div className='relative mx-auto size-11 shrink-0 md:h-15.5 md:w-15.5'>
+            {data.data?.photo_url ? (
+              <img
+                className='size-11 shrink-0 rounded-full md:h-15.5 md:w-15.5'
+                src={data.data.photo_url}
+                alt='Avatar'
+              />
+            ) : (
+              <span className='flex size-9.5 shrink-0 items-center justify-center rounded-full border border-gray-200 bg-white text-xs font-medium text-gray-700 uppercase dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-300'>
+                {
+                  getFullName({
+                    firstName: data.data?.first_name,
+                    lastName: data.data?.last_name
+                  }).initials
+                }
+              </span>
+            )}
+          </div>
+        </div>
+      )}
+
+      {!data?.data && (
+        <div className='flex justify-center py-2'>
+          <span className='inline-flex items-center gap-x-1.5 rounded-full bg-red-100 px-2.5 py-1 text-xs font-medium text-red-800 dark:bg-red-500/10 dark:text-red-500'>
+            <span className='inline-block size-1.5 shrink-0 rounded-full bg-red-800 dark:bg-red-500'></span>
+            Не авторизован в системе
           </span>
         </div>
-        <div className='relative mx-auto size-11 shrink-0 md:h-15.5 md:w-15.5'>
-          {data.data.photo_url ? (
-            <img
-              className='size-11 shrink-0 rounded-full md:h-15.5 md:w-15.5'
-              src={data.data.photo_url}
-              alt='Avatar'
-            />
-          ) : (
-            <span className='flex size-9.5 shrink-0 items-center justify-center rounded-full border border-gray-200 bg-white text-xs font-medium text-gray-700 uppercase dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-300'>
-              {
-                getFullName({
-                  firstName: data.data.first_name,
-                  lastName: data.data.last_name
-                }).initials
-              }
-            </span>
-          )}
-        </div>
-      </div>
-      {/* End Header */}
-      {/* Body */}
+      )}
       <div className='p-3 pt-0 text-center md:px-5 md:pb-5'>
         <h3 className='font-medium text-gray-800 md:text-lg dark:text-neutral-200'>
           {
             getFullName({
-              firstName: data.data.first_name,
-              lastName: data.data.last_name
+              firstName: data.data?.first_name,
+              lastName: data.data?.last_name
             }).shortName
           }
         </h3>
@@ -94,14 +103,26 @@ const UserCard = ({ data, organizationId, currentUserId }: IProps) => {
 
       <div className='border-t border-gray-200 px-2 dark:border-neutral-700'>
         {/* List */}
-        <div className='grid grid-cols-2 gap-x-3'>
-          <div className='relative truncate overflow-hidden py-1 text-end text-sm text-gray-500 after:absolute after:top-1/2 after:mx-3 after:hidden after:w-full after:border-t after:border-dashed after:border-gray-200 sm:text-start sm:after:block dark:border-neutral-700 dark:text-neutral-500 dark:after:border-neutral-700'>
-            <span className='relative z-1 pe-2'>Логин</span>
+        {data.data?.username && (
+          <div className='grid grid-cols-2 gap-x-3'>
+            <div className='relative truncate overflow-hidden py-1 text-end text-sm text-gray-500 after:absolute after:top-1/2 after:mx-3 after:hidden after:w-full after:border-t after:border-dashed after:border-gray-200 sm:text-start sm:after:block dark:border-neutral-700 dark:text-neutral-500 dark:after:border-neutral-700'>
+              <span className='relative z-1 pe-2'>Логин</span>
+            </div>
+            <div className='truncate py-1 text-sm text-gray-800 dark:text-neutral-200'>
+              <span id='hs-pro-shmaccl'>{data.data?.username}</span>
+            </div>
           </div>
-          <div className='truncate py-1 text-sm text-gray-800 dark:text-neutral-200'>
-            <span id='hs-pro-shmaccl'>{data.data.username}</span>
+        )}
+        {data.phone && (
+          <div className='grid grid-cols-2 gap-x-3'>
+            <div className='relative truncate overflow-hidden py-1 text-end text-sm text-gray-500 after:absolute after:top-1/2 after:mx-3 after:hidden after:w-full after:border-t after:border-dashed after:border-gray-200 sm:text-start sm:after:block dark:border-neutral-700 dark:text-neutral-500 dark:after:border-neutral-700'>
+              <span className='relative z-1 pe-2'>Телефон</span>
+            </div>
+            <div className='truncate py-1 text-sm text-gray-800 dark:text-neutral-200'>
+              <span id='hs-pro-shmaccl'>{data.phone}</span>
+            </div>
           </div>
-        </div>
+        )}
         <div className='grid grid-cols-2 gap-x-3 border-gray-200 dark:border-neutral-700'>
           <div className='relative truncate overflow-hidden py-1 text-end text-sm text-gray-500 after:absolute after:top-1/2 after:mx-3 after:hidden after:w-full after:border-t after:border-dashed after:border-gray-200 sm:text-start sm:after:block dark:border-neutral-700 dark:text-neutral-500 dark:after:border-neutral-700'>
             <span className='relative z-1 pe-2'>Последняя активность</span>
@@ -118,6 +139,7 @@ const UserCard = ({ data, organizationId, currentUserId }: IProps) => {
             </span>
           </div>
         </div>
+
         {/* End List */}
       </div>
 

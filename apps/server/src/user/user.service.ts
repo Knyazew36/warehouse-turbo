@@ -4,6 +4,7 @@ import { User, Role } from '@prisma/client'
 import { GetUsersDto } from './dto/get-users.dto'
 import { UpdateUserDto } from './dto/update-user.dto'
 import { OrganizationService } from 'src/organization/organization.service'
+import { CreateUserDto } from './dto/create-user.dto'
 
 @Injectable()
 export class UserService {
@@ -177,10 +178,6 @@ export class UserService {
         organizationId
       }
     })
-
-    console.info('userOrg', userOrg)
-    console.info('telegramId', telegramId)
-    console.info('organizationId', organizationId)
 
     if (!userOrg) {
       throw new NotFoundException('User not found in organization')

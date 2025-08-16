@@ -97,23 +97,21 @@ export const useAddUserToOrganization = () => {
   const queryClient = useQueryClient()
 
   return useMutation({
-    mutationFn: async ({
-      organizationId,
-      data
-    }: {
-      organizationId: number
-      data: IAddUserToOrganization
-    }) => {
-      const res = await $api.post(`${apiDomain}/organizations/${organizationId}/users`, data)
+    mutationFn: async (data: IAddUserToOrganization) => {
+      // users/:id/add
+      const res = await $api.post(`${apiDomain}/organizations/users/add`, data)
       return res.data.data
     },
-    onSuccess: (_, { organizationId }) => {
-      // queryClient.invalidateQueries({
-      //   queryKey: ORGANIZATION_KEYS.users(organizationId)
-      // })
+    onSuccess: (_, {}) => {
       queryClient.invalidateQueries({
-        queryKey: ORGANIZATION_KEYS.detail(organizationId)
+        queryKey: USER_KEYS.employees()
       })
+      // // queryClient.invalidateQueries({
+      // //   queryKey: ORGANIZATION_KEYS.users(organizationId)
+      // // })
+      // queryClient.invalidateQueries({
+      //   queryKey: ORGANIZATION_KEYS.em(organizationId)
+      // })
     }
   })
 }

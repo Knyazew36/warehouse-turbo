@@ -10,9 +10,10 @@ export enum Role {
 }
 export interface IUser {
   id: number
-  telegramId: string
+  telegramId?: string
+  phone?: string
 
-  data: User
+  data?: User
   createdAt: Date
   updatedAt: Date
   active: boolean
