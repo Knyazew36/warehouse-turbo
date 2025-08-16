@@ -188,4 +188,19 @@ export class UserService {
 
     return { role: userOrg.role }
   }
+
+  async tech() {
+    const users = await this.prisma.user.findMany({ include: { allowedPhone: true } })
+
+    for (const user of users) {
+      if (user.allowedPhone) {
+        await this.prisma.user.update({
+          where: { id: user.id },
+          data: { phone: user.allowedPhone.phone }
+        })
+      }
+    }
+
+    return 'done'
+  }
 }

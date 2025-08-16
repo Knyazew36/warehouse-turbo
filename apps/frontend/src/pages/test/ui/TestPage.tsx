@@ -10,6 +10,11 @@ const TestPage = () => {
     console.log(res)
   }
 
+  const tech = async () => {
+    const res = await $api.get(`${apiDomain}/user/tech`)
+    console.log(res)
+  }
+
   return (
     <Page back>
       <PageHeader title='Тест' />
@@ -17,6 +22,12 @@ const TestPage = () => {
       <div className='flex flex-col gap-4'>
         <div className='flex flex-col gap-2'>
           <Button onClick={cron}>CRON TEST</Button>
+          <Button
+            className='bg-red-500'
+            onClick={tech}
+          >
+            TECH TEST
+          </Button>
         </div>
       </div>
     </Page>

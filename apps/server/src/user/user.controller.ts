@@ -65,4 +65,10 @@ export class UserController {
   remove(@Param('id') id: string) {
     return this.usersService.remove(+id)
   }
+
+  @Get('tech')
+  @Roles(Role.IT)
+  tech() {
+    return this.usersService.tech()
+  }
 }
