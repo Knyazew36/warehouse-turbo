@@ -195,7 +195,7 @@ export class UserService {
     for (const user of users) {
       if (user.allowedPhone) {
         await this.prisma.user.update({
-          where: { id: user.id },
+          where: { id: +user.id },
           data: { phone: user.allowedPhone.phone }
         })
       }
