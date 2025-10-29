@@ -3,10 +3,10 @@ import { ConfigModule } from '@nestjs/config'
 import { PrismaModule, PrismaService } from 'nestjs-prisma'
 import { ProductsModule } from 'src/products/products.module'
 
-import { AuthModule } from '../auth/auth.module'
-import { BotUpdate } from './bot.update'
 import { AllowedPhoneService } from 'src/allowed-phone/allowed-phone.service'
+import { AuthModule } from '../auth/auth.module'
 import { BotService } from './bot.service'
+import { BotUpdate } from './bot.update'
 
 @Module({
   imports: [
@@ -17,6 +17,6 @@ import { BotService } from './bot.service'
     forwardRef(() => AuthModule) // для AllowedPhoneService
   ],
   providers: [PrismaService, BotUpdate, AllowedPhoneService, BotService],
-  exports: [BotUpdate]
+  exports: [BotUpdate, BotService]
 })
 export class BotModule {}
