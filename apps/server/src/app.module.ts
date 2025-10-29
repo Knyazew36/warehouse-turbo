@@ -1,26 +1,27 @@
-import { MiddlewareConsumer, NestModule, Module } from '@nestjs/common'
+import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common'
+import { ConfigModule } from '@nestjs/config'
+import { APP_INTERCEPTOR } from '@nestjs/core'
+import { PrismaModule, PrismaService } from 'nestjs-prisma'
 import { AppController } from './app.controller'
 import { AppService } from './app.service'
-import { ConfigModule } from '@nestjs/config'
-import { BotModule } from './bot/bot.module'
 import { AuthModule } from './auth/auth.module'
+import { BotModule } from './bot/bot.module'
 import { ProductsModule } from './products/products.module'
-import { PrismaModule, PrismaService } from 'nestjs-prisma'
-import { APP_INTERCEPTOR } from '@nestjs/core'
 
-import { ResponseInterceptor } from './common/interseptors/response.interceptor'
-import { ShiftsModule } from './shifts/shifts.module'
-import { ReceiptsModule } from './receipts/receipts.module'
 import { ScheduleModule } from '@nestjs/schedule'
+import { ResponseInterceptor } from './common/interseptors/response.interceptor'
 import { LoggerMiddleware } from './common/middlewares/logger.middleware'
-import { UserModule } from './user/user.module'
 import { OrganizationModule } from './organization/organization.module'
+import { ReceiptsModule } from './receipts/receipts.module'
+import { ShiftsModule } from './shifts/shifts.module'
+import { UserModule } from './user/user.module'
 // import { OrganizationContextMiddleware } from './organization/middleware/organization-context.middleware'
+import { WinstonModule } from 'nest-winston'
+import { TelegrafModule } from 'nestjs-telegraf'
 import * as winston from 'winston'
 import 'winston-daily-rotate-file'
-import { WinstonModule } from 'nest-winston'
-import { TelegrafModule, TelegrafModuleOptions } from 'nestjs-telegraf'
 import { AllowedPhoneModule } from './allowed-phone/allowed-phone.module'
+import { DebugModule } from './debug/debug.module'
 
 const dailyRotateFileTransport = new winston.transports.DailyRotateFile({
   filename: 'logs/application-%DATE%.log',
@@ -86,7 +87,8 @@ const dailyRotateFileTransport = new winston.transports.DailyRotateFile({
     TelegrafModule.forRoot({
       token: process.env.TG_BOT_TOKEN
     }),
-    AllowedPhoneModule
+    AllowedPhoneModule,
+    DebugModule
   ],
   controllers: [AppController],
   providers: [

@@ -1,11 +1,11 @@
-import { NestFactory } from '@nestjs/core'
-import { AppModule } from './app.module'
-import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston'
-import { AllExceptionsFilter } from './common/fitlers/exception.filter'
 import { ValidationPipe } from '@nestjs/common'
+import { NestFactory } from '@nestjs/core'
+import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger'
 import { config } from 'dotenv'
+import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston'
 import * as path from 'path'
-import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger'
+import { AppModule } from './app.module'
+import { AllExceptionsFilter } from './common/fitlers/exception.filter'
 
 // Загружаем правильный .env файл в зависимости от NODE_ENV
 const envFile = process.env.NODE_ENV === 'production' ? '.env.production' : '.env.development'
@@ -27,7 +27,11 @@ async function bootstrap() {
       'https://5278831-ad07030.twc1.net/',
       'http://5278831-ad07030.twc1.net',
       'http://test.5278831-ad07030.twc1.net',
-      process.env.WEBAPP_URL
+      process.env.WEBAPP_URL,
+      'https://pwa.dterra.ru/',
+      'https://pwa.alfastrah.ru/',
+      'https://pwa.dterra.ru',
+      'https://pwa.alfastrah.ru'
       // 'https://big-grain-tg.vercel.app',
       // 'https://front-test.devmill.ru'
     ],
