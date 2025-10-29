@@ -1,10 +1,10 @@
 import { Injectable, Logger } from '@nestjs/common'
-import { PrismaService } from 'nestjs-prisma'
-import { UserService } from '../user/user.service'
-import { Organization, Role, User } from '@prisma/client'
 import { Cron, CronExpression } from '@nestjs/schedule'
-import { BotService } from '../bot/bot.service'
+import { Organization, Role, User } from '@prisma/client'
+import { PrismaService } from 'nestjs-prisma'
 import { OrganizationSettings } from 'src/organization/types/organization-settings.type'
+import { BotService } from '../bot/bot.service'
+import { UserService } from '../user/user.service'
 
 @Injectable()
 export class CronService {

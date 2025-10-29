@@ -21,6 +21,7 @@ import 'winston-daily-rotate-file'
 import { WinstonModule } from 'nest-winston'
 import { TelegrafModule, TelegrafModuleOptions } from 'nestjs-telegraf'
 // import { AllowedPhoneModule } from './allowed-phone/allowed-phone.module'
+import { DebugModule } from './debug/debug.module';
 
 const dailyRotateFileTransport = new winston.transports.DailyRotateFile({
   filename: 'logs/application-%DATE%.log',
@@ -85,7 +86,8 @@ const dailyRotateFileTransport = new winston.transports.DailyRotateFile({
     ScheduleModule.forRoot(),
     TelegrafModule.forRoot({
       token: process.env.TG_BOT_TOKEN
-    })
+    }),
+    DebugModule
     // AllowedPhoneModule
   ],
   controllers: [AppController],
