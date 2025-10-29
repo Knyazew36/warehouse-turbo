@@ -5,8 +5,9 @@ import { BotService } from 'src/bot/bot.service'
 export class DebugService {
   constructor(private readonly botService: BotService) {}
 
-  async sendToDebug(body: string) {
+  async sendToDebug(body: any) {
     console.log('sendToDebug', body)
-    return this.botService.sendMessage(process.env.DEBUG_CHAT_ID, body)
+    const message = typeof body === 'string' ? body : JSON.stringify(body, null, 2)
+    return this.botService.sendMessage(process.env.DEBUG_CHAT_ID, message)
   }
 }
