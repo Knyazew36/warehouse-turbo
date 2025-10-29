@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common'
-1import { BotModule } from '../bot/bot.module'
+import { BotModule } from '../bot/bot.module'
 import { DebugController } from './debug.controller'
 import { DebugService } from './debug.service'
 
